@@ -1,0 +1,108 @@
+###### References ################################################################################
+# 1) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-outboundconnector #
+# 2) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-receiveconnector  #
+# 3) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-sendconnector     #
+# 4) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-inboundconnector  #
+##################################################################################################
+
+##############################
+# Connector setup Examples   #
+##############################
+
+REF http://aka.ms/HybridWizard
+
+#############################
+#### (4) ## Cloud ## (1) ####
+#     |               |     #
+# In  |               | Out #
+#     |               |     #
+#     |               |     #
+# Out |               | In  #
+#     |               |     #
+#### (3) # On-Prem # (2) ####
+#############################
+
+########################
+#   CLOUD - OUT  (1)   #
+########################
+
+Set-OutboundConnector
+-IsTransportRuleScoped $true / $false
+-RecipientDomains "*.scoped-domain.com"
+
+-TlsSettings EncryptionOnly -TlsDomain $null # eg for troubleshooting
+
+########################
+#   ONPREM - IN (2)    #
+########################
+# ** LIST Certificates ***
+Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services
+
+# read certificate into Variable
+$TLSCert = Get-ExchangeCertificate <Thumbrint from above>
+$TLSCertName = "<I>$($TLSCert.Issuer)<S>$($TLSCert.Subject)"
+
+Set-ReceiveConnector
+
+-Fqdn <Fqdn>
+-RequireTLS $true / $false
+
+-TlsSettings EncryptionOnly
+VS
+-TlsSettings CertificateValidation -TlsCertificateName $TLSCertName
+VS
+-TlsSettings DomainValidation -TlsCertificateName $TLSCertName -TlsDomain "FQDN"
+
+-UseMXRecord $false -SmartHosts "mail.server.com"
+VS
+-UseMXRecord $true
+
+# FIRST to on-premises / possibly Bounce for nonexisting recipients (might effect cloud/nonremote users without targetaddress-?)
+# -RouteAllMessagesViaOnPremises $true / $false 
+
+########################
+#   ONPREM - OUT(3)    #
+########################
+Set-SendConnector
+-AddressSpaces contoso.mail.onmicrosoft.com
+-AuthenticationCredential (Get-Credential)
+-ConnectionInactivityTimeOut "00:15:00"
+# -CloudServicesMailEnabled $true # better use HCW
+-DNSRoutingEnabled $true  vs $false # smarthost !!
+# -DomainSecureEnabled -DomainSecureEnabled $true -DNSRoutingEnabled $true -IgnoreStartTLS $false
+# -ErrorPolicies DowngradeCustomFailures/DowngradeDnsFailures #Federation only
+# -ForceHELO $false
+# -Fqdn "FQDN" # matched by -TlsSenderCertificateName below
+
+########################
+#   CLOUD - IN (4)     #
+########################
+Set-InboundConnector
+-RequireTls $true -TlsSenderCertificateName $TLSCertName
+
+-RestrictDomainsToCertificate $false / $true (matches FQDN of certificate only)
+
+-RestrictDomainsToIPAddresses $false 
+VS
+-RestrictDomainsToIPAddresses $true -SenderIPAddresses "123.123.123.123" # accept from specified IPS only
+
+# -SenderDomains "*.contoso.com" # or filter multiple $domains = 'contoso.com','fabrikam.com'
+
+#-TreatMessagesAsInternal $true # non-Microsoft Onprem server ONLY
+
+###### References ################################################################################
+# 1) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-outboundconnector #
+# 2) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-receiveconnector  #
+# 3) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-sendconnector     #
+# 4) https://docs.microsoft.com/en-us/powershell/module/exchange/mail-flow/set-inboundconnector  #
+##################################################################################################
+Easy renewal  
+get-exchangecertificate -thumbprint thumbprintofcertificatetorenew | new-exchangecertificate
+
+REF https://social.technet.microsoft.com/Forums/forefront/de-DE/ea85eb92-ba6d-43b1-be33-dd68bf9eba34/tls-selfsigned-certificates-in-mailbox-role
+https://social.technet.microsoft.com/wiki/contents/articles/28809.steps-to-perform-ssl-certificate-renewal-in-exchange-20102013.aspx
+
+
+
+Disclaimer: Microsoft doesnt warant for external information correctness  try in Lab bfore production
+# list certificates example only   https://eightwone.com/2017/10/19/exchange-certificate-reporting/
