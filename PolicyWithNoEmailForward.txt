@@ -1,0 +1,9 @@
+#connect to EXO
+
+New-ManagementRole MyBaseOptions-NoForward -Parent MyBaseOptions
+
+Set-ManagementRoleEntry MyBaseOptions-NoForward\Set-Mailbox -RemoveParameter -Parameters DeliverToMailboxAndForward, ForwardingSmtpAddress
+
+New-RoleAssignmentPolicy -Name PolicyWithNoEmailForward -Roles MyContactInformation, MyRetentionPolicies, MyMailSubscriptions, MyTextMessaging, MyVoiceMail, MyDistributionGroupMembership, MyDistributionGroups, MyProfileInformation, MyBaseOptions-NoForward -Description "User role assignment policy that restricts the assignees from being able to autoforward email outside the organization"
+
+Set-Mailbox "replace with the customer mailbox to test on" -RoleAssignmentPolicy PolicyWithNoEmailForward
