@@ -1,0 +1,56 @@
+    
+$path = "path to your CSV"
+
+
+$ts = Get-Date -Format yyyyMMdd_hhmmss
+$FormatEnumerationLimit = -1
+Start-Transcript OnPremises$ts.txt
+$DesktopPath = ([Environment]::GetFolderPath('Desktop'))
+
+$logsPATH = mkdir "C:\Temp\verit\$ts"
+ 
+$wrongmailboxusers = Import-CliXml -path $path | select UPN -unique
+
+# $wrongmailboxusers = Get-ADUser -Filter * -Properties * | `
+# where {(($_.msExchRecipientTypeDetails -eq '1') -or ($_.msExchRecipientTypeDetails -eq '4'))}
+
+$wrongmailboxusers | Export-Csv "$logsPATH\wrongmailboxusers_$ts.csv"
+
+foreach ($user in $wrongmailboxusers) {  
+$usermail = $user.UPN
+ldifde -f "$logsPATH\$usermail.LFIDE.txt" -r "(UserPrincipalName=$usermail)"
+Get-ADUser -Filter "userprincipalname -eq `'$usermail`'" -Properties * | Out-File -FilePath "$logsPATH\$usermail.AD.txt"
+}
+
+$destination = "C:\Temp\verit\Logs_$ts.zip"
+Add-Type -assembly “system.io.compression.filesystem”
+[io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) 
+
+########################
+to be done
+filter aduser where proxyadresses match
+filter where targetadress match
+
+#########################################################################################
+
+    $usererr = Get-MsolUser -HasErrorsOnly
+$results = @()
+Foreach ($user in $usererr) {
+    foreach ($err in $user.Errors){
+        if ($null -ne $err.ErrorDetail){
+            $entry = new-object psobject
+            $entry | add-member -membertype noteproperty -name "UPN" -value $user.userprincipalname
+            $entry | add-member -membertype noteproperty -name "Error" -value $err.ErrorDetail.ObjectErrors.ErrorRecord.ErrorDescription.'#text'
+            $entry | add-member -membertype noteproperty -name "Service" -value $e.ErrorDetail.Name
+            $results += $entry
+        }
+        if ($null -eq $err.ErrorDetail){
+            $entry = new-object psobject
+            $entry | add-member -membertype noteproperty -name "UPN" -value $user.userprincipalname
+            $entry | add-member -membertype noteproperty -name "Error" -value $err.ErrorDetail.ObjectErrors.ErrorRecord.ErrorDescription.'#text'
+            $entry | add-member -membertype noteproperty -name "Service" -value $err.Serviceinstance
+            $results += $entry
+        }
+    }
+}
+ 
