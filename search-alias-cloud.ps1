@@ -1,4 +1,4 @@
-﻿$v = 'search string here'
+﻿$v = 'bag'
 $M = Get-Mailbox -IncludeInactiveMailbox -ResultSize unlimited
 $R=$M|?{$_.EmailAddresses -match $v -or $_.WindowsLiveID -match $v -or $_.LegacyExchangeDN -match $v -or $_.WindowsEmailAddress -match $v } 
 if ($R){ Write-host $R.userprincipalname -F yellow -NoNewline ; Write-host " Mailbox" -F green }
