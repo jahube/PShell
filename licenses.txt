@@ -1,0 +1,186 @@
+User exportieren / Importieren / In der CloudAnlegen
+
+########################## create CSV containing values defined in first line ########################################
+UserPrincipalName,DisplayName,FirstName,LastName,UsageLocation,License,Department,MobilePhone,Language
+john.doe@contoso.com,John Doe,John,Doe,DE,Contoso:M365EDU_A1,Student,017212345678,DE-DE
+jane.doe@contoso.com,Jane Doe,Jane,Doe,DE,Contoso:M365EDU_A3_FACULTY,Teacher,017212345678,DE-DE
+jim.doe@contoso.com,Jim Doe,Jim,Doe,DE,Contoso:M365EDU_A1,Student,Student,017212345678,EN-GB
+######################################################################################################################
+
+###############################################################
+############## Import %homepath%\Documents\users.csv ##########
+###############################################################
+# import Exported user.scv from Admincenter > users > export
+
+$users = Import-Csv $ENV:UserProfile\Documents\users.csv -Encoding UTF8     # change to UTF7 if exported eg. from Outlook contacts
+
+###############################################################
+############# NEW - create the users  #########################
+###############################################################
+
+$users | ForEach-Object { New-MsolUser -UserPrincipalName $_.UserPrincipalName -DisplayName $_.DisplayName -FirstName $_.FirstName -LastName $_.LastName }
+
+###############################################################
+############# SET - populate user details  ####################
+###############################################################
+
+$users | ForEach-Object { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation $_.UsageLocation -LicenseAssignment $_.License -LicenseOptions $ServiceDisable -Department $_.Department -MobilePhone $_.MobilePhone }
+
+# populate ALL UsageLocation with "DE"
+$users | Where {$_.UsageLocation -eq $Null} | ForEach-Object {  Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation "DE" }
+
+# populate existing UsageLocation from CSV
+$users | Where {$_.UsageLocation -ne $Null} | ForEach-Object {  Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation $_.UsageLocation }
+
+# populate empty UsageLocation with "DE"
+$users | Where {$_.UsageLocation -eq $Null} | ForEach-Object {  Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation "DE" }
+
+############################################
+#####     read available licenses      #####
+############################################
+
+$ActSku = (Get-MsolAccountSku) ; $ActSku
+
+# list line by line
+$License1 = $ActSku[0] ; $License1
+$License2 = $ActSku[1] ; $License2
+$License3 = $ActSku[1] ; $License3
+
+### Examples 
+### Contoso:M365EDU_A1
+### Contoso:M365EDU_A3_FACULTY
+
+$License1 = "Contoso:M365EDU_A3_FACULTY"
+$License2 = "Contoso:M365EDU_A1"
+###############################################################
+############    set TEACHER Location and license    ###########
+###############################################################
+
+$ServiceDisableList1 =@("WHITEBOARD_PLAN2","FLOW_P1","MYANALYTICS_P2","KAIZALA_STANDALONE")
+$ServiceDisable1 = New-MsolLicenseOptions -AccountSkuId $ActSku.AccountSkuId -DisabledPlans $ServiceDisableList
+$users | Where {$_.department -eq "Teacher"} | % { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation $_.UsageLocation -LicenseAssignment $License1 -LicenseOptions $ServiceDisable1 -MobilePhone $_.MobilePhone }
+
+###############################################################
+#############   set STUDENT Location and license   ############
+###############################################################
+
+$ServiceDisableList2 = @("WHITEBOARD_PLAN2","FLOW_P1","MYANALYTICS_P2","KAIZALA_STANDALONE")
+$ServiceDisable2 = New-MsolLicenseOptions -AccountSkuId $ActSku.AccountSkuId -DisabledPlans $ServiceDisableList
+$users | Where {$_.department -eq "Teacher"} | % { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -UsageLocation $_.UsageLocation -LicenseAssignment $License2 -LicenseOptions $ServiceDisable2 -MobilePhone $_.MobilePhone }
+
+###############################################################
+##########  update Name, Department, MobilePhone  #############
+###############################################################
+$users | % { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -DisplayName $_.DisplayName -FirstName $_.FirstName -LastName $_.LastName -Department $_.Department -MobilePhone $_.MobilePhone }
+
+###############################################################
+##########           update Language              #############
+###############################################################
+
+# set ALL to Standardlanguage
+$StandardLanguage = "DE-DE"
+$users | % { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -PreferredLanguage $StandardLanguage }
+
+# set EMPTY Language values
+$StandardLanguage = "DE-DE"
+$users | Where {$_.Language -eq ""} | % { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -PreferredLanguage $StandardLanguage }
+
+# populate Language from CSV / if NOT EMPTY
+$users | Where {$_.Language -ne ""} |% { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -PreferredLanguage $_.Language }
+
+###############################################################
+$user = "user@domain.com"
+$test = (Get-MsolUser -userprincipalname $user).Licenses.ServiceStatus.serviceplan.ServiceName
+$test = (Get-MsolUser -userprincipalname $user).Licenses.ServiceStatus
+$test 
+
+# get all users
+$userlist = Get-MsolUser -All | where {$_.isLicensed -eq $true}
+
+# list UsageLocation
+$userlist | Get-MsolUser | fl DisplayName,Usagelocation
+
+# update UsageLocation
+$UsageLocation = “DE”
+$userlist | Set-MsolUser -Usagelocation $UsageLocation
+
+# list available licenses
+Get-MsolAccountSku
+
+$ServiceDisableList=@("WHITEBOARD_PLAN2","FLOW_P1","MYANALYTICS_P2","KAIZALA_STANDALONE")
+
+$ActSku = (Get-MsolAccountSku)
+$ActSku[0]
+$ActSku[1]
+$ActSku[2]
+
+$ServiceDisableList = @("*WHITEBOARD*","*FLOW*","*MYANALYTICS*","*KAIZALA*")
+
+$ServiceDisable = New-MsolLicenseOptions -AccountSkuId $ActSku.AccountSkuId -DisabledPlans $ServiceDisableList
+
+#add license with $ServiceDisableList
+
+$userlist | ForEach-Object { Set-MsolUserLicense -AddLicenses $ActSku.AccountSkuId -LicenseOptions $ServiceDisable }
+
+#apply $ServiceDisableList for existing licenses
+$userlist | ForEach-Object { Set-MsolUserLicense -LicenseOptions $ServiceDisable }
+
+#remove licenses for group members
+$userlist | ForEach-Object { Set-MsolUserLicense -RemoveLicenses $ActSku.AccountSkuId }
+
+# list license status for the license itself
+$userlist | Get-MsolUser | fl DisplayName,Usagelocation,Licenses,ServiceStatus
+  
+
+
+$user = "user@domain.com"
+$test = (Get-MsolUser -userprincipalname $user).Licenses.ServiceStatus.serviceplan.ServiceName
+$test = (Get-MsolUser -userprincipalname $user).Licenses.ServiceStatus
+$test
+
+# get all users
+$userlist = Get-MsolUser -All | where {$_.isLicensed -eq $true}
+
+# list UsageLocation
+$userlist | ft DisplayName,Usagelocation
+
+# update UsageLocation
+$UsageLocation = “DE”
+$userlist | Set-MsolUser -Usagelocation $UsageLocation
+
+# list available licenses
+Get-MsolAccountSku
+
+$ServiceDisableList=@("WHITEBOARD_PLAN2","FLOW_P1","MYANALYTICS_P2","KAIZALA_STANDALONE")
+
+$ActSku = (Get-MsolAccountSku)
+$ActSku[0]
+$ActSku[1]
+$ActSku[2]
+
+$ServiceDisableList = @("*WHITEBOARD*","*FLOW*","*MYANALYTICS*","*KAIZALA*")
+
+$ServiceDisable = New-MsolLicenseOptions -AccountSkuId $ActSku.AccountSkuId[0] -DisabledPlans $ServiceDisableList
+
+#add license with $ServiceDisableList
+
+$userlist | ForEach-Object { Set-MsolUserLicense -AddLicenses $ActSku.AccountSkuId -LicenseOptions $ServiceDisable }
+
+#apply $ServiceDisableList for existing licenses
+$userlist | ForEach-Object { Set-MsolUserLicense -LicenseOptions $ServiceDisable }
+
+#remove licenses for group members
+$userlist | ForEach-Object { Set-MsolUserLicense -RemoveLicenses $ActSku.AccountSkuId }
+
+# list license status for the license itself
+$userlist | Get-MsolUser | fl DisplayName,Usagelocation,Licenses,ServiceStatus
+
+$usererr = Get-MsolUser -HasErrorsOnly
+
+Foreach ($user in $usererr) { 
+
+    Write-output $user.UserPrincipalName;
+
+    "Service: "+ $user.Errors.ErrorDetail.Name.split("/")[0]; "Error Message: "+ $user.Errors.ErrorDetail.ObjectErrors.ErrorRecord.ErrorDescription +"`n"
+
+    }
