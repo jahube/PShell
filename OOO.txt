@@ -1,0 +1,10 @@
+# Set Autoreply
+ $users = get-mailbox -resultsize unlimited | select UserPrincipalName,Recipienttype,RecipientTypeDetails
+ 
+ $(foreach ($User in $Users.UserPrincipalName) {Set-MailboxAutoReplyConfiguration $User –AutoReplyState Scheduled –StartTime (get-date) –EndTime “2/19/2020” –ExternalMessage “Out of office testing” –InternalMessage “Out of office testing..”})
+
+ #list Autoreply
+ $users = get-mailbox -resultsize unlimited | select UserPrincipalName,Recipienttype,RecipientTypeDetails
+ 
+ $(foreach ($User in $Users.UserPrincipalName) {Get-MailboxAutoReplyConfiguration $User | fl Identity,StartTime,EndTime,ExternalMessage,InternalMessage })
+
