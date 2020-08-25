@@ -1,29 +1,36 @@
 Set-ExecutionPolicy RemoteSigned
+
+# install
+Install-Module -Name ExchangeOnlineManagement
+
 # connect
 $admin = "admin@domain.com"
-
-Install-Module -Name ExchangeOnlineManagement
 Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 
-#assign permissions
+# assign permissions
 New-ManagementRoleAssignment -Role "Mailbox Import Export" -User $ADMIN
-New-ManagementRoleAssignment -Role "Mailbox Search" -User $ADMIN
-Add-RoleGroupMember "Organization Management" -Member $ADMIN
-Add-RoleGroupMember "Discovery Management" -Member $ADMIN
-Add-RoleGroupMember "Compliance Management" -Member $ADMIN
-
-# if customization not enabled yet, run the below first and retry the above (command takes 1-2 minutes)
 # Enable-OrganizationCustomization -confirm:$false
 
 # GET-RECOVERABLEITEMS
+$user = "affected@user.com"
 
+#all in one
+get-recoverableitems -Identity $user -ResultSize unlimited | restore-recoverableitems -NoOutput
+
+# check + restore changed/deleted last 14 days
+
+$search = get-recoverableitems -Identity $user -ResultSize unlimited
+$search = $search | where { $_.LastModifiedTime -gt (Get-Date).AddDays(-14) }
+$search | ft subject,SourceFolder,ItemClass
+$search | restore-recoverableitems
+
+
+# check + restore + by original item date
 $user = "affected@user.com"
 $start = Get-Date -date $(Get-Date).AddDays(-90)
 $end = Get-Date -date $(Get-Date)
-
-$search = get-recoverableitems -Identity $user -FilterStartTime $start -FilterEndTime $end
+$search = get-recoverableitems -Identity $user -FilterStartTime (Get-Date).AddDays(-90) -FilterEndTime (Get-Date)
 $search | fl subject,SourceFolder,ItemClass
-
 $search | restore-recoverableitems
 
 -SourceFolder PurgedItems,DeletedItems,RecoverableItems
