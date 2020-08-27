@@ -1,7 +1,7 @@
 ﻿# OWA-AutoCompleteCache
 
-$CFG = "Configuration\IPM.Configuration.OWA.AutocompleteCache"
-$mbxs = get-mailbox -ResultSize unlimited; $count= $MBX.count
+$C = "Configuration\IPM.Configuration.OWA.AutocompleteCache"
+$mbxs = get-mailbox -ResultSize unlimited; $count= $MBXs.count
 [System.Collections.ArrayList]$MBX = $mbxs.userprincipalname
 for ($M = 0; $M -lt $MBX.count; $M++) { $S =" [MBX] ($($M+1)/$count)  [Time]"
 $A = "Clearing OWA Autocomplete Cache [Mailbox Count] ($($M+1)/$count) [Mailbox] $($MBX[$M])"
