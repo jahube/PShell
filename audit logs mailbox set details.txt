@@ -1,7 +1,7 @@
 
 start-transcript -verbose
 
-$user = "crm.onpremise@meusburger.com"  # please modify
+$user = "AFFECTED@USER.com"  # please modify
 
 $PROW1 = Get-Mailbox $user | select -expandproperty AuditOwner
  Write-host "BEFORE: AuditOwner = $($PROW1.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PROW1)" -foregroundcolor Cyan
