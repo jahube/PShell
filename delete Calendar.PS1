@@ -1,4 +1,10 @@
 
+######################################################
+# classic - custom retention tag for calendar folder #
+######################################################
+
+https://docs.microsoft.com/en-us/exchange/security-and-compliance/messaging-records-management/default-folders
+
 ##################
 # install EXO PS #
 ##################
