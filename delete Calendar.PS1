@@ -68,6 +68,31 @@ Foreach ($user in $users) {
 try { Search-Mailbox -identity $user.DistinguishedName -SearchQuery kind:meetings -DeleteContent -Confirm:$false -force } catch { Write-host $error[0] }
 }
 
+
+###################################################
+# Third Option: ComplianceSearch Purge HardDelete #
+###################################################
+
+$USER = "affecteduser@DOMAIN.com"
+
+$searchname= "NEW SEARCH NAME"
+
+$USER = "ADMIN@DOMAINcom"
+
+Connect-ExchangeOnline -userprincipalname $admin"
+
+$ID= (get-mailboxfolderstatistics -identity $USER -folderscope calendar).folderid
+
+Connect-IPPSSession -userprincipalname $admin
+
+New-ComplianceSearch -Name $searchname -ExchangeLocation $USER -ContentMatchQuery "FolderID:$ID"
+
+Start-ComplianceSearch -Identity $searchname
+
+get-ComplianceSearch -Identity $searchname
+
+New-ComplianceSearchAction -SearchName $searchname -Purge -PurgeType HardDelete
+
 #################
 # recover items #
 #################
