@@ -1,0 +1,11 @@
+Start-Transcript
+Install-Module MSOnline
+Connect-MsolService
+Get-Mailbox "user@domain.com" | Select WindowsEmailAddress, PrimarySmtpAddress, EmailAddresses, MicrosoftOnlineServicesID, WindowsLiveID, UserPrincipalName, ExternalDirectoryObjectId
+Get-MsolUser -ObjectId "copy ExternalDirectoryObjectId value from previous command" | Select UserPrincipalName, ProxyAddresses
+Set-MsolUserPrincipalName -ObjectId "same ExternalDirectoryObjectId value" -NewUserPrincipalName "new UPN"
+Set-Mailbox "same ExternalDirectoryObjectId value" -WindowsEmailAddress "new UPN"
+Set-Mailbox "same ExternalDirectoryObjectId value" -EmailAddresses @{remove="old UPN"}
+Get-Mailbox "same ExternalDirectoryObjectId value" | Select WindowsEmailAddress, PrimarySmtpAddress, EmailAddresses, MicrosoftOnlineServicesID, WindowsLiveID, UserPrincipalName
+Get-MsolUser -ObjectId "same ExternalDirectoryObjectId value" | Select UserPrincipalName, ProxyAddresses
+Stop-Transcript
