@@ -1,0 +1,7 @@
+if after 30 days a prior mailbox was harddeleted you can trigger a NEW MAILBOX'
+
+## DONT do it on a mailbox that contains data DATALOSS ##
+
+set-mailbox user@domain.com -ExchangeGuid $([guid]::NewGuid())
+
+set-remotemailbox user@domain.com -ExchangeGuid $([guid]::NewGuid())
