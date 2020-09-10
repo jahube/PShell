@@ -16,13 +16,13 @@ $E5 = ($ActSku | where { $_.AccountSkuId -match 'Enterprisepremium' })[0]
 $ServiceDisableList =@("WHITEBOARD_PLAN2","FLOW_P1","MYANALYTICS_P2","KAIZALA_STANDALONE")
 $ServiceDisable = New-MsolLicenseOptions -AccountSkuId $ActSku.AccountSkuId -DisabledPlans $ServiceDisableList
 
-$ParamNew = { UserPrincipalName = $new.UserPrincipalName
+$ParamNew = @{ UserPrincipalName = $new.UserPrincipalName
 DisplayName = $DisplayName
 FirstName = $FirstName
 LastName = $LastName 
 erroraction = 'stop' }
 
-$ParamDetail = { UserPrincipalName = $new.UserPrincipalName
+$ParamDetail = @{ UserPrincipalName = $new.UserPrincipalName
 DisplayName = $new.DisplayName
 UsageLocation = $new.UsageLocation
 LicenseAssignment = $license.AccountSkuId
