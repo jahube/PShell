@@ -1,6 +1,5 @@
 ﻿$CsvPath = "$ENV:UserProfile\Documents\users.csv"
 
-
 $import = Import-Csv $CsvPath -Encoding UTF8     # change to UTF7 if exported eg. from Outlook contacts
 
 $users = Get-Msoluser -all
