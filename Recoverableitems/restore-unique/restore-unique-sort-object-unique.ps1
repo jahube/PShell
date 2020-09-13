@@ -6,7 +6,7 @@ $user = 'affected@user.com'
 $search = Get-RecoverableItems $user -FilterStartTime (get-date).AddDays(-180) -FilterEndTime (get-date).Addyears(2)
 
 $unique = $search | Sort-Object subject -unique
-$search | Sort-Object EntryID | Select subject,EntryID
+$search | Sort-Object subject | Select subject,EntryID
 $unique | Select subject,EntryID
 
 Write-host "`nFound $($search.count)" -F yellow
