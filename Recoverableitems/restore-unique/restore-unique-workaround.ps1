@@ -7,7 +7,10 @@ $search = Get-RecoverableItems $user -FilterStartTime (get-date).AddDays(-180) -
 
 $Filter = $search | Sort-Object | Select-Object subject -unique
 
-Write-host "`nFilter $($filter.count)" -F green
+$search | Sort-Object subject | Select subject,EntryID
+$Filter | Select subject,EntryID
+Write-host "`nSearch found $($search.count)" -F yellow
+Write-host "`nFiltered $($filter.count)" -F green
 #################################################################################
 #  matching filtered with first entry (adding back entryID from first match [0] #
 #################################################################################
