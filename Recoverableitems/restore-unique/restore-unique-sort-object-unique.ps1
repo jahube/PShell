@@ -5,6 +5,12 @@ $user = 'affected@user.com'
 
 $search = Get-RecoverableItems $user -FilterStartTime (get-date).AddDays(-180) -FilterEndTime (get-date).Addyears(2)
 
+# Calendar Items only
+# $search = Get-RecoverableItems $user -FilterItemType IPM.Appointment -FilterStartTime (get-date).AddDays(-180) -FilterEndTime (get-date).Addyears(2) 
+
+# Messages only
+# $search = Get-RecoverableItems $user -FilterItemType IPM.Note -FilterStartTime (get-date).AddDays(-180) -FilterEndTime (get-date).Addyears(2) 
+
 $unique = $search | Sort-Object subject -unique
 $search | Sort-Object subject | Select subject,EntryID
 $unique | Select subject,EntryID
