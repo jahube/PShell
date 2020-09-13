@@ -28,3 +28,5 @@ $failed += $n
 ##############
 Write-host "`nrestored $($done.count)" -F green
 Write-host "`nFailed $($failed.count)" -F yellow
+
+# reference https://powershell.org/forums/topic/get-unique-items-from-an-array/
