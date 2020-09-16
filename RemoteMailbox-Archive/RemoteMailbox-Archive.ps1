@@ -41,3 +41,26 @@ Set-ADUser $mbx.DistinguishedName -Replace @{msExchDisabledArchiveGUID=$([guid]:
 # clearing OTHER value should only be used if you know what you are doing for a specific purpose  *DATALOSS
 # Set-ADUser $mbx.DistinguishedName -Replace @{msExchMailboxGuid=$([guid]::empty).ToByteArray()}
 # Set-ADUser $mbx.DistinguishedName -Replace @{msExchArchiveGUID=$([guid]::empty).ToByteArray()}
+
+----------------------------------------------------------
+
+FOR PROVISIONING (generate NEW GUID for NEW shared mailboxes or nonexisting deprovisioned Cloud MBX) 
+*** DONT use for existing data DATALOSS ***
+
+# Set-ADUser $mbx.DistinguishedName -Replace @{msExchMailboxGuid=$([guid]::NewGuid()}
+
+----------------------------------------------------------
+  
+# create NEW shared remotemailbox
+# create user in AD and run below
+
+enable-remotemailbox user@domain.com -shared -remoteroutingaddress alias@tenant.mail.onmicrosoft.com
+
+# provision new GUID (+AAD sync)
+*** DONT use for existing data DATALOSS ***
+
+# set-remotemailbox user@domain.com -ExchangeGuid $([guid]::NewGuid())
+
+enable-remotemailbox user@domain.com -archive
+
+# set-remotemailbox user@domain.com -ArchiveGuid $([guid]::NewGuid())
