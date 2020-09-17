@@ -1,7 +1,7 @@
 ﻿######################################################
 #              Remove ALL Permissions                #
 ######################################################
-$folderscope = '\'
+$folderscope = '\BAG\Offerten'
 
 $success = New-Object System.Collections.ArrayList
 $errors = New-Object System.Collections.ArrayList
