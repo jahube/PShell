@@ -16,4 +16,11 @@ New-GlobalAddressList  -Name "Global Adressbook Internal" -RecipientFilter "(Rec
 # Create Address Book Policy
 New-AddressBookPolicy -Name "Adressbook Policy” -AddressLists "Addresslist Internal","Addresslist External","Addresslist Groups","Room Lists","Rooms","Ressources" -RoomList "\Room Lists" -OfflineAddressBook “\Offline Addressbook” -GlobalAddressList “\Global Adressbook Internal”
 
+#check wih test user first
+Get-Mailbox TESTUSER | Set-Mailbox -AddressBookPolicy "Adressbook Policy”
+
+# later assign to all users if it is confirmed to be running
 Get-Mailbox -Filter {(RecipientType -eq 'UserMailbox')} | Set-Mailbox -AddressBookPolicy "Adressbook Policy”
+
+# update Addresslists
+get-AddressList | % { Set-AddressList -Identity $_.identity }
