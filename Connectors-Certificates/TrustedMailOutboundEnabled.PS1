@@ -5,7 +5,7 @@ Start-transcript
 
 Get-remotedomain | FL
 
-Set-remotedomain 'tenant.onmicrosoft.com' -TrustedMailnboundEnabled $true
+Set-remotedomain 'tenant.onmicrosoft.com' -TrustedMailInboundEnabled $true
 
 Set-remotedomain 'tenant.mail.onmicrosoft.com' -TrustedMailOutboundEnabled $true -TargetDeliveryDomain $true
 
