@@ -1,4 +1,12 @@
-﻿duplicate PF MigrationRequest deletion
+﻿get-migrationuser -batchid BATCHNAME | remove-migrationuser -confirm:$false
+
+#wait 5 minutes
+
+Remove-migrationbatch BATCHNAME -verbose
+
+############### experimental version - parameter requestqueue not recognized ########################
+
+duplicate PF MigrationRequest deletion
 
 https://social.technet.microsoft.com/Forums/msonline/en-US/d37d09d8-c9c2-4e84-9426-f7f83d5b7fd7/newmailboximportrequest-creates-double-identical-entry-how-to-remove
 
