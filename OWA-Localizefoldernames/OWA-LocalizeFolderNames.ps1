@@ -11,7 +11,7 @@ $culture = New-Object system.globalization.cultureinfo($Language)
                  TimeZone = "W. Europe Standard Time"
 LocalizeDefaultFolderName = $true
                   Confirm = $false 
-                       EA = 'Stop' }
+              ErrorAction = 'Stop' }
                     $mbxs = get-mailbox -ResultSize unlimited; $count= $MBXs.count
 [System.Collections.ArrayList]$MBX = $mbxs.userprincipalname
 $label="[$($param.Language) $($culture.DisplayName)] Time[$($param.TimeFormat)] Date[$($param.DateFormat)]"
@@ -34,5 +34,5 @@ $culture = New-Object system.globalization.cultureinfo($Language)
                  TimeZone = "W. Europe Standard Time"
 LocalizeDefaultFolderName = $true
                   Confirm = $false 
-                       EA = 'Stop' }
+              ErrorAction = 'Stop' }
 Try { Set-MailboxRegionalConfiguration @param } catch { $Error[0] | fl }
