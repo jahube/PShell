@@ -1,7 +1,7 @@
 ##################################
 # for all mailboxes progress bar #
 ##################################
-$Language  = "DE-DE" # "EN-US" "EN-GB" "DE-CH" "FR-FR" "DE-DE" "FR-BE" "FR-TN"
+$Language  = "DE-DE" # Examples: "EN-US" "EN-GB" "DE-CH" "FR-FR" "DE-DE" "FR-BE" "FR-TN"
 ##################################
 $culture = New-Object system.globalization.cultureinfo($Language)
   $param = @{    Identity = $MBX[$M] 
@@ -22,7 +22,7 @@ Try { Set-MailboxRegionalConfiguration @param } catch { Write-Host $Error[0].Exc
 ####################
 # for ONE mailboxe #
 ####################
-$Language  = "DE-DE" # "EN-US" "EN-GB" "DE-CH" "FR-FR" "DE-DE" "FR-BE" "FR-TN"
+$Language  = "DE-DE" # Examples: "EN-US" "EN-GB" "DE-CH" "FR-FR" "DE-DE" "FR-BE" "FR-TN"
   $Mailbox = 'user@domain.com'
 ##################################
 $culture = New-Object system.globalization.cultureinfo($Language)
