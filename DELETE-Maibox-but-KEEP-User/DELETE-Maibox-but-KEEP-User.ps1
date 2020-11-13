@@ -1,4 +1,17 @@
-﻿$admin = ""
+﻿# DELETE-Maibox-but-KEEP-User - CONFIRM to avoid DATALOSS
+
+# modify affected user
+$user = "affected@user.com" 
+
+disable-mailbox $user
+
+get-mailbox -softdeletedmailbox $user | set-mailbox -ExcludeFromAllOrgHolds
+
+disable-mailbox $user -PermanentlyDisable -IgnoreLegalHold
+
+####################################################################
+
+$admin = ""
 
 #Admin + PS check
 Try { Set-ExecutionPolicy RemoteSigned -Force -EA stop } catch { Write-host "restart as Admin / check Permissions" -F Yellow }
