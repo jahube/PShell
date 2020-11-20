@@ -1,17 +1,4 @@
-[9:08 AM] Jan Hubener (Convergys Corporation)
-    
-  
-  
-  
-    
-      
-      
-        PowerShell
-      
-    
-    
-    
-      # Retention Folder TAGS Report ("Personal Tags")
+# Retention Folder TAGS Report ("Personal Tags")
 $path = "C:\temp"
 # check input
 $mbxs = get-mailbox -ResultSize unlimited; $count= $MBXs.count
@@ -42,8 +29,3 @@ Foreach ($item in $R) {​
 }​
 $collected | export-csv "$path\retentionfoldertags.csv"
 $collected | ft > "$path\retentionfoldertags.txt"
-    
-    
-  
-  
-
