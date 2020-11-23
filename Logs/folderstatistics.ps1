@@ -10,11 +10,14 @@ get-mailboxfolderstatistics $mbx -FolderScope nonIPMroot | export-clixml $logsPA
 get-mailboxfolderstatistics $mbx -FolderScope all | export-clixml $logsPATH\EXO_all_MbxFStats.xml
 get-mailboxfolderstatistics $mbx | ft folderpath,containerclass,foldertype,itemsinfolder,itemsinfolderandsubfolders
 get-mailboxfolderstatistics $mbx | ft folderpath,containerclass,foldertype,itemsinfolder,itemsinfolderandsubfolders > $logsPATH\list.txt
-get-mailboxfolderstatistics $mbx -FolderScope nonIPMroot | ft folderpath, itemsinfolder, itemsinfolderandsubfolders
+get-mailboxfolderstatistics $mbx -FolderScope nonIPMroot | ft folderpath,containerclass,foldertype,itemsinfolder,itemsinfolderandsubfolders
+get-mailboxfolderstatistics $mbx -FolderScope nonIPMroot | ft folderpath,containerclass,foldertype,itemsinfolder,itemsinfolderandsubfolders > $logsPATH\NonIPM.txt
 get-mailboxfolderstatistics $mbx -FolderScope all | ft folderpath, itemsinfolder, itemsinfolderandsubfolders
 Get-MailboxFolderstatistics $mbx | Select-Object *,@{ Name = "SizeInBytes"; Expression={ [Uint64]::Parse([Regex]::Match($_.FolderSize.ToString(), '\(([0-9,]+) bytes\)').Groups[1].Value.Replace(",","")) } } | Sort SizeInBytes -Descending | ft FolderPath,FolderSize,itemsinfolder
 Get-MailboxFolderstatistics $mbx -FolderScope nonIPMroot | Select-Object *,@{ Name = "SizeInBytes"; Expression={ [Uint64]::Parse([Regex]::Match($_.FolderSize.ToString(), '\(([0-9,]+) bytes\)').Groups[1].Value.Replace(",","")) } } | Sort SizeInBytes -Descending | ft FolderPath,FolderSize,itemsinfolder
 Get-MailboxFolderstatistics $mbx -FolderScope all | Select-Object *,@{ Name = "SizeInBytes"; Expression={ [Uint64]::Parse([Regex]::Match($_.FolderSize.ToString(), '\(([0-9,]+) bytes\)').Groups[1].Value.Replace(",","")) } } | Sort SizeInBytes -Descending | ft FolderPath,FolderSize,itemsinfolder
+Get-MailboxFolderStatistics $mbx -IncludeOldestAndNewestItems -IncludeAnalysis -FolderScope nonipmroot | Export-Clixml $logsPATH\MailboxFolderStatistics_NONIPM-IncludeAnalysis_$mbx.xml
+Get-MailboxFolderStatistics $mbx -IncludeOldestAndNewestItems -IncludeAnalysis -FolderScope all | Export-Clixml $logsPATH\MailboxFolderStatistics-IncludeAnalysis_$mbx.xml
 
 Stop-Transcript
 
