@@ -1,7 +1,7 @@
 #experimental session options
 $option = New-PSSessionOption -IdleTimeout "4300000" -MaximumRedirection 5 -Culture "DE-DE" -OpenTimeout "4300000" -MaxConnectionRetryCount "1000" -OperationTimeout "4300000" -SkipRevocationCheck -MaximumReceivedObjectSize 500MB -MaximumReceivedDataSizePerCommand 50MB
 # connect EXO PS
-Connect-ExchangeOnline -UserPrincipalName admin@DOMAIN.com -PSSessionOption $option
+Connect-ExchangeOnline -UserPrincipalName admin@edu.dnsabr.com -PSSessionOption $option
 # connect Skype PS
 $sfbSession = New-CsOnlineSession -Credential $credential -SessionOption $option  ; Import-PSSession $sfbSession -AllowClobber
 # get-pssession | Remove-PSSession  #otherwise close session and reconnect
@@ -14,7 +14,7 @@ $sfbSession = New-CsOnlineSession -Credential $credential -SessionOption $option
 #############################################################################
 $option = New-PSSessionOption -IdleTimeout "4300000" -MaximumRedirection 5 -Culture "DE-DE" -OpenTimeout "4300000" -MaxConnectionRetryCount "1000" -OperationTimeout "4300000" -SkipRevocationCheck -MaximumReceivedObjectSize 500MB -MaximumReceivedDataSizePerCommand 50MB
 get-pssession | Remove-PSSession ; $sfbSession = New-CsOnlineSession -Credential $credential -SessionOption $option  ; Import-PSSession $sfbSession -AllowClobber
-Connect-ExchangeOnline -UserPrincipalName admin@edu.dnsabr.com -PSSessionOption $option
+Connect-ExchangeOnline -UserPrincipalName admin@DOMAIN.com -PSSessionOption $option
 #############################################################################
 ###############     Auto Parse Calling Queues      ##########################
 #############################################################################
@@ -57,6 +57,7 @@ $collected | ft
 $collected | export-csv c:\queue2.csv -NoTypeInformation
 #############################################################################
 ############     Mass Add  CallingQueue from Above     ######################
+############   stamp callingqueue on customattibute12   #####################
 #############################################################################
 $queue = ($CSVqueue | group Callingqueue).name
 $cnt1 = $queue.count ; $A = "[Adding Custom Tag for Queue:]" ; $B = "[Adding Custom Tag for Mailbox:]"
