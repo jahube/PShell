@@ -1,3 +1,5 @@
+# https://www.knowledgebase.it/powershell/install-azure-active-directory-in-powershell/fixoffice365groupsubscriptions/
+
 # All Office 365 Groups
 #$groups = Get-UnifiedGroup
 
