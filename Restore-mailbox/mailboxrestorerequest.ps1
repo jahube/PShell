@@ -11,15 +11,35 @@ $MBX = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
 $TGT = (Get-Mailbox $target).DistinguishedName
 New-MailboxRestoreRequest -SourceMailbox $MBX.DistinguishedName -TargetMailbox $TGT.SamAccountName -AllowLegacyDNMismatch
 
+############
+
 # new syntax
 
-$source = "SOURCE@DOMAIN.com"
-$target = "TARGET@DOMAIN.com"
-$param = @{ AllowLegacyDNMismatch = $true
-SourceMailbox = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
-TargetMailbox = (Get-Mailbox $target).DistinguishedName }
+        $source = "SOURCE@DOMAIN.com"
+        $target = "TARGET@DOMAIN.com"
+
+         $param = @{ AllowLegacyDNMismatch = $true
+  SourceMailbox = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
+  TargetMailbox = (Get-Mailbox $target).DistinguishedName }
 
 New-MailboxRestoreRequest @param
+
+############
+
+# new syntax ARCHIVE
+
+        $source = "SOURCE@DOMAIN.com"
+        $target = "TARGET@DOMAIN.com"
+
+         $param = @{ AllowLegacyDNMismatch = $true
+  SourceMailbox = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
+  TargetMailbox = (Get-Mailbox $target).DistinguishedName
+Sourceisarchive = "$true"
+Targetisarchive = "$true" }
+
+New-MailboxRestoreRequest @param
+
+############
 
 #status
 get-MailboxRestoreRequest
