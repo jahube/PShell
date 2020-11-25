@@ -1,4 +1,4 @@
-# OWA-AutoCompleteCache
+# Suggested Contacts - thanks to Zaki !
 
 $Configs = "Configuration\IPM.Configuration.Relevance.SasPeopleMetadataModel"
 $Configs += "Configuration\IPM.Configuration.Relevance.SasPeopleIndexModel"
@@ -23,3 +23,4 @@ Try { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -Confirm:$f
 # Filemanager OR  Search beside Start menu
 # %LocalAppData%\Microsoft\Outlook\Offline Address Books\
 # %LocalAppData%\Microsoft\Outlook\RoamCache\
+# also check Recipientcache in MFCMAPI
