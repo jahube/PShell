@@ -2,7 +2,7 @@
 
 $Configs = "Configuration\IPM.Configuration.Relevance.SasPeopleMetadataModel"
 $Configs += "Configuration\IPM.Configuration.Relevance.SasPeopleIndexModel"
-$Configs += "IPM.Configuration.Relevance.SasInstantIndexModelItem"
+$Configs += "Configuration\IPM.Configuration.Relevance.SasInstantIndexModelItem"
 $Configs += "Configuration\IPM.Configuration.AutoComplete"
 $Configs += "Configuration\IPM.Configuration.OWA.AutocompleteCache"
 
