@@ -1,9 +1,15 @@
 $folderscope = '\'
+
+#GROUP
+$Group = 'group name' 
+$access = (Get-DistributionGroup $Group).Distinguishedname ;
+
+#USER
+$access = 'user to remove' #MODIFY
+
 $empty = 0
 $PFs = get-publicfolder $folderscope –Recurse -ResultSize unlimited
-#$Group = 'pfsec' 
-#$access = (Get-DistributionGroup $Group).Distinguishedname ;
-$access = 'pfsec'
+
 [System.Collections.ArrayList]$PFE = ($PFs).entryid
 $count = $PFE.count
 for ($F = 0; $F -lt $PFE.count; $F++) { 
