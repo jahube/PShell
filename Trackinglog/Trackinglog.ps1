@@ -20,10 +20,7 @@ Foreach ($i in (Get-ExchangeServer)) {Write-Host $i.FQDN; Get-ExchangeCertificat
 Foreach ($c in (Get-ExchangeCertificate)) {Write-Host $c.Thumbprint; Get-ExchangeCertificate -Thumbprint $c.Thumbprint | fl}
 
 Stop-transcript
-
 ######END SCRIPT ##########################
-Stop-Transcript
-
 # Logs >> Zip file
 $destination = "$DesktopPath\MS-Logs\ConnectorLogs_$ts.zip"
 Add-Type -assembly “system.io.compression.filesystem”
