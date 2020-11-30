@@ -8,9 +8,9 @@ $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
 $logsPATH =mkdir "$DesktopPath\MS-Logs\$ts" # creates MS-Logs on desktop + Timestamp
 Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 
-Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -sender “affected@sender.com" | Export-CsV $logsPATH\sendertrackinglog2.csv
+Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -sender “affected@sender.com" | Export-CsV $logsPATH\sendertrackinglog2.csv
 
-Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -Recipients “affected@recipient.com" | Export-CsV $logsPATH\receivetrackinglog2.csv
+Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -Recipients “affected@recipient.com" | Export-CsV $logsPATH\receivetrackinglog2.csv
 
 Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer
 Get-RemoteDomain |fl
@@ -28,8 +28,4 @@ Add-Type -assembly “system.io.compression.filesystem”
 [io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
 Invoke-Item $DesktopPath\MS-Logs # open file manager
 
-
-# Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -sender “affected@sender.com" | Export-CsV C:\Temp\sendertrackinglog1.csv
-
-# Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays(-15) -End (get-date) -sender “affected@recipient.com" | Export-CsV C:\Temp\receivetrackinglog1.csv 
 
