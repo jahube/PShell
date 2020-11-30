@@ -1,4 +1,5 @@
-﻿# DELETE-Maibox-but-KEEP-User - CONFIRM to avoid DATALOSS
+﻿
+# DELETE-Maibox-but-KEEP-User - CONFIRM to avoid DATALOSS
 
 # modify affected user
 $user = "affected@user.com" 
