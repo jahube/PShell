@@ -37,7 +37,7 @@ Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCe
 
 #SET connector Logging Verbose
 Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
-Set-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
+Get-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
 
 # Restart-Service MSExchangeTransport
 
