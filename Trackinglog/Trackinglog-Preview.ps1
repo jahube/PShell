@@ -26,7 +26,11 @@ $TLSCertName="<I>$($TLScert.Issuer)<S>$($TLSCert.Subject)" ; $Exch = $(get-excha
 
 Get-ReceiveConnector "$Exch\Default Frontend $Exch" | Set-ReceiveConnector -TlsCertificateName $TLSCertName
 
-Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCertName
+Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCertName -ProtocolLoggingLevel verbose
+
+Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
+
+Set-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
 
 # Restart-Service MSExchangeTransport
 
