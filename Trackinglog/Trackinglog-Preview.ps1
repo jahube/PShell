@@ -15,8 +15,7 @@ $logsPATH =mkdir "$DesktopPath\MS-Logs\ConnectorLogs_$ts" # creates MS-Logs on d
 ########  Start Transcipt  ##########
 
 Start-Transcript "$logsPATH\ConnectorLogs_$ts.txt" -Verbose
-Get-SendConnector | fl > "$logsPATH\SendConnector-FL-before.txt"
-Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL-before.txt"
+
 Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer > "$logsPATH\RemoteDomain-before.txt"
 
 Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services > "$logsPATH\certificates.txt"
@@ -37,7 +36,7 @@ Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCe
 
 #SET connector Logging Verbose
 Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
-Set-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
+Get-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
 
 # Restart-Service MSExchangeTransport
 
@@ -57,8 +56,8 @@ Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,Ori
 Get-TransportService | icm { Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $sender | Export-CsV $logsPATH\sendertrackinglog.csv  }
 Get-TransportService | icm { Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $recipient | Export-CsV $logsPATH\receivetrackinglog.csv  }
 
-Get-SendConnector | fl > "$logsPATH\SendConnector-FL-After.txt"
-Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL-After.txt"
+Get-SendConnector | fl > "$logsPATH\SendConnector-FL.txt"
+Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL.txt"
 Get-AuthConfig | fl > "$logsPATH\AuthConfig-FL.txt"
 
 Foreach ($i in (Get-ExchangeServer)) {Write-Host $i.FQDN; icm { Get-ExchangeCertificate -Server $i.Identity } }
