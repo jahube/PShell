@@ -6,6 +6,7 @@ $timeframe = '-4'
 
 #######  $DesktopPath\MS-Logs #######
 
+$VerbosePreference = 'Continue'
 $ts = Get-Date -Format yyyyMMdd_hhmmss
 $FormatEnumerationLimit = -1
 $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
@@ -18,27 +19,35 @@ Start-Transcript "$logsPATH\ConnectorLogs_$ts.txt" -Verbose
 Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer > "$logsPATH\RemoteDomain-before.txt"
 
 Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services > "$logsPATH\certificates.txt"
-# $Thumbprint = "code from above"
 
+# specify thumbprint  for connector or chose default from Authconfig
+# $Thumbprint = "code from above"
 $Thumbprint = (Get-AuthConfig).CurrentCertificateThumbprint ; $Thumbprint
+
+# CertificateName "<I>issuer<S>subject" from certificate
 $TLSCert=Get-ExchangeCertificate -Thumbprint $Thumbprint
 $TLSCertName="<I>$($TLScert.Issuer)<S>$($TLSCert.Subject)" ; $Exch = $(get-exchangeserver).name
 
+#SET Receiveconnector
 Get-ReceiveConnector "$Exch\Default Frontend $Exch" | Set-ReceiveConnector -TlsCertificateName $TLSCertName
 
+#SET Sendconnector
 Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCertName -ProtocolLoggingLevel verbose
 
+#SET connector Logging Verbose
 Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
-
 Set-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
 
 # Restart-Service MSExchangeTransport
 
+#Remotedomain filter
+
 $remoterouting = (Get-Remotedomain).name | ? {$_ -match '.mail.onmicrosoft.com'} 
 $tenantdomain = $remoterouting -replace '.mail' ; $remoterouting ; $tenantdomain
 
-Set-remotedomain $tenantdomain -TrustedMailInboundEnabled $true
+#Set Remotedomains
 
+Set-remotedomain $tenantdomain -TrustedMailInboundEnabled $true
 Set-remotedomain $remoterouting -TrustedMailOutboundEnabled $true -TargetDeliveryDomain $true
 
 Get-remotedomain | FL > "$logsPATH\RemoteDomain-FL.txt"
