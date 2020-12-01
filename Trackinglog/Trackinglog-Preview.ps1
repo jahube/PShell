@@ -2,7 +2,7 @@
 
 $sender = 'affected@sender.com'
 $recipient = 'affected@recipient.com'
-$timeframe = '-1'
+$timeframe = '-4'
 
 #######  $DesktopPath\MS-Logs #######
 
