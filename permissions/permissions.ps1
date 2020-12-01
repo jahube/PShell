@@ -4,7 +4,7 @@ install-module exchangeonlinemanagement
 
 Connect-ExchangeOnline
 
-$admin = 'admin@DOMAIN.com'
+$admin = 'admin@DOMAIN.com' # CHANGE
 
 Add-RoleGroupMember -Identity eDiscoveryManager -Member $admin
  
