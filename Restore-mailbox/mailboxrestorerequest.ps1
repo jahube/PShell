@@ -42,8 +42,9 @@ New-MailboxRestoreRequest @param
 ############
 
 # new syntax ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
+# compare-disable archive OR complete mailbox OR archiveGUID
 
-        $source = "SOURCE@DOMAIN.com"  (compare - disable archive OR complete mailbox)
+        $source = "SOURCE@DOMAIN.com"
         $target = "TARGET@DOMAIN.com"
 
          $param = @{ AllowLegacyDNMismatch = $true
