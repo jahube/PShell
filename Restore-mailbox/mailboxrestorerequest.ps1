@@ -42,9 +42,10 @@ New-MailboxRestoreRequest @param
 ################################################
 # ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
 ################################################
-
 # compare-disable archive OR complete mailbox OR archiveGUID
-
+################################################
+#  SourceMailbox = ARCHIVE DistinguishedName   #
+################################################
          $source = "SOURCE@DOMAIN.com"
          $target = "TARGET@DOMAIN.com"
 
@@ -57,7 +58,7 @@ TargetRootFolder = "Recovered Archive"
 New-MailboxRestoreRequest @param
 
 ################################################
-#        SourceMailbox = $ArchiveGUID          #
+#  SourceMailbox =  ARCHIVE - ArchiveGUID      #
 ################################################
 
          $source = "SOURCE@DOMAIN.com"
