@@ -25,46 +25,49 @@ New-MailboxRestoreRequest -SourceMailbox $MBX.DistinguishedName -TargetMailbox $
 New-MailboxRestoreRequest @param
 
 ################################################
+#          new syntax ARCHIVE                  #
+################################################
+         $source = "SOURCE@DOMAIN.com"
+         $target = "TARGET@DOMAIN.com"
 
-# new syntax ARCHIVE
-
-        $source = "SOURCE@DOMAIN.com"
-        $target = "TARGET@DOMAIN.com"
-
-         $param = @{ AllowLegacyDNMismatch = $true
-  SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
-  TargetMailbox = (Get-Mailbox $target).DistinguishedName
-Sourceisarchive = "$true"
-Targetisarchive = "$true" }
+          $param = @{ AllowLegacyDNMismatch = $true
+   SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
+   TargetMailbox = (Get-Mailbox $target).DistinguishedName
+TargetRootFolder = "Recovered Archive"
+ Sourceisarchive = "$true"
+ Targetisarchive = "$true" }
 
 New-MailboxRestoreRequest @param
 
 ################################################
-
 # ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
+################################################
+
 # compare-disable archive OR complete mailbox OR archiveGUID
 
-        $source = "SOURCE@DOMAIN.com"
-        $target = "TARGET@DOMAIN.com"
+         $source = "SOURCE@DOMAIN.com"
+         $target = "TARGET@DOMAIN.com"
 
-         $param = @{ AllowLegacyDNMismatch = $true
-  SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
-  TargetMailbox = (Get-Mailbox $target).DistinguishedName
-Sourceisarchive = "$true" }
+          $param = @{ AllowLegacyDNMismatch = $true
+   SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
+   TargetMailbox = (Get-Mailbox $target).DistinguishedName
+TargetRootFolder = "Recovered Archive"
+ Sourceisarchive = "$true" }
 
 New-MailboxRestoreRequest @param
 
 ################################################
-# SourceMailbox = $ArchiveGUID
+#        SourceMailbox = $ArchiveGUID          #
 ################################################
 
-$ArchiveGUID= "Archive GUID here"
-$target = "TARGET@DOMAIN.com"
+    $ArchiveGUID = "Archive GUID here"
+         $target = "TARGET@DOMAIN.com"
 
-$param = @{​ AllowLegacyDNMismatch = $true
-SourceMailbox = $ArchiveGUID
-TargetMailbox = (Get-Mailbox $target).DistinguishedName
-Sourceisarchive = "$true" }​
+          $param = @{​ AllowLegacyDNMismatch = $true
+   SourceMailbox = $ArchiveGUID
+   TargetMailbox = (Get-Mailbox $target).DistinguishedName
+TargetRootFolder = "Recovered Archive"
+ Sourceisarchive = "$true" }​
 
 New-MailboxRestoreRequest @param
 
