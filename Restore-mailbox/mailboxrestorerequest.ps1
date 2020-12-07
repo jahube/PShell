@@ -11,7 +11,7 @@ $MBX = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
 $TGT = (Get-Mailbox $target).DistinguishedName
 New-MailboxRestoreRequest -SourceMailbox $MBX.DistinguishedName -TargetMailbox $TGT.SamAccountName -AllowLegacyDNMismatch
 
-############
+################################################
 
 # new syntax
 
@@ -24,7 +24,7 @@ New-MailboxRestoreRequest -SourceMailbox $MBX.DistinguishedName -TargetMailbox $
 
 New-MailboxRestoreRequest @param
 
-############
+################################################
 
 # new syntax ARCHIVE
 
@@ -39,9 +39,9 @@ Targetisarchive = "$true" }
 
 New-MailboxRestoreRequest @param
 
-############
+################################################
 
-# new syntax ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
+# ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
 # compare-disable archive OR complete mailbox OR archiveGUID
 
         $source = "SOURCE@DOMAIN.com"
@@ -54,7 +54,22 @@ Sourceisarchive = "$true" }
 
 New-MailboxRestoreRequest @param
 
-############
+################################################
+# SourceMailbox = $ArchiveGUID
+################################################
+
+$ArchiveGUID= "Archive GUID here"
+$target = "TARGET@DOMAIN.com"
+
+$param = @{​ AllowLegacyDNMismatch = $true
+SourceMailbox = $ArchiveGUID
+TargetMailbox = (Get-Mailbox $target).DistinguishedName
+Sourceisarchive = "$true" }​
+
+New-MailboxRestoreRequest @param
+
+################################################
+################################################
 
 #status
 get-MailboxRestoreRequest
