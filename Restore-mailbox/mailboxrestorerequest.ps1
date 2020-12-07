@@ -60,6 +60,21 @@ New-MailboxRestoreRequest @param
 #        SourceMailbox = $ArchiveGUID          #
 ################################################
 
+         $source = "SOURCE@DOMAIN.com"
+         $target = "TARGET@DOMAIN.com"
+
+          $param = @{​ AllowLegacyDNMismatch = $true
+   SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).ArchiveGUID
+   TargetMailbox = (Get-Mailbox $target).DistinguishedName
+TargetRootFolder = "Recovered Archive"
+ Sourceisarchive = "$true" }​
+
+New-MailboxRestoreRequest @param
+
+################################################
+#   SourceMailbox = $ArchiveGUID  manually     #
+################################################
+
     $ArchiveGUID = "Archive GUID here"
          $target = "TARGET@DOMAIN.com"
 
