@@ -4,6 +4,8 @@ $user = "affected@user.com"
 
 $Credentials = Get-Credential $user
 
+Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2
+
 Install-Package Exchange.WebServices.Managed.Api
 
 cd "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35"
