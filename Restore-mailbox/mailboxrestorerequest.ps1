@@ -32,10 +32,24 @@ New-MailboxRestoreRequest @param
         $target = "TARGET@DOMAIN.com"
 
          $param = @{ AllowLegacyDNMismatch = $true
-  SourceMailbox = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
+  SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
   TargetMailbox = (Get-Mailbox $target).DistinguishedName
 Sourceisarchive = "$true"
 Targetisarchive = "$true" }
+
+New-MailboxRestoreRequest @param
+
+############
+
+# new syntax ARCHIVE to PRIMARY (not confirmed / not guarateed / best effort )
+
+        $source = "SOURCE@DOMAIN.com"  (compare - disable archive OR complete mailbox)
+        $target = "TARGET@DOMAIN.com"
+
+         $param = @{ AllowLegacyDNMismatch = $true
+  SourceMailbox = (Get-Mailbox -IncludeInactiveMailbox $source).DistinguishedName
+  TargetMailbox = (Get-Mailbox $target).DistinguishedName
+Sourceisarchive = "$true" }
 
 New-MailboxRestoreRequest @param
 
