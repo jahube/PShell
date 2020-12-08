@@ -1,5 +1,9 @@
-$Domain = "yourdomain.com"
-$tenant = "YourTenant.onmicrosoft.com" # "YourTenant.onmicrosoft.com"
+# O365 DKIM CHECK + Values
+
+$Domain = "yourdomain.com"  # Modify
+
+$tenant = "YourTenant.onmicrosoft.com" # Modify
+
 $host1 = "Selector1._domainkey." ; $host2 = "Selector2._domainkey."
 $Value = $Domain -replace "\.","-" ; $hostname1 =  $host1 + $domain; $hostname2 =  $host2 + $domain
 $Selector1 = "selector1-" + $Value + "._domainkey." + $tenant
