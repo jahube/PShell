@@ -32,4 +32,4 @@ Write-host "._domainkey." -F yellow -NoNewline ; Write-host $tenant -F green
 Write-host "[Existing DKIM CNAME ]  " -F green -NoNewline
 If ($DKIM2) { Write-host "$DKIM2" -F yellow -NoNewline }
 If ($DKIM2 -eq $Selector2) { Write-host "   [ OK ]" -F green -NoNewline }
-If (($DKIM2) -and ($DKIM2 -ne $Selector2)) { Write-host "   [ INCORRECT ]" -F cyan -NoNewline
+If (($DKIM2) -and ($DKIM2 -ne $Selector2)) { Write-host "   [ INCORRECT ]" -F cyan -NoNewline }
