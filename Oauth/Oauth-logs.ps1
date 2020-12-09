@@ -46,10 +46,12 @@ Get-SendConnector | fl
 Get-ReceiveConnector | fl
 
 # EWS Endpoint for cloud logs
-get-webservicesvirtualdirectory | fl ExternalURL
+$EWS = (get-webservicesvirtualdirectory).ExternalURL
+Write-Host "EWS ENDPOINT`n`n please copy >>  " -F yellow -NoNewline ; Write-host $EWS -F cyan
 
-# Autodiscover Endpoint for cloud logs
-Get-ClientAccessService | fl *uri
+# Autodiscover
+$Auto = (Get-ClientAccessService).AutoDiscoverServiceInternalUri -replace "xml","svc"
+Write-Host "`n`nAutodiscover Endpoint`n`n please copy >>  " -F yellow -NoNewline ; Write-host $Auto -F cyan
 
 Stop-Transcript
 
