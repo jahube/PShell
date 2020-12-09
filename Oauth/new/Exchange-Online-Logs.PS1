@@ -1,0 +1,47 @@
+# REMOTE-Mailbox / migrated (synced with onprem) - Thank You !
+$CloudMailbox = "Any@Remote-Mailbox.com" 
+
+# Auto - select + run to verify
+$MigrationEndpoint = (Get-MigrationEndpoint | ? {$_.identity -match "Hybrid"}).remoteserver ; $EwsEndpointURI = 'https://' + $MigrationEndpoint +  '/ews/exchange.asmx'; $EwsEndpointURI # Onprem EWS
+$AutoddiscoverURI = $((Get-IntraOrganizationConnector)[-1].DiscoveryEndpoint.AbsoluteUri) ; $AutoddiscoverURI
+
+# Manual Alternative: copy from ONPREM Outputs and remove '#'
+# $EwsEndpointURI = "https://mail.domain.com/ews/exchange.asmx" # Onprem EWS
+# $AutoddiscoverURI = "https://mail.domain.com/autodiscover/autodiscover.svc" # Onprem Autodiscover
+
+# desktop/MS-Logs+Timestamp
+$ts = Get-Date -Format yyyyMMdd_hhmmss
+$DesktopPath = ([Environment]::GetFolderPath('Desktop'))
+$logsPATH =mkdir "$DesktopPath\MS-Logs\EXO_LOGS_$ts"
+
+Start-Transcript "$logsPATH\EXO_LOGS_$ts.txt"
+$FormatEnumerationLimit = -1
+
+Get-IntraOrganizationConfiguration | fl
+Get-IntraOrganizationConnector | fl
+Get-AuthServer –Identity 00000001-0000-0000-c000-000000000000 | fl
+Get-PartnerApplication | fl
+
+$MBX = Get-Mailbox $CloudMailbox -EA silentlycontinue ; 
+IF (!($MBX)) { Write-host "$CloudMailbox invalid" -F yellow ; $MBX = (Get-Mailbox)[-1] ; $CloudMailbox = $($MBX.primarysmtpaddress) } #fallback if $CloudMailbox is invalid
+$MBX | fl ; (Get-MailUser)[-1] | fl
+
+write-host "Test-OAuthConnectivity"
+Test-OAuthConnectivity -Service EWS -TargetUri $EwsEndpointURI -Mailbox $CloudMailbox -Verbose | fl
+Test-OAuthConnectivity -Service AutoD -TargetUri $AutoddiscoverURI -Mailbox $CloudMailbox -Verbose | fl
+
+Get-OrganizationRelationship | fl
+Get-FederatedOrganizationIdentifier | fl
+Get-AvailabilityAddressSpace | fl
+Get-OnPremisesOrganization | fl
+Get-FederationTrust | fl
+Get-OutboundConnector | fl
+Get-InboundConnector | fl
+
+Stop-Transcript
+###### END TRANSCRIPT ######################
+$destination = "$DesktopPath\MS-Logs\ConnectorLogs_$ts.zip"
+Add-Type -assembly “system.io.compression.filesystem”
+[io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
+Invoke-Item $DesktopPath\MS-Logs # open file manager
+###### END ZIP Logs ########################
