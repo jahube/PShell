@@ -57,7 +57,7 @@ $Auto = (Get-ClientAccessService).AutoDiscoverServiceInternalUri -replace "xml",
 Write-Host "`n`nAutodiscover Endpoint`n`n please copy >>  " -F yellow -NoNewline ; Write-host $Auto -F cyan
 Stop-Transcript
 ###### END TRANSCRIPT ######################
-$destination = "$DesktopPath\MS-Logs\ConnectorLogs_$ts.zip"
+$destination = "$DesktopPath\MS-Logs\ON-Premise_LOGS_$ts.zip"
 Add-Type -assembly “system.io.compression.filesystem”
 [io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
 Invoke-Item $DesktopPath\MS-Logs # open file manager
