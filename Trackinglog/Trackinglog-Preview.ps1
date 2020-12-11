@@ -1,68 +1,35 @@
 #############  MODIFY ##############
 
-$sender = 'affected@sender.com'
-$recipient = 'affected@recipient.com'
-$timeframe = '-4'
+$EMAIL = 'EMAIL@DOMAIN.com'
+
+$MessageID = "<MessageID>"
+
+$timeframe = '-4' # last 4 days
 
 #######  $DesktopPath\MS-Logs #######
-
 $VerbosePreference = 'Continue'
 $ts = Get-Date -Format yyyyMMdd_hhmmss
 $FormatEnumerationLimit = -1
 $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
-$logsPATH =mkdir "$DesktopPath\MS-Logs\ConnectorLogs_$ts" # creates MS-Logs on desktop + Timestamp
+$logsPATH =mkdir "$DesktopPath\MS-Logs\Tracking-Connector-LOG_$ts" # creates MS-Logs on desktop + Timestamp
 
 ########  Start Transcipt  ##########
+Start-Transcript "$logsPATH\Tracking-Connector-LOG_$ts.txt" -Verbose
 
-Start-Transcript "$logsPATH\ConnectorLogs_$ts.txt" -Verbose
-Get-SendConnector | fl > "$logsPATH\SendConnector-FL-before.txt"
-Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL-before.txt"
-Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer > "$logsPATH\RemoteDomain-before.txt"
+$Servers = Get-ExchangeServer;  $Servers | where {​​$_.isHubTransportServer -eq $true -or $_.isMailboxServer -eq $true}​​
+$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL | Export-CsV $logsPATH\sendertrackinglog.csv
+$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $EMAIL | Export-CsV $logsPATH\receivetrackinglog.csv
+IF ($MessageID -ne "<MessageID>") { $Servers | Get-MessageTrackingLog -MessageId $MessageID | Export-CsV $logsPATH\MessageID-trackinglog.csv }
 
-Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services > "$logsPATH\certificates.txt"
-
-# specify thumbprint  for connector or chose default from Authconfig
-# $Thumbprint = "code from above"
-$Thumbprint = (Get-AuthConfig).CurrentCertificateThumbprint ; $Thumbprint
-
-# CertificateName "<I>issuer<S>subject" from certificate
-$TLSCert=Get-ExchangeCertificate -Thumbprint $Thumbprint
-$TLSCertName="<I>$($TLScert.Issuer)<S>$($TLSCert.Subject)" ; $Exch = $(get-exchangeserver).name
-
-#SET Receiveconnector
-Get-ReceiveConnector "$Exch\Default Frontend $Exch" | Set-ReceiveConnector -TlsCertificateName $TLSCertName
-
-#SET Sendconnector
-Set-SendConnector -Identity "Outbound to Office 365*" -TLSCertificateName $TLSCertName -ProtocolLoggingLevel verbose
-
-#SET connector Logging Verbose
-Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
-Get-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
-
-# Restart-Service MSExchangeTransport
-
-#Remotedomain filter
-
-$remoterouting = (Get-Remotedomain).name | ? {$_ -match '.mail.onmicrosoft.com'} 
-$tenantdomain = $remoterouting -replace '.mail' ; $remoterouting ; $tenantdomain
-
-#Set Remotedomains
-
-Set-remotedomain $tenantdomain -TrustedMailInboundEnabled $true
-Set-remotedomain $remoterouting -TrustedMailOutboundEnabled $true -TargetDeliveryDomain $true
-
-Get-remotedomain | FL > "$logsPATH\RemoteDomain-FL.txt"
-Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer > "$logsPATH\RemoteDomain-after.txt"
-
-Get-TransportService | icm { Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $sender } | Export-CsV $logsPATH\sendertrackinglog.csv
-Get-TransportService | icm { Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $recipient } | Export-CsV $logsPATH\receivetrackinglog.csv
-
-Get-SendConnector | fl > "$logsPATH\SendConnector-FL-After.txt"
-Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL-After.txt"
+Get-queue | FL > "$logsPATH\queue.txt" ; (Get-queue).LastError
+Get-SendConnector | fl > "$logsPATH\SendConnector-FL.txt"
+Get-ReceiveConnector | fl > "$logsPATH\ReceiveConnector-FL.txt"
 Get-AuthConfig | fl > "$logsPATH\AuthConfig-FL.txt"
-
+Get-remotedomain | FL > "$logsPATH\RemoteDomain-FL.txt"
+Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer > "$logsPATH\RemoteDomain.txt"
+Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services > "$logsPATH\certificates.txt"
+$Thumbprint = (Get-AuthConfig).CurrentCertificateThumbprint ; $Thumbprint
 Foreach ($i in (Get-ExchangeServer)) {Write-Host $i.FQDN; icm { Get-ExchangeCertificate -Server $i.Identity } }
-
 Foreach ($c in (Get-ExchangeCertificate)) {Write-Host $c.Thumbprint; icm { Get-ExchangeCertificate -Thumbprint $c.Thumbprint | fl } } "$logsPATH\Certificate-FL.txt"
 
 ###### connector logs ###################
@@ -77,18 +44,16 @@ Copy-Item -Path $HUBReceive -destination $logsPATH
 Copy-Item -Path $FrontSEND -destination $logsPATH
 Copy-Item -Path $HUBSEND -destination $logsPATH
 
-Stop-Transcript
-
 ###### END TRANSCRIPT ######################
-
-$destination = "$DesktopPath\MS-Logs\ConnectorLogs_$ts.zip"
+Stop-Transcript
+$destination = "$DesktopPath\MS-Logs\Tracking-Connector-LOG_$ts.zip"
 Add-Type -assembly “system.io.compression.filesystem”
 [io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
 Invoke-Item $DesktopPath\MS-Logs # open file manager
-
 ###### END ZIP Logs ########################
 
 
+###### reference only ######################
 ###### Connector Logs Path (Manual) ########
 # Receive connectors:
 # FRONTEND  %ExchangeInstallPath%TransportRoles\Logs\FrontEnd\ProtocolLog\SmtpReceive\
