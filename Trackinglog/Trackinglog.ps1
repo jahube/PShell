@@ -1,11 +1,11 @@
 
-
 Get-ReceiveConnector | Set-ReceiveConnector -ProtocolLoggingLevel verbose
 Get-SendConnector | Set-SendConnector -ProtocolLoggingLevel verbose
 
-$sender = “affected@sender.com"
-$recipient = “affected@recipient.com"
+$EMAIL = 'EMAIL@DOMAIN.com'
+
 $MessageID = "<MessageID>"
+
 $timeframe = “-5" # ("days back")
 
 $VerbosePreference = 'Continue'
@@ -15,11 +15,13 @@ $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
 $logsPATH =mkdir "$DesktopPath\MS-Logs\$ts" # creates MS-Logs on desktop + Timestamp
 Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 
-Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender “affected@sender.com" | Export-CsV $logsPATH\Sender-trackinglog.csv
+$Servers = Get-ExchangeServer;  $Servers | where {​​$_.isHubTransportServer -eq $true -or $_.isMailboxServer -eq $true}​​
 
-Get-TransportService | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients “affected@recipient.com" | Export-CsV $logsPATH\Receive-trackinglog.csv
+$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL | Export-CsV $logsPATH\Sender-trackinglog.csv
 
-$Servers = Get-ExchangeServer;  $Servers | where {​​$_.isHubTransportServer -eq $true -or $_.isMailboxServer -eq $true}​​ | Get-MessageTrackingLog -MessageId $MessageID  | | Export-CsV $logsPATH\MessageID-trackinglog.csv
+$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $EMAIL | Export-CsV $logsPATH\Receive-trackinglog.csv
+
+$Servers | Get-MessageTrackingLog -MessageId $MessageID | Export-CsV $logsPATH\MessageID-trackinglog.csv
 
 Get-queue ; (Get-queue).LastError
 
