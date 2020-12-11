@@ -2,32 +2,34 @@
 # install-module exchangeonlinemanagement
 # connect-exchangeonline -userprincipalname "ADMIN@DOMAIN.com"
 
-get-mailbox -publicfolder | FT Displayname,userprincipalname,primarySMTPaddress
- 
-$path = "C:\temp"
-$PFMBX = "<address of cloud public folder mailbox>"
- 
-Get-MigrationUserStatistics $PFMBX -DiagnosticInfo Verbose -IncludeReport | Export-CliXML $path\EXO_PFmbxmigUserStats.xml
+# desktop/MS-Logs+Timestamp
+$ts = Get-Date -Format yyyyMMdd_hhmmss
+$DesktopPath = ([Environment]::GetFolderPath('Desktop'))
+$logsPATH =mkdir "$DesktopPath\MS-Logs\Public_Folder_Migration_Stats_$ts"
 
-Get-PublicFolderMailboxMigrationRequest | Get-PublicFolderMailboxMigrationRequestStatistics -IncludeReport -DiagnosticInfo Verbose | Export-CliXML $path\EXO_PFMigReq.xml
+Start-Transcript "$logsPATH\Public_Folder_Migration_Stats_$ts"
+$FormatEnumerationLimit = -1
 
-Get-MigrationBatch -DiagnosticInfo Verbose -IncludeReport | ?{$_.MigrationType.ToString() -eq "PublicFolder"} | export-clixml $path\EXO_PFMigbatch.xml
-
+$PFMs = get-mailbox -publicfolder | FT Displayname,userprincipalname,primarySMTPaddress
+ForEach ($PFM in $PFMs.userprincipalname) { $upath = $($logsPATH + '\' + "$PFM" + '_EXO_PFmbxmigUserStats.xml')
+Get-MigrationUserStatistics $PFM -DiagnosticInfo Verbose -IncludeReport | Export-CliXML "$upath" }
+Get-PublicFolderMailboxMigrationRequest | Get-PublicFolderMailboxMigrationRequestStatistics -IncludeReport -DiagnosticInfo Verbose | Export-CliXML $logsPATH\EXO_PFMigReq.xml
+Get-MigrationBatch -DiagnosticInfo Verbose -IncludeReport | ?{$_.MigrationType.ToString() -eq "PublicFolder"} | export-clixml $logsPATH\EXO_PFMigbatch.xml
 # large items: 
 $pf=Get-PublicFolderMailboxMigrationRequest | Get-PublicFolderMailboxMigrationRequestStatistics -IncludeReport;
-ForEach ($i in $pf) {if ($i.LargeItemsEncountered -gt 0) {$i.TargetMailbox.Name,$i.report.largeitems.messagesize}}
-
+$largeitems = ForEach ($i in $pf) {if ($i.LargeItemsEncountered -gt 0) {$i.TargetMailbox.Name,$i.report.largeitems.messagesize}}
+$largeitems | Export-CliXML $logsPATH\EXO_PFMig_largeitems.xml
 # bad items: 
 $pf=Get-PublicFolderMailboxMigrationRequest | Get-PublicFolderMailboxMigrationRequestStatistics -IncludeReport; 
-ForEach ($i in $pf) {if ($i.BadItemsEncountered -gt 0) {$i.TargetMailbox.Name,$i.report.baditems.subject}}
+$baditems = ForEach ($i in $pf) {if ($i.BadItemsEncountered -gt 0) {$i.TargetMailbox.Name,$i.report.baditems.subject}}
+$baditems | Export-CliXML $logsPATH\EXO_PFMig_baditems.xml
 
-#Follow these steps, if you are ok with skipping the large/bad items: 
-#Approve the skipped items on Migration batch: 
-Set-MigrationBatch <batchname> -ApproveSkippedItems 
-	
-#Use following command to approve the skipped items on migration requests that are “Synced” but not completed: 
-$pf=Get-PublicFolderMailboxMigrationRequest | Get-PublicFolderMailboxMigrationRequestStatistics -IncludeReport; 
-ForEach ($i in $pf) {if ($i.LargeItemsEncountered -gt 0 -or $i.BadItemsEncountered -gt 0) {
-Set-PublicFolderMailboxMigrationRequest $i.Identity.IdentifyingGuid -SkippedItemApprovalTime $([DateTime]::UtcNow)}} 
+Stop-Transcript
+###### END TRANSCRIPT ######################
+$destination = "$DesktopPath\MS-Logs\Public_Folder_Migration_Stats_$ts.zip"
+Add-Type -assembly “system.io.compression.filesystem”
+[io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
+Invoke-Item $DesktopPath\MS-Logs # open file manager
+###### END ZIP Logs ########################
 
-# The migration batch and requests should resume and Complete
+
