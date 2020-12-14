@@ -23,6 +23,8 @@ try { Get-Mailbox -PublicFolder -SoftDeletedMailbox | export-clixml $logsPATH\de
 try { Get-Mailbox -PublicFolder -SoftDeletedMailbox | select -expandproperty emailaddresses | FL > $logsPATH\SoftDeleted-MEPF-Aliases.txt } catch { write-host $Error[0] } 
 IF ($ITEMSSubfolder -ne "/Sub/Folder") { try { Get-PublicFolder $ITEMSSubfolder -Recurse | Get-PublicFolderItemStatistics | ?{$_.ItemType -eq "IPM.Contact"} | Export-CliXML $logsPATH\Contact-Items.xml -EA stop } catch { write-host $Error[0] } }
 IF ($ITEMSSubfolder -ne "/Sub/Folder") { try { Get-PublicFolder $ITEMSSubfolder -Recurse | Get-PublicFolderItemStatistics | ?{$_.ItemType -eq "IPM.Note"} | Export-CliXML $logsPATH\Message-Items.xml -EA stop } catch { write-host $Error[0] } }
+IF ($ITEMSSubfolder -ne "/Sub/Folder") { try { Get-PublicFolder $ITEMSSubfolder -Recurse | Get-PublicFolderItemStatistics | ?{$_.ItemType -eq "IPF.Contact"} | FT > $logsPATH\IPF.Contact.txt -EA stop } catch { write-host $Error[0] } }
+IF ($ITEMSSubfolder -ne "/Sub/Folder") { try { Get-PublicFolder $ITEMSSubfolder -Recurse | Get-PublicFolderItemStatistics | ?{$_.ItemType -eq "IPF.Note"} | FT > $logsPATH\IPF.Note.txt -EA stop } catch { write-host $Error[0] } }
 
 Stop-Transcript
 
@@ -30,3 +32,4 @@ $destination = "$DesktopPath\MS-Logs\Public_Folder_LOGS_$ts.zip"
 Add-Type -assembly “system.io.compression.filesystem”
 [io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
 Invoke-Item $DesktopPath\MS-Logs # open file manager
+#End
