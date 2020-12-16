@@ -1,6 +1,6 @@
 $folderscope = '\'
 
-$PFs = get-publicfolder $folderscope –Recurse -ResultSize unlimited ;
+$PFs = get-publicfolder $folderscope -Recurse -ResultSize unlimited ;
 [System.Collections.ArrayList]$PFE = ($PFs).entryid ; $count = $PFE.count ;
 for ($F = 0; $F -lt $PFE.count; $F++) { $ac = "Remove permission" ;
 $Sts = "Remove permission: $([math]::Round($(($F/$count)*100))) %"; $Pc = (($F/$count)*100); $sc =$($count-$F)
