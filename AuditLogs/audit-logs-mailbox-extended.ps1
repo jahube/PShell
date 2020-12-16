@@ -10,6 +10,10 @@
 
         # only if you face issues use the parameter [ -Format (Get-Culture).DateTimeFormat.ShortDatePattern ]
 
+          IF(!((Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled)) {
+          Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true ;
+          Write-host "Unified Audit log was disabled - ENABLING NOW" -F yellow }
+
 	$scriptStart=(get-date)
 	$sessionName = (get-date -Format 'u')+'o365auditlog'
 	# Reset user audit accumulator
