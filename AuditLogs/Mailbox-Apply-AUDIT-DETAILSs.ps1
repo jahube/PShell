@@ -1,11 +1,10 @@
 start-transcript -verbose
 
-$user = "AFFECTED@USER.com"  # please modify
+$user = "AFFECTED@USER.com"  # modify USER only + connect Powershell / Exchange Online 
 
 # check results BEFORE
-$PROW1 = Get-Mailbox $user | select -expandproperty AuditOwner
+$MBX = Get-Mailbox $user ; $PROW1 = $MBX.AuditOwner ; $PRDL1 = $MBX.AuditDelegate
  Write-host "BEFORE: AuditOwner = $($PROW1.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PROW1)" -foregroundcolor Cyan
-$PRDL1 =Get-Mailbox $user | select -expandproperty AuditDelegate
  Write-host "BEFORE: AuditOwner = $($PRDL1.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PRDL1)" -foregroundcolor Cyan
  
 # Apply ALL DETAILS
@@ -20,9 +19,8 @@ set-MailboxAuditBypassAssociation -Identity $user -AuditBypassEnabled $true  #OF
 set-MailboxAuditBypassAssociation -Identity $user -AuditBypassEnabled $false  #ON
 
 # recheck results AFTER
-$PROW = Get-Mailbox $user | select -expandproperty AuditOwner
+$MBX = Get-Mailbox $user ; $PROW1 = $MBX.AuditOwner ; $PRDL1 = $MBX.AuditDelegate
  Write-host "AFTER: AuditOwner = $($PROW.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PROW)" -foregroundcolor Cyan
-$PRDL =Get-Mailbox $user | select -expandproperty AuditDelegate
  Write-host "AFTER: AuditOwner = $($PRDL.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PRDL)" -foregroundcolor Cyan
 
 # enable Unified Audit logs
@@ -31,3 +29,4 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true ;
 Write-host "Unified Audit log was disabled - ENABLING NOW" -F yellow }
 
 stop-transcript
+#End
