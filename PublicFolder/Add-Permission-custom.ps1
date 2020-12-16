@@ -20,7 +20,7 @@ $access = (Get-mailbox -Identity $user).Distinguishedname
 ################################################################
 $PFs = get-publicfolder $folderscope -Recurse -ResultSize unlimited -EA silentlycontinue ;
 [System.Collections.ArrayList]$PFE = ($PFs).entryid ; $count = $PFE.count
-for ($F = 0; $F -lt $PFE.count; $F++) { $A = "Add pemission ($permission) - current Folder" ;
-Write-Progress -Activity $A -Id 2 -ParentId 1 -Status $PFE[$F] -PercentComplete (($F/$count)*100) -SecondsRemaining (($count-$F)*3) ;
+for ($F = 0; $F -lt $PFE.count; $F++) { $A = "Add pemission ($permission) - current Folder" ; $Prc= $(($F/$count)*100);
+Write-Progress -Activity $A -Id 2 -ParentId 1 -Status $PFE[$F] -PercentComplete $Prc -SecondsRemaining (($count-$F)*3);
 Add-PublicFolderClientPermission -Identity $PFE[$F] -user $access -AccessRights $permission -Confirm:$false }
 ################################################################
