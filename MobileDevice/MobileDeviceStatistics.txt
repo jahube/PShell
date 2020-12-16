@@ -1,4 +1,4 @@
-$user = affected@user.com
+$user = "affected@user.com"
 
 #long INFO
 Get-MobileDeviceStatistics -mailbox $user |FT DeviceType,DeviceOS,Status,deviceAccessState,DeviceAccessstateReason,deviceaccesscontrolrule,clientType,devicePolicyapplied
