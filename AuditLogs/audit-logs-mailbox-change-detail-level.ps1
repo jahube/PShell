@@ -8,9 +8,8 @@ $PROW1 = Get-Mailbox $user | select -expandproperty AuditOwner
 $PRDL1 =Get-Mailbox $user | select -expandproperty AuditDelegate
  Write-host "BEFORE: AuditOwner = $($PRDL1.count)" -foregroundcolor yellow;  Write-host "AuditOwner: $($PRDL1)" -foregroundcolor Cyan
  
-
 Get-Mailbox $user | Set-Mailbox -AuditEnabled $true `
--AuditOwner AddFolderPermissions, ApplyRecord, Create, HardDelete, MailboxLogin, ModifyFolderPermissions, Move, MoveToDeletedItems, RecordDelete, RemoveFolderPermissions, SoftDelete, Update, UpdateFolderPermissions, UpdateCalendarDelegation, UpdateInboxRules `
+-AuditOwner AddFolderPermissions, ApplyRecord, Create, Send, HardDelete, MailboxLogin, ModifyFolderPermissions, Move, MoveToDeletedItems, RecordDelete, RemoveFolderPermissions, SoftDelete, Update, UpdateFolderPermissions, UpdateCalendarDelegation, UpdateInboxRules `
 -AuditDelegate AddFolderPermissions, ApplyRecord, Create, FolderBind, HardDelete, ModifyFolderPermissions, Move, MoveToDeletedItems, RecordDelete, RemoveFolderPermissions, SendAs, SendOnBehalf, SoftDelete, Update, UpdateFolderPermissions, UpdateInboxRules `
 -AuditAdmin Copy, Create, HardDelete, MoveToDeletedItems, RecordDelete, RemoveFolderPermissions, SendAs, SendOnBehalf, SoftDelete, Update, UpdateFolderPermissions, UpdateCalendarDelegation, UpdateInboxRules
 
