@@ -55,3 +55,8 @@ $mbx = get-aduser test2 -Properties *
 $guid = "4a0ed62f-6875-4f7b-a151-1c434c0dcdb1"
 Set-ADUser $mbx.DistinguishedName -Replace @{msExchDisabledArchiveGUID=$guid.ToByteArray()}
 Set-ADUser $mbx.DistinguishedName -Replace @{msExchDisabledArchiveGUID=$([guid]::empty).ToByteArray()}
+
+
+####Set-ADUser $mbx.DistinguishedName -Replace @{msExchDisabledArchiveGUID=$([guid]::empty).ToByteArray()}
+#### Set-ADUser $mbx.DistinguishedName -Replace @{msExchMailboxGuid=$([guid]::empty).ToByteArray()}
+#### Set-ADUser $mbx.DistinguishedName -Replace @{msExchArchiveGUID=$([guid]::empty).ToByteArray()}
