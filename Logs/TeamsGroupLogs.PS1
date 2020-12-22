@@ -1,3 +1,6 @@
+
+Set-ExecutionPolicy RemoteSigned
+
 # install
 install-module MSOnline
 install-module MicrosoftTeams
