@@ -46,6 +46,9 @@ Get-TeamUser -GroupId $group1.ExternalDirectoryObjectId -Role Owner
 Write-host "get-team Group 1"
 get-team -GroupId $group1.ExternalDirectoryObjectId |fl
 
+Write-host "AzureAD Group 1"
+$group1 = Get-AzureADGroup -SearchString $Groupname1 ; $group1 | FL
+
 # GROUP 2
 
 $group2 = Get-UnifiedGroup -Identity $Groupname2 ; $group2 |fl
@@ -64,6 +67,9 @@ Get-TeamUser -GroupId $group2.ExternalDirectoryObjectId -Role Owner
 
 Write-host "get-team Group 2"
 get-team -GroupId $group2.ExternalDirectoryObjectId |fl
+
+Write-host "AzureAD Group 2"
+$group1 = Get-AzureADGroup -SearchString $Groupname2 ; $group2 | FL
 
 # USER
 $userguid1 = (get-user $user1).ExternalDirectoryObjectId
