@@ -25,11 +25,14 @@ $user2 = "user2@example.com"
 
 $Groupname = “Group name"
 
-$group = Get-UnifiedGroup -Identity “PineviewSchoolStaff" ; $group |fl
+$group = Get-UnifiedGroup -Identity $Groupname ; $group |fl
+
 Write-host "Members"
 $Members = Get-UnifiedGroupLinks $group.ExternalDirectoryObjectId -LinkType Members ; $Members
+
 Write-host "Owners"
 $Owners = Get-UnifiedGroupLinks -Identity $group.ExternalDirectoryObjectId -LinkType Owners ; $Owners
+
 $userguid1 = (get-user $user1).ExternalDirectoryObjectId
 $userguid2 = (get-user $user2).ExternalDirectoryObjectId
 Get-Team -User $user1
