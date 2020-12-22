@@ -30,25 +30,39 @@ $Groupname2 = “Group name 2"
 # GROUP 1
 
 $group1 = Get-UnifiedGroup -Identity $Groupname1 ; $group1 |fl
+
 Write-host "Members Group 1"
 $Members1 = Get-UnifiedGroupLinks $group1.ExternalDirectoryObjectId -LinkType Members ; $Members1
+
 Write-host "Owners Group 1"
 $Owners1 = Get-UnifiedGroupLinks -Identity $group1.ExternalDirectoryObjectId -LinkType Owners ; $Owners1
-Write-host "Teams Group 1"
+
+Write-host "Teams Group 1 Members"
 Get-TeamUser -GroupId $group1.ExternalDirectoryObjectId -Role member
+
+Write-host "Teams Group 1 Owners"
 Get-TeamUser -GroupId $group1.ExternalDirectoryObjectId -Role Owner
+
+Write-host "get-team Group 1"
 get-team -GroupId $group1.ExternalDirectoryObjectId |fl
 
 # GROUP 2
 
 $group2 = Get-UnifiedGroup -Identity $Groupname2 ; $group2 |fl
+
 Write-host "Members Group 2"
 $Members2 = Get-UnifiedGroupLinks $group2.ExternalDirectoryObjectId -LinkType Members ; $Members2
+
 Write-host "Owners Group 2"
 $Owners2 = Get-UnifiedGroupLinks -Identity $group2.ExternalDirectoryObjectId -LinkType Owners ; $Owners2
-Write-host "Teams Group 2"
+
+Write-host "Teams Group 2 Members"
 Get-TeamUser -GroupId $group2.ExternalDirectoryObjectId -Role member
+
+Write-host "Teams Group 2 Owners"
 Get-TeamUser -GroupId $group2.ExternalDirectoryObjectId -Role Owner
+
+Write-host "get-team Group 2"
 get-team -GroupId $group2.ExternalDirectoryObjectId |fl
 
 # USER
