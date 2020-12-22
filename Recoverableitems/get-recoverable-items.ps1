@@ -60,3 +60,14 @@ $search = get-recoverableitems -Identity $user -LastParentFolderID $ID
 $search | fl subject,SourceFolder,ItemClass
 
 $search | restore-recoverableitems
+
+* folder TYPE
+
+$foldertype = "sentitems" # (dont change to local language, its the Type, not the name)
+$Stats = (Get-MailboxFolderStatistics $user).where( {$_.foldertype.tostring() -eq $foldertype })
+$ID= $Stats[0].folderid.toString()
+
+$search = get-recoverableitems -Identity $user -LastParentFolderID $ID
+$search | fl subject,SourceFolder,ItemClass
+
+$search | restore-recoverableitems
