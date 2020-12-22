@@ -23,13 +23,13 @@ $user1 = "user1@example.com"
 
 $user2 = "user2@example.com"
 
-$Groupname1 = “Group name 1"
+$Groupname = “Group name 1"
 
-$Groupname2 = “Group name 2"
+$Groupname = “Group name 2"
 
 # GROUP 1
 
-$group1 = Get-UnifiedGroup -Identity $Groupname1 ; $group1 |fl
+$group1 = Get-UnifiedGroup -Identity $Groupname ; $group1 |fl
 Write-host "Members Group 1"
 $Members1 = Get-UnifiedGroupLinks $group1.ExternalDirectoryObjectId -LinkType Members ; $Members1
 Write-host "Owners Group 1"
@@ -41,7 +41,7 @@ get-team -GroupId $group1.ExternalDirectoryObjectId |fl
 
 # GROUP 2
 
-$group2 = Get-UnifiedGroup -Identity $Groupname2 ; $group2 |fl
+$group2 = Get-UnifiedGroup -Identity $Groupname ; $group2 |fl
 Write-host "Members Group 2"
 $Members2 = Get-UnifiedGroupLinks $group2.ExternalDirectoryObjectId -LinkType Members ; $Members2
 Write-host "Owners Group 2"
