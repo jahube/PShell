@@ -27,6 +27,10 @@ $Groupname1 = “Group name 1"
 
 $Groupname2 = “Group name 2"
 
+# check groups
+
+Get-UnifiedGroup | FT name,displayname,primarySMTPaddress,ExternalDirectoryObjectId
+
 # GROUP 1
 
 $group1 = Get-UnifiedGroup -Identity $Groupname1 ; $group1 |fl
