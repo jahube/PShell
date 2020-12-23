@@ -10,9 +10,9 @@ $logs = Get-CalendarDiagnosticLog $user -Subject "Full Name1 Jr.'s Birthday" -Ex
 $logs = Get-CalendarDiagnosticLog $user -Subject "office hours" ; $logs
 
 # range -14 => last 14 days
-$logs = Get-CalendarDiagnosticLog $user -StartDate (get-date).AddDays(-14) -EndDate (get-date) | select CleanGlobalObjectId | Get-Unique -AsString ; $logs.count
+$logs = Get-CalendarDiagnosticLog $user -StartDate (get-date).AddDays(-14) -EndDate (get-date) ; $logs.count
 
-$IDs = $logs.CleanGlobalObjectId
+$IDs = $logs | select CleanGlobalObjectId | Get-Unique -AsString
 $results = foreach ($id in $IDs) {​ Get-CalendarDiagnosticObjects -Identity $user -MeetingId $id }​
 # export as one file
 $results| Export-csv $path\logs.csv -NoTypeInformation
