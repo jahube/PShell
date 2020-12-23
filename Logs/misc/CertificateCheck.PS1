@@ -17,3 +17,5 @@ $Certificate.Extensions
 [System.Security.Cryptography.X509Certificates.X509Certificate2]$SslStream.RemoteCertificate |fl
 
 # Reference: http://digicert.com/help
+# https://dev.digicert.com/services-api/certificates/list-intermediates/
+# https://dev.digicert.com/custom-reports-api/
