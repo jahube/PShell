@@ -2,24 +2,22 @@
 # connect-exchangeonline -UserPrincipalName ADMIN
 
 $user = "affected@user.com"
+
+$Subject = "" #Subject
+
 $path = "C:\Temp"
 
-$logs = Get-CalendarDiagnosticLog $user -Subject "Full Name1 Jr.'s Birthday" -ExactMatch ;$logs
-# Specific
+$start = (get-date).AddDays(-14) ;  $end = (get-date).AddDays(30) ;
+$Calendar = Get-CalendarDiagnosticLog $user -StartDate $startdate -EndDate $enddate -EA silentlycontinue ;
+$Match = $Calendar.Where({($_.NormalizedSubject -match $Subject) -or ($_.NormalizedSubject -eq $Subject)})
+$Cal = $logs | sort-Object CleanGlobalObjectId -Unique ; $count= $Cal.count ; $label = "Calendarlogs for [$user]"
+for ($C = 0; $C -lt $Cal.count; $C++) { $S =" [Event Count] ($($C+1)/$count)  [Time]"
+$A = "$label [Subject] $($Cal[$C].NormalizedSubject) [Date] $($Cal[$C].LogDate)" ; $ID = $Cal[$C].CleanGlobalObjectId
+Write-Progress -Activity $A -Status $S -PercentComplete (($C/$count)*100) -SecondsRemaining ($count-$C) ;
+$Out = Get-CalendarDiagnosticObjects -Identity $user -MeetingId $ID -StartDate $start -EndDate $end -WA silentlycontinue ;
+$DayN = (get-date $Cal[$C].LogDate).DayOfWeek ; $Datestr = get-date $Cal[$C].LogDate -Format yyyy-MM-dd-HHmm ;
+$FileN =  $Cal[$C].CleanGlobalObjectId + '_' + $DayN + '_' + $Datestr + '-' + $Cal[$C].NormalizedSubject + '.Csv' ; 
+$FileName = $FileN.Split([IO.Path]::GetInvalidFileNameChars()) -join '_';IF(!(Test-Path $path)){mkdir $path}
+$Out | Export-csv $path\$Filename -NoTypeInformation }
 
-$logs = Get-CalendarDiagnosticLog $user -Subject "office hours" ;$logs
-
-# range -14 => last 14 days
-$logs = Get-CalendarDiagnosticLog $user -StartDate (get-date).AddDays(-14) -EndDate (get-date);$logs.count
-$IDs = $logs.CleanGlobalObjectId | Get-Unique
-
-$results = foreach ($id in $IDs){​Get-CalendarDiagnosticObjects -Identity $user -MeetingId $id}​
-
-# export as one file
-$results| Export-csv $path\logs.csv -NoTypeInformation
-
-# export separately as <MEETINGID>.CSV
-$results = foreach ($id in $IDs) {​ Get-CalendarDiagnosticObjects -Identity $user -MeetingId $id | Export-csv $path\$($id)_log.csv -NoTypeInformation }​
-  
-  
-
+[System.Collections.ArrayList]$logs | select CleanGlobalObjectId | get-unique  -AsString
