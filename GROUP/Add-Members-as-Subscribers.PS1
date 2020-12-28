@@ -1,23 +1,21 @@
 
-# ADD Office 365 Group Subscribers
+# ADD Office 365 Group Subscribers   # https://support.microsoft.com/en-us/office/follow-a-group-in-outlook-e147fc19-f548-4cd2-834f-80c6235b7c36
+
+# check groups to know the valid Group data
+Get-UnifiedGroup | FT name,displayname,primarySMTPaddress,ExternalDirectoryObjectId,HiddenFromAddressListsEnabled,HiddenFromExchangeClientsEnabled
 
 # (1) ALL GROUPS
 $groups = Get-UnifiedGroup
 
-### $groups | % { Set-UnifiedGroup $_.name -HiddenFromAddressListsEnabled:$false -HiddenFromExchangeClientsEnabled:$false }
-### $groups | % { Set-UnifiedGroup $_.name -SubscriptionEnabled:$true }
+# (2) ONE GROUP
+$groups = Get-UnifiedGroup -Identity "group1"
 
+# (3) selected GROUPS
+$Groupnames = "group1","group2","group3"
+$groups = $Groupnames | % { Get-UnifiedGroup -Identity $_ }
 
-# check groups
-Get-UnifiedGroup | FT name,displayname,primarySMTPaddress,ExternalDirectoryObjectId,HiddenFromAddressListsEnabled,HiddenFromExchangeClientsEnabled:
-
-# OR (2) ONE GROUP only
-# SUBSCRIBE 1 Group
-
-$groups = Get-UnifiedGroup -Identity "put Group here" # check above to know the valid Group data
- 
-### Set-UnifiedGroup $groups.name -HiddenFromAddressListsEnabled:$false -HiddenFromExchangeClientsEnabled:$false
-### Set-UnifiedGroup $groups.name -SubscriptionEnabled:$true
+#    $groups | % { Set-UnifiedGroup $_.name -HiddenFromAddressListsEnabled:$false -HiddenFromExchangeClientsEnabled:$false }
+#    $groups | % { Set-UnifiedGroup $_.name -SubscriptionEnabled:$true }
 
 # SUBSCRIBE ALL
 
