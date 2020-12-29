@@ -48,26 +48,19 @@ IPM.Task
 
 -Format (Get-Culture).DateTimeFormat.ShortDatePattern # optional date adjustment parameter
 
-
 * folder specific
 
-$foldername = "inbox"
-$ID= (get-mailboxfolderstatistics -identity $USER -folderscope $foldername).folderid.toString()
-
-$ID = "GUID from Rave folder statistics / folder folderID"
-
-$search = get-recoverableitems -Identity $user -LastParentFolderID $ID
-$search | fl subject,SourceFolder,ItemClass
-
+$user="affected@user.com"
+$folder = 'sent items'
+$search = (get-recoverableitems $user).where({$_.LastParentPath -match $folder -or $_.LastParentPath -eq $folder})
+$search | fl subject,SourceFolder,ItemClass,LastParentPath
 $search | restore-recoverableitems
 
 * folder TYPE
 
-$foldertype = "sentitems" # (dont change to local language, its the Type, not the name)
+$user="affected@user.com"
+$foldertype = "sentitems"
 $Stats = (Get-MailboxFolderStatistics $user).where( {$_.foldertype.tostring() -eq $foldertype })
-$ID= $Stats[0].folderid.toString()
-
-$search = get-recoverableitems -Identity $user -LastParentFolderID $ID
-$search | fl subject,SourceFolder,ItemClass
-
+$search = (get-recoverableitems $user).where({$_.LastParentPath -eq $Stats[0].name })
+$search | fl subject,SourceFolder,ItemClass,LastParentPath
 $search | restore-recoverableitems
