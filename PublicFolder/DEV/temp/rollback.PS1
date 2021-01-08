@@ -1,3 +1,4 @@
+# source https://docs.microsoft.com/en-us/exchange/collaboration/public-folders/roll-back-exchange-online-migration
 
 # Delete Folders
 Get-MailPublicFolder -ResultSize Unlimited | where {$_.EntryId -ne $null}| Disable-MailPublicFolder -Confirm:$false
@@ -8,7 +9,7 @@ $hierarchyMailboxGuid = $(Get-OrganizationConfig).RootPublicFolderMailbox.Hierar
 # Softdelete Secondary Mailboxes first
 Get-Mailbox -PublicFolder | Where-Object {$_.ExchangeGuid -ne $hierarchyMailboxGuid} | Remove-Mailbox -PublicFolder -Confirm:$false -Force
 
-#Try Harddelete  Secondary Mailboxes first
+#Try Harddelete  Secondary Mailboxes first # ADDED
 Get-Mailbox -PublicFolder | Where-Object {$_.ExchangeGuid -eq $hierarchyMailboxGuid} | Remove-Mailbox -PublicFolder -PermanentlyDelete:$true
 
 # softdelete HierarchyMailbox
