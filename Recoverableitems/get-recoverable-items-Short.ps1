@@ -1,8 +1,8 @@
 
          #  MODIFY below  
+
 $ADMIN = "admin@domain.com"
 
-        #    MODIFY below    
 $USER = "user@your-domain.com"
 
 #  <<< ====  RUN BELOW + (1) , (2) or (3) =======>>>
@@ -16,24 +16,27 @@ Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 
 #  <<< ========      (1) ALL         ============>>>
 
+
 get-recoverableitems -Identity $user -ResultSize unlimited | restore-recoverableitems -NoOutput
 
 
 #  <<< ========      (2) Item Type   ============>>>
 
          # MODIFY #
-$Items = "IPM.Note"          # Examples:  "IPM.Note"  "IPM.Appointment"   "IPM.Contact"
+
+$Items = "IPM.Note"          # Examples  -->   "IPM.Note"  "IPM.Appointment"   "IPM.Contact"
 
 $search = get-recoverableitems -Identity $user -FilterItemType $ItemsToRecover $ItemsToRecover -ResultSize unlimited
-$search | ft subject,SourceFolder,ItemClass,LastModifiedTime
-$search | restore-recoverableitems
+$search | ft subject,SourceFolder,ItemClass,LastParentPath,LastModifiedTime    #   <-- preview  
+$search | restore-recoverableitems                                             #   <-- restore 
 
 #  <<< =========      (3) Folder Type     ========>>>
 
               #  MODIFY #
-$foldertype = "sentitems" # Examples: "inbox"  "calendar" "sentitems"
+
+$foldertype = "sentitems"    # Examples  -->   "inbox"  "calendar" "sentitems"
 
 $Stats = (Get-MailboxFolderStatistics $user).where( {$_.foldertype.tostring() -eq $foldertype })
 $search = (get-recoverableitems $user).where({$_.LastParentPath -eq $Stats[0].name })
-$search | fl subject,SourceFolder,ItemClass,LastParentPath
-$search | restore-recoverableitems
+$search | fl subject,SourceFolder,ItemClass,LastParentPath                     #   <-- preview  
+$search | restore-recoverableitems                                             #   <-- restore
