@@ -5,7 +5,6 @@ $ADMIN = "admin@domain.com"
 
 $USER = "user@your-domain.com"
 
-
 #  <<< ====  RUN BELOW + (1) , (2) or (3) =======>>>
 
 Set-ExecutionPolicy RemoteSigned
@@ -17,9 +16,7 @@ Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 
 #  <<< ========      (1) ALL         ============>>>
 
-
 get-recoverableitems -Identity $user -ResultSize unlimited | restore-recoverableitems -NoOutput
-
 
 #  <<< ========      (2) Item Type   ============>>>
 
