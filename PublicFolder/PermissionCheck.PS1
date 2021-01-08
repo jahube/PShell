@@ -1,10 +1,19 @@
+# << ============= Variables ===================================== >> #
+
 $FolderScope = '\'
+
 $Path = "C:\FolderData.CSV"
+
+$AnonymousPerm = "CreateItems"
+
+$DefaultPerm = "Author"
+
+# << ============== Script Start ================================= >> #
 
 $PFs = get-publicfolder $FolderScope –Recurse -resultsize unlimited
 
 $count = $PFs.count ; $err = @() ; $Folderdata = @() ; $missingowner = @() ; $FalseAno = @() ; $FalseDef = @()
- 
+
       For ($P = 0; $P -lt $PFs.count; $P++) { 
 
        $Folder = $PFs[$P].identity.ToString()
@@ -17,20 +26,20 @@ Write-Progress -Activity "Checking permissions  " -Id 2 -ParentId 1 -Status "[cu
       $current = Get-PublicFolderClientPermission -Identity $EntryID
 
   ## Anonymous
-    $AnonAccess = @($current.where({'anonymous' -eq $_.user})).accessrights
-IF ("Createitems" -eq $AnonAccess ) { $NewAnon = "unchanged" } else { $NewAnon = "Createitems" ; $FalseAno += $Folder ;
-Add-PublicFolderClientPermission -Identity $EntryID -user 'anonymous' -AccessRights "Createitems" -Confirm:$false }
+    $AnonAccess = @($current.where({ 'anonymous' -eq $_.user })).accessrights
+IF ($AnonymousPerm -eq $AnonAccess ) { $NewAnon = "unchanged" } else { $NewAnon = $AnonymousPerm ; $FalseAno += $Folder ;
+Add-PublicFolderClientPermission -Identity $EntryID -user 'anonymous' -AccessRights $AnonymousPerm -Confirm:$false }
 
- ## Default
-   $defaultAccess = @($current.where({'default' -eq $_.user})).accessrights
+## Default
+   $defaultAccess = @($current.where({ 'default' -eq $_.user })).accessrights
 IF ("Author" -eq $defaultAccess ) { $NewDefault = "unchanged" } else { $NewDefault = "Author" ; $FalseDef += $Folder ;
 Add-PublicFolderClientPermission -Identity $EntryID -user 'default' -AccessRights "Author" -Confirm:$false }
 
- ## Editors
-   $Editors = @($current.where({'Editor' -eq $_.accessrights}));
-IF($Editors) { $EditorsString = $Editors.user.displayname.ToString() -join ";" } else { $EditorsString = 'None' ;
+## Editors
+   $Editors = @($current.where({ 'Editor' -eq $_.accessrights }));
+IF($Editors) { $EditorsString = $Editors.user.displayname.ToString() -join ";" } else { $EditorsString = 'None' }
 
- ## Owners
+## Owners
    $Owners = @($current.where({'Owner' -eq $_.accessrights})); 
 IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } else { $OwnersString = 'None' ; $missingowner += $Folder }
 
@@ -45,4 +54,5 @@ IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } el
         $Folderdata += $currentdata
   }
 
-$Folderdata | Export-CSV $Path -Notypeinformation
+
+$Folderdata | Export-CSV $Path -Notypeinformation 
