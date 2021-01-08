@@ -23,15 +23,15 @@ Add-PublicFolderClientPermission -Identity $EntryID -user 'anonymous' -AccessRig
 
  ## Default
    $defaultAccess = @($current.where({'default' -eq $_.user})).accessrights
-IF ("Author" -eq $defaultAccess ) { $NewDefault = "unchanged" } else { $NewDefault = "Author" ; $FalseDef += $Folder }
+IF ("Author" -eq $defaultAccess ) { $NewDefault = "unchanged" } else { $NewDefault = "Author" ; $FalseDef += $Folder ;
 Add-PublicFolderClientPermission -Identity $EntryID -user 'default' -AccessRights "Author" -Confirm:$false }
 
  ## Editors
-   $Editors = @($current.where({'Editor' -eq $_.accessrights});
-IF($Editors) { $EditorsString = $Editors.user.displayname.ToString() -join ";" } else { $EditorsString = 'None' }
+   $Editors = @($current.where({'Editor' -eq $_.accessrights}));
+IF($Editors) { $EditorsString = $Editors.user.displayname.ToString() -join ";" } else { $EditorsString = 'None' ;
 
  ## Owners
-   $Owners = @($current.where({'Owner' -eq $_.accessrights}); 
+   $Owners = @($current.where({'Owner' -eq $_.accessrights})); 
 IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } else { $OwnersString = 'None' ; $missingowner += $Folder }
 
         $currentdata = New-Object -TypeName PSObject       
@@ -44,7 +44,5 @@ IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } el
         $currentdata | Add-Member -MemberType NoteProperty -Name Owners -Value $OwnersString
         $Folderdata += $currentdata
   }
-
-}
 
 $Folderdata | Export-CSV $Path -Notypeinformation
