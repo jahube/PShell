@@ -1,41 +1,50 @@
-$folderscope = '\'
+$FolderScope = '\'
+$Path = "C:\FolderData.CSV"
 
-$success = New-Object System.Collections.ArrayList
-$errors = New-Object System.Collections.ArrayList
-$PFs = get-publicfolder $folderscope –Recurse
-#$PS = $PFs | Get-PublicFolderClientPermission
-#$PS = $PS | ? { ($_.user.displayname -notmatch "Default") -and ($_.user.displayname -notmatch "Anonymous") }
-$count = $PFs.count ; $err = @() ; $data = @()
-for ($P = 0; $P -lt $PFs.count; $P++) { 
-$F = $PFs[$P].identity.ToString()
-$DN = $PS[$P].user.displayname.ToString()
-#$DST = $PS[$P].user.RecipientPrincipal
-#$AR = $PS[$P].accessrights
-$SPF = $PS[$P].SharingPermissionFlags
-Write-Progress -Activity "Remove permission - [current Folder] $($F)" -Id 2 -ParentId 1 -Status "For [USER] $($DN)" -PercentComplete (($P/$count)*100) -SecondsRemaining $($count-$P) ;
+$PFs = get-publicfolder $FolderScope –Recurse -resultsize unlimited
 
-       $current = Get-PublicFolderClientPermission -Identity $F
-       $default = $current.where({'default' -eq $_.user })
-     $anonymous = $current.where({'anonymous' -eq $_.user }) ; $ano = $anonymous.accessrights
-        $Editor = $current.where({'Editor' -eq $_.accessrights })
-        $Owners = $current.where({'Owner' -eq $_.accessrights }) ; $Own = $Owners.user
+$count = $PFs.count ; $err = @() ; $Folderdata = @() ; $missingowner = @() ; $FalseAno = @() ; $FalseDef = @()
+ 
+      For ($P = 0; $P -lt $PFs.count; $P++) { 
 
-IF ("Createitems" -eq $ano ) {  $AnonAccess = $ano ; $NewAnon = "unchanged" } else { $ano}
-IF ($Owners) { $Ownerstring = [system.String]::Join(";", $Own) }
+       $Folder = $PFs[$P].identity.ToString()
 
-        $folder = New-Object -TypeName PSObject       
-        $folder | Add-Member -MemberType NoteProperty -Name Folder -Value $F
-        $folder | Add-Member -MemberType NoteProperty -Name EntryID -Value $F
-        $folder | Add-Member -MemberType NoteProperty -Name anonymous -Value $AnonAccess
-        $folder | Add-Member -MemberType NoteProperty -Name NewAnon -Value $NewAnon
-        $folder | Add-Member -MemberType NoteProperty -Name default -Value $default.accessrights
-        $folder | Add-Member -MemberType NoteProperty -Name NewDefault -Value $cal
-        $folder | Add-Member -MemberType NoteProperty -Name Owners -Value $Ownerstring
-        $data += $folder
+Write-Progress -Activity "Checking permissions  " -Id 2 -ParentId 1 -Status "[current Folder] $Folder" -PercentComplete (($P/$count)*100) -SecondsRemaining $($count-$P) ;
+      
+      $EntryID = $PFs[$P].EntryID
+
+   ## Permissions
+      $current = Get-PublicFolderClientPermission -Identity $EntryID
+
+  ## Anonymous
+    $AnonAccess = @($current.where({'anonymous' -eq $_.user})).accessrights
+IF ("Createitems" -eq $AnonAccess ) { $NewAnon = "unchanged" } else { $NewAnon = "Createitems" ; $FalseAno += $Folder ;
+Add-PublicFolderClientPermission -Identity $EntryID -user 'anonymous' -AccessRights "Createitems" -Confirm:$false }
+
+ ## Default
+   $defaultAccess = @($current.where({'default' -eq $_.user})).accessrights
+IF ("Author" -eq $defaultAccess ) { $NewDefault = "unchanged" } else { $NewDefault = "Author" ; $FalseDef += $Folder }
+Add-PublicFolderClientPermission -Identity $EntryID -user 'default' -AccessRights "Author" -Confirm:$false }
+
+ ## Editors
+   $Editors = @($current.where({'Editor' -eq $_.accessrights});
+IF($Editors) { $EditorsString = $Editors.user.displayname.ToString() -join ";" } else { $EditorsString = 'None' }
+
+ ## Owners
+   $Owners = @($current.where({'Owner' -eq $_.accessrights}); 
+IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } else { $OwnersString = 'None' ; $missingowner += $Folder }
+
+        $currentdata = New-Object -TypeName PSObject       
+        $currentdata | Add-Member -MemberType NoteProperty -Name Folder -Value $Folder
+        $currentdata | Add-Member -MemberType NoteProperty -Name EntryID -Value $EntryID
+        $currentdata | Add-Member -MemberType NoteProperty -Name anonymous -Value $AnonAccess
+        $currentdata | Add-Member -MemberType NoteProperty -Name NewAnon -Value $NewAnon
+        $currentdata | Add-Member -MemberType NoteProperty -Name default -Value $defaultAccess
+        $currentdata | Add-Member -MemberType NoteProperty -Name NewDefault -Value $NewDefault
+        $currentdata | Add-Member -MemberType NoteProperty -Name Owners -Value $OwnersString
+        $Folderdata += $currentdata
   }
 
-
-| Remove-PublicFolderClientPermission -ErrorAction silentlycontinue
 }
 
-# get-publicfolder \ -Recurse | Get-PublicFolderClientPermission | Remove-PublicFolderClientPermission
+$Folderdata | Export-CSV $Path -Notypeinformation
