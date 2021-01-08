@@ -2,7 +2,7 @@
 
 $user = (get-mailbox USER).distinguishedname
 
-$types = "RecoverableItemsDeletions","RecoverableItemsPurges","Inbox","Outbox","SentItems","Drafts","JunkEmail","Archive","Contacts","Calendar","Notes","QuickContacts","RecipientCache","User Created"
+$types = "RecoverableItemsDeletions","RecoverableItemsPurges","Inbox","Outbox","SentItems","Drafts","JunkEmail","Archive","Contacts","Calendar","Notes","QuickContacts","RecipientCache","User Created","RecoverableItemsDiscoveryholds","RecoverableItemsRoot"
 
 $stats = (Get-MailboxFolderStatistics $user).where( {$_.foldertype.tostring() -in ($types)})
 $filtered = $stats | Select Name,containerclass,foldertype, `
