@@ -4,8 +4,7 @@
 $Language  = "DE-DE" # Examples: "EN-US" "EN-GB" "DE-CH" "FR-FR" "DE-DE" "FR-BE" "FR-TN"
 ##################################
 $culture = New-Object system.globalization.cultureinfo($Language)
-  $param = @{    Identity = $MBX[$M] 
-                 Language = $Language
+  $param = @{    Language = $Language
                TimeFormat = $culture.DateTimeFormat.ShortTimePattern
                DateFormat = $culture.DateTimeFormat.ShortDatePattern
                  TimeZone = "W. Europe Standard Time"
@@ -18,7 +17,7 @@ $label="[$($param.Language) $($culture.DisplayName)] Time[$($param.TimeFormat)] 
 for ($M = 0; $M -lt $MBX.count; $M++) { $S =" [MBX] ($($M+1)/$count)  [Time]"
 $A = "Changing Folder language $label  [Mailbox Count] ($($M+1)/$count) [Mailbox] $($MBX[$M])"
 Write-Progress -Activity $A -Status $S -PercentComplete (($M/$count)*100) -SecondsRemaining ($count-$M) ;
-Try { Set-MailboxRegionalConfiguration @param } catch { Write-Host $Error[0].Exception.Message -F Yellow } }
+Try { Set-MailboxRegionalConfiguration -Identity $MBX[$M] @param } catch { Write-Host $Error[0].Exception.Message -F Yellow } }
 
 ####################
 # for ONE mailboxe #
