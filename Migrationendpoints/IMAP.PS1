@@ -22,38 +22,36 @@ get-MigrationEndpoint $EndpointName | % { Test-MigrationServerAvailability -Imap
 
 Test-MigrationServerAvailability -Imap -RemoteServer $IMAPserver -Port $Port
 
-####       remove syncrequest        ####
+- common issue - orphan IMAP sync request -
+ >>  remove syncrequest
 Get-Syncrequest -mailbox "USER HERE" | Remove-syncrequest
 
-#### Misc
+- check if you want to resume or remove the failed users / batches
+ >>  Misc
 Get-MigrationUser | Set-MigrationUser -SyncNow
 Set-MigrationBatch -Identity MigrationBatch01 -SyncNow
 Set-MigrationBatch -Identity MigrationBatch01 -ApproveSkippedItems
 
-####  remove failed migrationusers   ####
-$failedusers =  get-migrationuser | where { $_.status -eq 'failed' }
-$failedusers | % { remove-migrationuser -identity $_.identity -force -confirm:$true }
+ >>  remove failed migrationusers
+Foreach ($MigUser in (get-migrationuser).where({$_.status -eq 'failed'})) {
+remove-migrationuser -identity $MigUser.identity.ToString() -CF:$true }
 
-####        remove batch             ####
- remove failed batches
-$failedmigrationbatch =  get-MigrationBatch | where { $_.status -eq 'failed' }
-$failedmigrationbatch | % { remove-MigrationBatch -identity $_.identity.ToString() -CF:$true }
+ >> remove failed batches
+Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'failed'})) {
+remove-MigrationBatch -identity $Batch.identity.ToString() -CF:$true }
 
- remove aready completed batches
-$failedmigrationbatch =  get-MigrationBatch | where { $_.status -eq 'Completed' }
-$failedmigrationbatch | % { remove-MigrationBatch -identity $_.identity.ToString() -CF:$true }
+ >> remove aready completed batches
+Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'Completed'})) {
+remove-MigrationBatch -identity $Batch.identity.ToString() -CF:$true }
 
+ >>  Set Completion time for 'CompletedWithErrors'
+Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'CompletedWithErrors'})) {
+Set-MigrationBatch -identity $Batch.identity.ToString() -CompleteAfter (Get-Date).ToUniversalTime() -CF:$true }
 
-  Set Completion time for synced with errors
-$failedmigrationbatch =  get-MigrationBatch | where { $_.status -eq 'CompletedWithErrors' }
-$failedmigrationbatch |% { Set-MigrationBatch -identity $_.identity.ToString() -CompleteAfter (Get-Date).ToUniversalTime() -CF:$true }
+ >> Set Completion time
+Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'synced'})) {
+Set-MigrationBatch -identity $Batch.identity.ToString() -CompleteAfter (Get-Date).ToUniversalTime() -CF:$true }
 
- Set Completion time
-$failedmigrationbatch =  get-MigrationBatch | where { $_.status -eq 'synced' }
-$failedmigrationbatch | % { Set-MigrationBatch -identity $_.identity.ToString() -CompleteAfter (Get-Date).ToUniversalTime() -CF:$true }
-
- manual complete
-$failedmigrationbatch =  get-MigrationBatch | where { $_.status -eq 'synced' }
-$failedmigrationbatch | % { Complete-MigrationBatch -identity $_.identity.ToString() -SyncAndComplete -CF:$true }
-
-
+ >> manual complete + final sync
+Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'synced'})) {
+Complete-MigrationBatch -identity $Batch.identity.ToString() -SyncAndComplete -CF:$true }
