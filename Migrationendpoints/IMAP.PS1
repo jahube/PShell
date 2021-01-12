@@ -55,3 +55,7 @@ Set-MigrationBatch -identity $Batch.identity.ToString() -CompleteAfter (Get-Date
  >> manual complete + final sync
 Foreach ($Batch in (get-MigrationBatch).where({$_.status -eq 'synced'})) {
 Complete-MigrationBatch -identity $Batch.identity.ToString() -SyncAndComplete -CF:$true }
+
+
+Foreach ($batch in (get-MigrationBatch).where({$_.status -eq 'SyncedWithErrors'}) {
+Get-MigrationUser -BatchId $Batch.identity.ToString() | FL }
