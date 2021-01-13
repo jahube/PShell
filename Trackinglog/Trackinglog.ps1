@@ -17,11 +17,18 @@ Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 
 $Servers = Get-ExchangeServer;  $Servers | where {​​$_.isHubTransportServer -eq $true -or $_.isMailboxServer -eq $true}​​
 
-$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL | Export-CsV $logsPATH\Sender-trackinglog.csv
+$senderlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL 
+$senderlog | Export-CsV $logsPATH\Sender-trackinglog.csv -notypeinformation
+$senderlog | Export-clixml -path $logsPATH\Sender-trackinglog.xml
 
-$Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $EMAIL | Export-CsV $logsPATH\Receive-trackinglog.csv
+$Recipientlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $EMAIL 
+$Recipientlog | Export-CsV $logsPATH\Receive-trackinglog.csv -notypeinformation
+$Recipientlog | Export-clixml -path $logsPATH\Receive-trackinglog.xml
 
-$Servers | Get-MessageTrackingLog -MessageId $MessageID | Export-CsV $logsPATH\MessageID-trackinglog.csv
+
+$MessageIDLog = $Servers | Get-MessageTrackingLog -MessageId $MessageID
+$MessageIDLog | Export-CsV $logsPATH\MessageID-trackinglog.csv -notypeinformation
+$MessageIDLog | Export-clixml -path $logsPATH\MessageID-trackinglog.xml
 
 Get-queue ; (Get-queue).LastError
 
