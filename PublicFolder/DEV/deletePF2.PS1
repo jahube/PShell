@@ -7,6 +7,15 @@ icm -Session $session -ScriptBlock { Get-Mailbox -PublicFolder | Remove-Mailbox 
 icm -Session $session -ScriptBlock { foreach ($X in (Get-Mailbox -PublicFolder -SoftDeletedMailbox).Exchangeguid.GUID) { Remove-Mailbox -PublicFolder -Identity $X -PermanentlyDelete -force -confirm:$false } }
 
 # Version 3
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].Exchangeguid.GUID -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].Samaccountname -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].GUID.GUID -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​$Error[0] | FL * }​​​​​​​}​​​​​​​}​​​​​​​
+
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder -SoftDeletedMailbox)[-1].Exchangeguid.GUID -Force -PermanentlyDelete -Confirm:$false }​​​​​​​ catch {​​​​​​​
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder -SoftDeletedMailbox)[-1].Samaccountname -Force -PermanentlyDelete -Confirm:$false }​​​​​​​ catch {​​​​​​​
+try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder -SoftDeletedMailbox)[-1].GUID.GUID -Force -PermanentlyDelete -Confirm:$false }​​​​​​​ catch {​​​​​​​$Error[0] | FL * }​​​​​​​}​​​​​​​}​​​​​​​
+
+# Version 4
 $HMBX = $(Get-OrganizationConfig).RootPublicFolderMailbox.HierarchyMailboxGuid ;
 $PFMSD = Get-Mailbox -PublicFolder -SoftDeletedMailbox ;
 $PFMBX = Get-Mailbox -PublicFolder ;
