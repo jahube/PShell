@@ -17,14 +17,30 @@ for ($P = 0; $P -lt $PFMPrim.count; $P++) { Remove-Mailbox -PublicFolder -Identi
 for ($P = 0; $P -lt $PFMPrim.count; $P++) { Remove-Mailbox -PublicFolder -Identity $PFMPrim[$P] -PermanentlyDelete:$true -force -Confirm:$false }
 
 # Version 1
+$HMBX = $(Get-OrganizationConfig).RootPublicFolderMailbox.HierarchyMailboxGuid ;
+$Softd = Get-Mailbox -PublicFolder -SoftDeletedMailbox ;
+$PFMBX = Get-Mailbox -PublicFolder ;
+$SEC = $PFMBX | Where-object {$_.ExchangeGuid -ne $HMBX} ;
+$PRIM = $PFMBX | Where-object {$_.ExchangeGuid -eq $HMBX} ;
+[System.Collections.ArrayList]$PFMSec= $SEC.Exchangeguid.GUID
+[System.Collections.ArrayList]$PFMPrim= $PRIM.Exchangeguid.GUID
+[System.Collections.ArrayList]$Softdel= $Softd.Exchangeguid.GUID
+for ($P = 0; $P -lt $Softdel.count; $P++) { Remove-Mailbox -PublicFolder -Identity $Softdel[$P] -PermanentlyDelete:$true -force -Confirm:$false }
+for ($P = 0; $P -lt $PFMSec.count; $P++) { Remove-Mailbox -PublicFolder -Identity $PFMSec[$P] -force -Confirm:$false }
+for ($P = 0; $P -lt $PFMSec.count; $P++) { Remove-Mailbox -PublicFolder -Identity $PFMSec[$P] -PermanentlyDelete:$true -force -Confirm:$false }
+for ($P = 0; $P -lt $PFMPrim.count; $P++) { Remove-Mailbox -PublicFolder -Identity $PFMPrim[$P] -force -Confirm:$false }
+for ($P = 0; $P -lt $PFMPrim.count; $P++) { Remove-Mailbox -PublicFolder -Identity $PFMPrim[$P] -PermanentlyDelete:$true -force -Confirm:$false }
+
+
+# Version 2
 foreach ($X in (Get-Mailbox -PublicFolder).Exchangeguid.GUID) { Remove-Mailbox -PublicFolder -Identity $X -force -confirm:$false } 
 foreach ($X in (Get-Mailbox -PublicFolder -SoftDeletedMailbox).Exchangeguid.GUID) { Remove-Mailbox -PublicFolder -Identity $X -PermanentlyDelete -force -confirm:$false } 
 
-# Version 2
+# Version 3
 icm -Session $session -ScriptBlock { Get-Mailbox -PublicFolder | Remove-Mailbox -PublicFolder -force -confirm:$false }
 icm -Session $session -ScriptBlock { foreach ($X in (Get-Mailbox -PublicFolder -SoftDeletedMailbox).Exchangeguid.GUID) { Remove-Mailbox -PublicFolder -Identity $X -PermanentlyDelete -force -confirm:$false } }
 
-# Version 3
+# Version 4
 try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].Exchangeguid.GUID -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​
 try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].Samaccountname -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​
 try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder)[-1].GUID.GUID -Force -Confirm:$false }​​​​​​​ catch {​​​​​​​$Error[0] | FL * }​​​​​​​}​​​​​​​}​​​​​​​
@@ -33,7 +49,7 @@ try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -
 try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder -SoftDeletedMailbox)[-1].Samaccountname -Force -PermanentlyDelete -Confirm:$false }​​​​​​​ catch {​​​​​​​
 try {​​​​​​​ Remove-Mailbox -PublicFolder -Identity (Get-Mailbox -PublicFolder -SoftDeletedMailbox)[-1].GUID.GUID -Force -PermanentlyDelete -Confirm:$false }​​​​​​​ catch {​​​​​​​$Error[0] | FL * }​​​​​​​}​​​​​​​}​​​​​​​
 
-# Version 4
+# Version 5
 $HMBX = $(Get-OrganizationConfig).RootPublicFolderMailbox.HierarchyMailboxGuid ;
 $PFMSD = Get-Mailbox -PublicFolder -SoftDeletedMailbox ;
 $PFMBX = Get-Mailbox -PublicFolder ;
