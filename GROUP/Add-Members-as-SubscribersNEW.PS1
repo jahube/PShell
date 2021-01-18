@@ -31,8 +31,8 @@ Set-UnifiedGroup $group.name -SubscriptionEnabled:$true
 
    Write-host "Group [$($group.Name)]"  -F yellow  -NoNewline ;   
    Write-host " [subscription OFF]" -F white -NoNewline
-   Write-host "  - Now [ENABLED] successfully " -F green  
-  
+   Write-host "  - Now [ENABLED] successfully `n( waiting 5 seconds replication time ) " -F green  
+   Start-Sleep 5
        } else {
 
    Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
@@ -87,14 +87,14 @@ foreach ($member in $members) { If ($member.Name -notin $subscribers.Name) {
    Write-host "subscriber " -F white -NoNewline
    Write-host "$($member.Name)" -F yellow -NoNewline
    Write-host " added to " -F Green -NoNewline
-   Write-host "$($group.Name)" -F white 
+   Write-host "[Group] $($group.Name)" -F white 
  
         } else { 
 
    Write-host "subscriber " -F white -NoNewline
    Write-host "$($member.Name)" -F green -NoNewline
    Write-host " already follower of " -F yellow -NoNewline
-   Write-host "$($group.Name)" -F white 
+   Write-host "[Group] $($group.Name)" -F white 
 
                 } 
          } 
@@ -105,16 +105,16 @@ foreach ($Owner in $Owners) { If ($Owner.Name -notin $members.Name) {
 
  Add-UnifiedGroupLinks -Identity $group.Name -LinkType Members -Links $Owner.Name
 
-   Write-host "Owner " -F white -NoNewline
+   Write-host "[Owner] " -F white -NoNewline
    Write-host "$($Owner.Name)" -F yellow -NoNewline
    Write-host " added to " -F Green -NoNewline
-   Write-host "$($group.Name) as Member" -F white 
+   Write-host "[Group] $($group.Name) as [Member] (unhide from OWA Group List)" -F white 
  
         } else { 
 
-   Write-host "subscriber " -F white -NoNewline
-   Write-host "$($member.Name)" -F green -NoNewline
-   Write-host " already follower of " -F yellow -NoNewline
+   Write-host "[Owner] " -F white -NoNewline
+   Write-host "$($Owner.Name)" -F green -NoNewline
+   Write-host " already Member of [Group] " -F yellow -NoNewline
    Write-host "$($group.Name)" -F white 
 
                 } 
