@@ -29,13 +29,13 @@ if (!($group.SubscriptionEnabled)) {
 
 Set-UnifiedGroup $group.name -SubscriptionEnabled:$true 
 
-   Write-host "Group [$($group.Name)]"  -F yellow  -NoNewline ;   
+   Write-host "Group [$($group.Name)] - [$($group.DisplaynameName)]"  -F yellow  -NoNewline ;   
    Write-host " [subscription OFF]" -F white -NoNewline
    Write-host "  - Now [ENABLED] successfully `n( waiting 5 seconds replication time ) " -F green  
    Start-Sleep 5
        } else {
 
-   Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
+   Write-host "Group [$($group.Name)] - [$($group.DisplaynameName)]"  -F cyan  -NoNewline ; 
    Write-host " [subscription ENABLED]" -F green
                }
 
@@ -44,13 +44,13 @@ if ($group.HiddenFromAddressListsEnabled) {
 
 Set-UnifiedGroup $group.name -HiddenFromAddressListsEnabled:$false
 
-   Write-host "Group [$($group.Name)]"  -F yellow  -NoNewline ;   
+   Write-host "Group [$($group.Alias)] - [$($group.DisplaynameName)]"  -F yellow  -NoNewline ;   
    Write-host " [HiddenFromAddressLists ENABLED]" -F white -NoNewline
    Write-host "  - Now [OFF] successfully " -F green  
   
        } else {
 
-   Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
+   Write-host "Group [$($group.Name)] - [$($group.DisplaynameName)]"  -F cyan  -NoNewline ; 
    Write-host " [HiddenFromAddressLists OFF]" -F green
                }
 
@@ -58,13 +58,13 @@ if ($group.HiddenFromExchangeClientsEnabled) {
 
 Set-UnifiedGroup $group.name -HiddenFromExchangeClientsEnabled:$false
 
-   Write-host "Group [$($group.Name)]"  -F yellow  -NoNewline ;   
+   Write-host "Group [$($group.Name)] - [$($group.DisplaynameName)]"  -F yellow  -NoNewline ;   
    Write-host " [HiddenFromExchangeClientsEnabled ENABLED]" -F white -NoNewline
    Write-host "  - Now [OFF] successfully " -F green  
   
        } else {
 
-   Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
+   Write-host "Group [$($group.Name)] - [$($group.DisplaynameName)]"  -F cyan  -NoNewline ; 
    Write-host " [HiddenFromExchangeClientsEnabled OFF]" -F green
                }
 
@@ -87,19 +87,19 @@ foreach ($member in $members) { If ($member.Name -notin $subscribers.Name) {
    Write-host "Subscriber " -F white -NoNewline
    Write-host "$($member.Name)" -F yellow -NoNewline
    Write-host " added to " -F Green -NoNewline
-   Write-host "[Group] $($group.Name)" -F white 
+   Write-host "[Group] $($group.Name) - [$($group.DisplaynameName)]" -F white 
  
         } else { 
 
    Write-host "subscriber " -F white -NoNewline
    Write-host "$($member.Name)" -F green -NoNewline
    Write-host " already follower of " -F yellow -NoNewline
-   Write-host "[Group] $($group.Name)" -F white 
+   Write-host "[Group] $($group.Name)  - [$($group.DisplaynameName)]" -F white 
 
                 } 
          } 
 
-Write-host "`nGroup $($group.Name) Adding Owners as Member`n" -F yellow
+Write-host "`nGroup $($group.Name) Adding Owners as Member`n (unhide from OWA Group List)" -F yellow
 
 foreach ($Owner in $Owners) { If ($Owner.Name -notin $members.Name) {
 
@@ -108,13 +108,13 @@ foreach ($Owner in $Owners) { If ($Owner.Name -notin $members.Name) {
    Write-host "[Owner] " -F white -NoNewline
    Write-host "$($Owner.Name)" -F yellow -NoNewline
    Write-host " added to " -F Green -NoNewline
-   Write-host "[Group] $($group.Name) as [Member] (unhide from OWA Group List)" -F white 
+   Write-host "[Group] $($group.Name) - [$($group.DisplaynameName)] as [Member]" -F white 
  
         } else { 
 
    Write-host "[Owner] " -F white -NoNewline
    Write-host "$($Owner.Name)" -F green -NoNewline
-   Write-host " already Member of [Group] " -F yellow -NoNewline
+   Write-host " already Member of [Group] - [$($group.DisplaynameName)]" -F yellow -NoNewline
    Write-host "$($group.Name)" -F white 
 
                 } 
