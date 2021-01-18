@@ -18,4 +18,4 @@ wget -Uri "https://raw.githubusercontent.com/michelderooij/Remove-DuplicateItems
 
 Set-ExecutionPolicy bypass
 
-.\Remove-DuplicateItems.ps1 -Identity $user -Credentials $Credentials
+.\Remove-DuplicateItems.ps1 -Identity $user -Server outlook.office365.com -Credentials $Credentials
