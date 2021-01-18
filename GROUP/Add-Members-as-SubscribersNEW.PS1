@@ -36,7 +36,7 @@ Set-UnifiedGroup $group.name -SubscriptionEnabled:$true
        } else {
 
    Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
-   Write-host " [subscription ENABLED]" -F green -NoNewline 
+   Write-host " [subscription ENABLED]" -F green
                }
 
 
@@ -51,7 +51,7 @@ Set-UnifiedGroup $group.name -HiddenFromAddressListsEnabled:$false
        } else {
 
    Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
-   Write-host " [HiddenFromAddressLists OFF]" -F green -NoNewline 
+   Write-host " [HiddenFromAddressLists OFF]" -F green
                }
 
 if ($group.HiddenFromExchangeClientsEnabled) { 
@@ -65,26 +65,26 @@ Set-UnifiedGroup $group.name -HiddenFromExchangeClientsEnabled:$false
        } else {
 
    Write-host "Group [$($group.Name)]"  -F cyan  -NoNewline ; 
-   Write-host " [HiddenFromExchangeClientsEnabled OFF]" -F green -NoNewline 
+   Write-host " [HiddenFromExchangeClientsEnabled OFF]" -F green
                }
 
 $members = Get-UnifiedGroupLinks -Identity $group.Name -LinkType Members
 
-   Write-host " Members $($members.count)" -F Magenta -NoNewline 
+   Write-host " Members $($members.count)" -F Magenta
 
 $Owners = Get-UnifiedGroupLinks -Identity $group.Name -LinkType Owners
 
-   Write-host " Owners $($Owners.count)" -F Magenta -NoNewline 
+   Write-host " Owners $($Owners.count)" -F Magenta
 
 $subscribers = Get-UnifiedGroupLinks -Identity $group.Name -LinkType Subscribers
 
-   Write-host " subscribers $($subscribers.count)" -F Green
+   Write-host " subscribers $($subscribers.count)1`n" -F Green
 
 foreach ($member in $members) { If ($member.Name -notin $subscribers.Name) {
 
  Add-UnifiedGroupLinks -Identity $group.Name -LinkType Subscribers -Links $member.Name
 
-   Write-host "subscriber " -F white -NoNewline
+   Write-host "Subscriber " -F white -NoNewline
    Write-host "$($member.Name)" -F yellow -NoNewline
    Write-host " added to " -F Green -NoNewline
    Write-host "[Group] $($group.Name)" -F white 
@@ -99,7 +99,7 @@ foreach ($member in $members) { If ($member.Name -notin $subscribers.Name) {
                 } 
          } 
 
-Write-host "Group $($group.Name) Adding Owners as Member" -F cyan
+Write-host "`nGroup $($group.Name) Adding Owners as Member`n" -F yellow
 
 foreach ($Owner in $Owners) { If ($Owner.Name -notin $members.Name) {
 
