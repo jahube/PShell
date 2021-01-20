@@ -14,6 +14,8 @@ $groups = Get-UnifiedGroup
 # (2) ONE GROUP
 $groups = Get-UnifiedGroup -Identity "group1"
 
+$groups = Get-UnifiedGroup -filter { name -like "*group*" } 
+
 # (3) selected GROUPS
 $Groupnames = "group1","group2","group3"
 $groups = $Groupnames | % { Get-UnifiedGroup -Identity $_ }
