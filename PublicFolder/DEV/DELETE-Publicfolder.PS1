@@ -10,12 +10,12 @@ foreach ($F in $Folders) {
 
 $Found = @() ; $DumpsterEntryID = @()
 
-try { Remove-Publicfolder -identity $F.EntryID -CF:$false } catch { $error[0].Exception | fl * }
+try { Remove-Publicfolder -identity $F.EntryID -CF:$false -EA stop } catch { $error[0].Exception | fl * }
 
 $notdeleted = get-publicfolder -identity $F.EntryID -EA silentlycontinue
 
 If ($notdeleted) {  
-try { Set-Publicfolder -identity $F.EntryID -Path $DeletePath -CF:$false } catch {  $error[0].Exception | fl * }
+try { Set-Publicfolder -identity $F.EntryID -Path $DeletePath -CF:$false -EA stop } catch {  $error[0].Exception | fl * }
                  }
                          }
 
