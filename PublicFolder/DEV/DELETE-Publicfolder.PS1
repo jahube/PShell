@@ -6,9 +6,18 @@ $DeleteFolder = "\"
 $Folders = get-publicfolder $DeleteFolder -recurse
 $DeletePath = "\NON_IPM_SUBTREE\DUMPSTER_ROOT\DUMPSTER_EXTEND\RESERVED_1\RESERVED_1"
 
-try { Remove-Publicfolder -identity $F.EntryID -CF:$false } catch { $error[0].Exception | fl * }}
+foreach ($F in $Folders) { 
+
+$Found = @() ; $DumpsterEntryID = @()
+
+try { Remove-Publicfolder -identity $F.EntryID -CF:$false } catch { $error[0].Exception | fl * }
+
 $notdeleted = get-publicfolder -identity $F.EntryID -EA silentlycontinue
-If ($notdeleted) {  try { Set-Publicfolder -identity $F.EntryID -Path $DeletePath -CF:$false } catch {  $error[0].Exception | fl * }}  }
+
+If ($notdeleted) {  
+try { Set-Publicfolder -identity $F.EntryID -Path $DeletePath -CF:$false } catch {  $error[0].Exception | fl * }
+                 }
+                         }
 
 # Create new test PF under IPM and see if you can remove it
 
