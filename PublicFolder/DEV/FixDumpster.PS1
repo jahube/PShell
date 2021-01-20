@@ -22,6 +22,7 @@ try { Set-Publicfolder -identity $DumpsterEntryID -path $DeletePath -EA STOP } c
 If ($Dumpster.DumpsterEntryId -eq $folderitem.EntryId) {Write-host "No Dumpster Mismatch OK" -F green }
 If ($Dumpster.DumpsterEntryId -ne $folderitem.EntryId) {Write-host "Dumpster REVERSE Mismatch" -F yellow ;
 #Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -FolderId $Folder.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false
-#Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -ForceOnlineSync -ReconcileFolders -InvokeSynchronizer -Confirm:$false}}}
+#Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -ForceOnlineSync -ReconcileFolders -InvokeSynchronizer -Confirm:$false
+}}}}
 
 Stop-transcript
