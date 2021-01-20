@@ -6,11 +6,10 @@ $users = "user1","user2","user3"  # <-- Change users
 
 $mbxs = $users | % { get-mailbox -Identity $_ }
 
-# $mbxs = get-mailbox -ResultSize unlimited; # # <-- OR - ALL users >> remove the '#' <<
+# $mbxs = get-mailbox -ResultSize unlimited; # <-- OR - ALL users >> remove the first '#' <<
 
-$count= $MBXs.count
+$collected=@() ; $count= $MBXs.count
 [System.Collections.ArrayList]$MBX = @($mbxs.userprincipalname)
-$collected=@()
 for ($M = 0; $M -lt $MBX.count; $M++) {​ $S =" [MBX] ($($M+1)/$count)  [Time]"
 $A = "collecting archive tag information [Mailbox Count] ($($M+1)/$count) [Mailbox] $($MBX[$M])"
 Write-Progress -Activity $A -Status $S -PercentComplete (($M/$count)*100) -SecondsRemaining $($count-$M) ;
