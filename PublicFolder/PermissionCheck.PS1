@@ -50,7 +50,7 @@ IF($Owners) { $OwnersString = $Owners.user.displayname.ToString() -join ";" } el
         $currentdata | Add-Member -MemberType NoteProperty -Name NewAnon -Value $NewAnon
         $currentdata | Add-Member -MemberType NoteProperty -Name default -Value $defaultAccess
         $currentdata | Add-Member -MemberType NoteProperty -Name NewDefault -Value $NewDefault
-        $currentdata | Add-Member -MemberType NoteProperty -Name Owners -Value $OwnersString
+        $currentdata | Add-Member -MemberType NoteProperty -Name Owners -Value $OwnersString.ToString()
         $Folderdata += $currentdata
   }
 
