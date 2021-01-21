@@ -19,3 +19,5 @@ $filtered = $stats | Select Name,containerclass,foldertype, `
 Itemsinfolderandsubfolders,oldestitemreceiveddate | Sort “Folderandsubfoldersize (MB)” -Descending
 
 $filtered | ft
+
+$filtered | FT > C:\Folders.txt
