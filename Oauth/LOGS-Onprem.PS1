@@ -33,7 +33,7 @@ Get-AvailabilityAddressSpace | fl
 
 $MBX = Get-Mailbox $OnpremMailbox -EA silentlycontinue ; IF ((!($MBX)) -or ($_.MailboxMoveRemoteHostName -notlike "*.onmicrosoft.com")) { 
 Write-host "$CloudMailbox invalid" -F yellow ; $MBX = (Get-Mailbox | Where-Object {$_.MailboxMoveRemoteHostName -like "*.onmicrosoft.com"})[-1] } 
-$OnpremMailbox = $($MBX.primarysmtpaddress) # fallback if $OnpremMailbox is invalid ;
+$OnpremMailbox = $($MBX.primarysmtpaddress) ; IF (!($OnpremMailbox)) { $OnpremMailbox = $((Get-Mailbox)[-1].primarysmtpaddress)}
 
 write-host "Test-OAuthConnectivity"
 Test-OAuthConnectivity -Service EWS -TargetUri https://outlook.office365.com/ews/exchange.asmx -Mailbox $OnpremMailbox -Verbose | fl
