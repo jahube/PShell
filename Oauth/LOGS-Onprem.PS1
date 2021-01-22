@@ -8,7 +8,7 @@ $CloudMailbox = "migrated@CloudUser.com" # <-- Modify
 # desktop/MS-Logs+Timestamp
 $ts = Get-Date -Format yyyyMMdd_hhmmss
 $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
-$logsPATH =mkdir "$DesktopPath\MS-Logs\ON-Premise_LOGS_$ts"
+$logsPATH = mkdir "$DesktopPath\MS-Logs\ON-Premise_LOGS_$ts"
 
 Start-Transcript "$logsPATH\ON-Premise_LOGS_$ts.txt"
 $FormatEnumerationLimit = -1
@@ -60,9 +60,6 @@ Write-Host "EWS ENDPOINT`n`n please copy >>  " -F yellow -NoNewline ; Write-host
 $Auto = (Get-ClientAccessService).AutoDiscoverServiceInternalUri -replace "xml","svc"
 Write-Host "`n`nAutodiscover Endpoint`n`n please copy >>  " -F yellow -NoNewline ; Write-host $Auto -F cyan
 Stop-Transcript
-###### END TRANSCRIPT ######################
-$destination = "$DesktopPath\MS-Logs\ON-Premise_LOGS_$ts.zip"
-Add-Type -assembly “system.io.compression.filesystem”
-[io.compression.zipfile]::CreateFromDirectory($logsPATH, $destination) # ZIP
+
+Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\ON-Premise_LOGS_$ts" -Force # Zip Logs
 Invoke-Item $DesktopPath\MS-Logs # open file manager
-###### END ZIP Logs ########################
