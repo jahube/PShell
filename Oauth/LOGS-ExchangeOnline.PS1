@@ -23,8 +23,8 @@ Get-AuthServer –Identity 00000001-0000-0000-c000-000000000000 | fl
 Get-PartnerApplication | fl
 
 $MBX = Get-Mailbox $CloudMailbox -EA silentlycontinue ; 
-IF ((!($MBX)) -or ($MBX.isdirsynced -ne 'true')) { Write-host "$CloudMailbox invalid" -F yellow ; $MBX = (Get-Mailbox | where {$_.isdirsynced -eq 'true' })[-1] } #fallback if $CloudMailbox is invalid ; 
-$CloudMailbox = $($MBX.primarysmtpaddress) 
+IF ((!($MBX)) -or ($MBX.isdirsynced -ne 'true')) { Write-host "$CloudMailbox invalid" -F yellow ; $MBX = @(Get-Mailbox | where {$_.isdirsynced -eq 'true' })[-1] } #fallback if $CloudMailbox is invalid ; 
+$CloudMailbox = "$($MBX.Userprincipalname)"
 $MBX | fl ; (Get-MailUser)[-1] | fl
 
 write-host "Test-OAuthConnectivity"
