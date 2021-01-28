@@ -16,7 +16,6 @@ Get-FederationInformation -DomainName Contoso.onmicrosoft.com | New-Organization
 Get-FederationInformation -DomainName Contoso.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
 
 
-
 >>> CLOUD
               $access = ‘LimitedDetails’
            $CloudName = "Fabrikam Cloud"
@@ -32,7 +31,6 @@ FreeBusyAccessEnabled = $true
   FreeBusyAccessScope = $null
  TargetApplicationUri = $TargetAppURICloud
               Enabled = $true }
-
 
 >>> ONPREM
               $access = ‘LimitedDetails’
