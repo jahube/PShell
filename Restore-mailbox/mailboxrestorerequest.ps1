@@ -7,9 +7,15 @@ get-mailbox -SoftDeletedMailbox | Get-MailboxFolderStatistics -IncludeSoftDelete
 $source = "SOURCE@DOMAIN.com"
 $target = "TARGET@DOMAIN.com"
 
-$MBX = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
+$SRC = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
 $TGT = (Get-Mailbox $target).DistinguishedName
-New-MailboxRestoreRequest -SourceMailbox $MBX -TargetMailbox $TGT -AllowLegacyDNMismatch
+New-MailboxRestoreRequest -SourceMailbox $SRC -TargetMailbox $TGT -AllowLegacyDNMismatch
+
+################################################
+
+$SRC = "Exchange GUID deleted"
+$TGT = "Exchange GUID active"
+New-MailboxRestoreRequest -SourceMailbox $SRC -TargetMailbox $TGT -AllowLegacyDNMismatch
 
 ################################################
 
