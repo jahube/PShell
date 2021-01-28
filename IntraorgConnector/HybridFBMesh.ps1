@@ -8,13 +8,14 @@ Contoso          Fabrikam
 
 
 >>> CLOUD
+
 Get-FederationInformation -DomainName Contoso.onmicrosoft.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
 
 >>> ONPREM
+
 Get-FederationInformation -DomainName Contoso.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
 
 
-<Manually>
 
 >>> CLOUD
               $access = ‘LimitedDetails’
@@ -34,11 +35,6 @@ FreeBusyAccessEnabled = $true
 
 
 >>> ONPREM
-
-Get-FederationInformation -DomainName Contoso.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
-
-OR 
-
               $access = ‘LimitedDetails’
            $LocalName = "Fabrikam Onprem"
         $Localdomains = "fabrikam.com","other.fabrikam.com"
