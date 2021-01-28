@@ -1,7 +1,12 @@
-﻿#statistics
+﻿################################################
+#                 statistics                   #
+################################################
 
-get-mailbox -SoftDeletedMailbox | Get-MailboxFolderStatistics -IncludeSoftDeletedRecipients | ft *name*,*items*
+get-mailbox -SoftDeletedMailbox | Get-MailboxFolderStatistics -IncludeSoftDeletedRecipients | ft userprincipalname,primarysmtpaddress,*items*,Exchangeguid
 
+################################################
+#                   restore                    #
+################################################
 
 $source = "SOURCE@DOMAIN.com"
 
