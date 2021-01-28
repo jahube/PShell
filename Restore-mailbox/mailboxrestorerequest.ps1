@@ -5,6 +5,7 @@ get-mailbox -SoftDeletedMailbox | Get-MailboxFolderStatistics -IncludeSoftDelete
 # old syntax
 
 $source = "SOURCE@DOMAIN.com"
+
 $target = "TARGET@DOMAIN.com"
 
 $SRC = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
