@@ -2,6 +2,7 @@
 
 get-mailbox -SoftDeletedMailbox | Get-MailboxFolderStatistics -IncludeSoftDeletedRecipients | ft *name*,*items*
 
+
 $source = "SOURCE@DOMAIN.com"
 
 $target = "TARGET@DOMAIN.com"
