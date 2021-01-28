@@ -115,15 +115,17 @@ New-MailboxRestoreRequest @param
 ################################################
 
 #status
+
 get-MailboxRestoreRequest
 
 #To check the progress of the restore:
 
-Get-MailboxRestoreRequest ThereseRestore | Get-MailboxRestoreRequestStatistics | fl
+Get-MailboxRestoreRequest USER | Get-MailboxRestoreRequestStatistics | fl
 
 #To troubleshoot:
 
-Get-MailboxRestoreRequest ThereseRestore | Get-MailboxRestoreRequestStatistics -IncludeReport | fl
+Get-MailboxRestoreRequest USER | Get-MailboxRestoreRequestStatistics -IncludeReport | fl
 
 # to remove failed request
+
 # get-MailboxRestoreRequest | remove-MailboxRestoreRequest
