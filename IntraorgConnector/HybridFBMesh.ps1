@@ -17,33 +17,25 @@ Get-FederationInformation -DomainName Contoso.com | New-OrganizationRelationship
 
 
 >>> CLOUD
-              $access = ‘LimitedDetails’
-           $CloudName = "Fabrikam Cloud"
-        $Clouddomains = "fabrikam.mail.onmicrosoft.com","fabrikam.onmicrosoft.com"
-       $clouddiscover = "https://outlook.office365.com/autodiscover/autodiscover.svc" 
-   $TargetAppURICloud = "outlook.com"
 
-$PARAM = @{      Name = $CloudName
+             $domains = "fabrikam.mail.onmicrosoft.com","fabrikam.onmicrosoft.com"
+$PARAM = @{      Name = "Fabrikam Cloud"
           DomainNames = $Clouddomains
-TargetAutodiscoverEpr = $clouddiscover
+TargetAutodiscoverEpr = "https://outlook.office365.com/autodiscover/autodiscover.svc"
 FreeBusyAccessEnabled = $true
-  FreeBusyAccessLevel = $access
+  FreeBusyAccessLevel = "LimitedDetails"
   FreeBusyAccessScope = $null
- TargetApplicationUri = $TargetAppURICloud
+ TargetApplicationUri = "outlook.com"
               Enabled = $true }
 
 >>> ONPREM
-              $access = ‘LimitedDetails’
-           $LocalName = "Fabrikam Onprem"
-        $Localdomains = "fabrikam.com","other.fabrikam.com"
-   $LocalAutodiscover = "https://mail.fabrikam.com/autodiscover/autodiscover.svc"
-   $TargetAppURIlocal = "mail.fabrikam.com"
 
-$PARAM = @{      Name = $LocalName
-          DomainNames = $Localdomains
-TargetAutodiscoverEpr = $LocalAutodiscover
+             $domains = "fabrikam.com","other.fabrikam.com"
+$PARAM = @{      Name = "Fabrikam Onprem"
+          DomainNames = $domains
+TargetAutodiscoverEpr = "https://mail.fabrikam.com/autodiscover/autodiscover.svc"
 FreeBusyAccessEnabled = $true
-  FreeBusyAccessLevel = $access
+  FreeBusyAccessLevel = "LimitedDetails"
   FreeBusyAccessScope = $null
- TargetApplicationUri = $TargetAppURIlocal
+ TargetApplicationUri = "mail.fabrikam.com"
               Enabled = $true }
