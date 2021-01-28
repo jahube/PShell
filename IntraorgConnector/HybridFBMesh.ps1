@@ -6,7 +6,6 @@ Contoso          Fabrikam
 
 (2)      Onprem    (4)
 
-
 >>> CLOUD
 
 Get-FederationInformation -DomainName Contoso.onmicrosoft.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
