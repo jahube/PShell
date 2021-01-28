@@ -9,7 +9,7 @@ $target = "TARGET@DOMAIN.com"
 
 $MBX = (Get-Mailbox -SoftDeletedMailbox $source).DistinguishedName
 $TGT = (Get-Mailbox $target).DistinguishedName
-New-MailboxRestoreRequest -SourceMailbox $MBX.DistinguishedName -TargetMailbox $TGT.SamAccountName -AllowLegacyDNMismatch
+New-MailboxRestoreRequest -SourceMailbox $MBX -TargetMailbox $TGT -AllowLegacyDNMismatch
 
 ################################################
 
