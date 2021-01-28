@@ -1,28 +1,57 @@
-  
-Start-transcript
+﻿
+$ParentPath = "\"
 
-$Folder = "\"
+$DeletePath = "\NON_IPM_SUBTREE\DUMPSTER_ROOT\DUMPSTER_EXTEND\RESERVED_1\RESERVED_1"
 
-$Folders = get-publicfolder $Folder -recurse -resultsize unlimited
+# $session = Get-PSSession -InstanceId (Get-OrganizationConfig).RunspaceId.Guid
+# Invoke-Command -Session $session -ScriptBlock { get-publicfolder $Folder -recurse -resultsize unlimited } -ArgumentList $Folder
+$Dumpstermismatch = @()
+$Folders = get-publicfolder $ParentPath -recurse -resultsize unlimited
+$DumpsterDir =  get-publicfolder "\NON_IPM_SUBTREE" -recurse -resultsize unlimited
+#$dumpsterPre = $DumpsterDir | select entryID,DumpsterEntryID
 
-foreach ($F in $Folders) { $Dumpster = @() ; $DumpsterEntryID = @()
-$Folder = get-publicfolder -identity $F.EntryID ; $DumpsterEntryID = $Folder.DumpsterEntryID
-$Dumpster = Get-Publicfolder -identity $DumpsterEntryID -EA silentlycontinue
-If (!($Dumpster)) { Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -FolderId $Folder.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false }
-If ($Dumpster) { Write-Host "Dumpster" $DumpsterEntryID "- Folder" $($folder.entryID) "Found" -F cyan
+$stopwatch =  [system.diagnostics.stopwatch]::StartNew()
+$count = 0 ; $total = $folders.Count ; $Folders.Count ; $DumpsterDir.count
+foreach ($F in $folders) {   $Dumpster = @() ; $DID = @() ;
+               #$Folder = get-publicfolder -identity $F.EntryID ; 
+               #$DumpsterEntryID = $Folder.DumpsterEntryID
+               $DID = $F.DumpsterEntryID
+               #$Dumpster = Get-Publicfolder -identity $DID -EA silentlycontinue
+               $Dumpster = $DumpsterDir.Where({ $F.DumpsterEntryID -eq $_.EntryID })
+        If ($Dumpster) { Write-Host "Dumpster" $DID "- Folder" $($F.entryID) "Found" -F cyan }
+                  Else { Update-PublicFolderMailbox $F.ContentMailboxGuid.Guid -FolderId $F.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false ; 
+                         sleep 20 ; $Dumpster = Get-Publicfolder -identity $DID -EA silentlycontinue }
 
-$Dumpsterparent = $Dumpster.ParentPath ; If ($Dumpsterparent -like "\NON_IPM_SUBTREE*" ) {Write-host "Dumpster Parent correct" -F green ;}
+        If ($F.ContentMailboxGuid.Guid -eq $Dumpster.ContentMailboxGuid.Guid) {
+                   Write-host "Folder/Dumpster same Content Mailbox - OK" -F green }
+            Else { Write-host "Folder/Dumpster - different  Content Mailbox" -F yellow ;
+                   Update-PublicFolderMailbox $F.ContentMailboxGuid.Guid -FolderId $F.EntryID -InvokeSynchronizer -Confirm:$false }
 
-If ($Folder.ContentMailboxGuid.Guid -eq $Dumpster.ContentMailboxGuid.Guid) {Write-host "Dumpster Content Mailbox - No Mismatch OK" -F green }
-If ($Folder.ContentMailboxGuid.Guid -ne $Dumpster.ContentMailboxGuid.Guid) {Write-host "Dumpster Content Mailbox - Mismatch" -F yellow ;
-Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -FolderId $Folder.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false
+            $Dumpsterparent = $Dumpster.ParentPath
+        If ($Dumpsterparent -like "\NON_IPM_SUBTREE*" ) {
+                   Write-host "Dumpster Parent correct" -F green ;}
+      Else {       Write-host "Dumpster Parent not in NON_IPM_SUBTREE" -F Yellow
+             try { Set-Publicfolder -identity $DID -path $DeletePath -EA STOP } 
+           catch { $error[0].Exception | fl * }
+           }
 
-If ($Dumpsterparent -notlike "\NON_IPM_SUBTREE*") {Write-host "Wrongparent" -F Yellow ;
-try { Set-Publicfolder -identity $DumpsterEntryID -path $DeletePath -EA STOP } catch { $error[0].Exception | fl * }}
-If ($Dumpster.DumpsterEntryId -eq $folderitem.EntryId) {Write-host "No Dumpster Mismatch OK" -F green }
-If ($Dumpster.DumpsterEntryId -ne $folderitem.EntryId) {Write-host "Dumpster REVERSE Mismatch" -F yellow ;
-#Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -FolderId $Folder.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false
-#Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -ForceOnlineSync -ReconcileFolders -InvokeSynchronizer -Confirm:$false
-}}}}
+        If ($Dumpster.DumpsterEntryId -eq $F.EntryId) { 
+                   Write-host "No Dumpster Mismatch OK" -F green }
+      Else {       Write-host "Dumpster REVERSE Mismatch" -F yellow ; $Dumpstermismatch += $F
+                   #Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -FolderId $Folder.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -Confirm:$false
+                   #Update-PublicFolderMailbox $Folder.ContentMailboxGuid.Guid -ForceOnlineSync -ReconcileFolders -InvokeSynchronizer -Confirm:$false
+           }
 
-Stop-transcript
+    # estimate the time remaining
+    $count++
+    $secondsRemaining = (($stopwatch.ElapsedMilliseconds/1000)/$count) * ($total – $count)
+    $seconds = $stopwatch.ElapsedMilliseconds/1000
+    $percentComplete = ($count / $total) * 100
+    $progressParameters = @{ Status = 'Processing'
+        Activity = "Doing my thing [$count/$total] $seconds"
+        CurrentOperation = "Doing something with $F"
+        PercentComplete = $percentComplete
+        SecondsRemaining = $secondsRemaining }
+        Write-Progress @progressParameters
+
+}
