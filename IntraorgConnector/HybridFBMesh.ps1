@@ -16,10 +16,9 @@ Get-FederationInformation -DomainName Contoso.onmicrosoft.com | New-Organization
 Get-FederationInformation -DomainName Contoso.com | New-OrganizationRelationship -Name "Contoso" -FreeBusyAccessEnabled $true -FreeBusyAccessLevel LimitedDetails
 
 
->>> CLOUD
-
+# >>> CLOUD
              $domains = "fabrikam.mail.onmicrosoft.com","fabrikam.onmicrosoft.com"
-$PARAM = @{      Name = "Fabrikam Cloud"
+$ParamCloud = @{ Name = "Fabrikam Cloud"
           DomainNames = $Clouddomains
 TargetAutodiscoverEpr = "https://outlook.office365.com/autodiscover/autodiscover.svc"
 FreeBusyAccessEnabled = $true
@@ -27,11 +26,11 @@ FreeBusyAccessEnabled = $true
   FreeBusyAccessScope = $null
  TargetApplicationUri = "outlook.com"
               Enabled = $true }
+New-OrganizationRelationship @ParamCloud
 
->>> ONPREM
-
+# >>> ONPREM
              $domains = "fabrikam.com","other.fabrikam.com"
-$PARAM = @{      Name = "Fabrikam Onprem"
+$ParamLocal = @{ Name = "Fabrikam Onprem"
           DomainNames = $domains
 TargetAutodiscoverEpr = "https://mail.fabrikam.com/autodiscover/autodiscover.svc"
 FreeBusyAccessEnabled = $true
@@ -39,3 +38,5 @@ FreeBusyAccessEnabled = $true
   FreeBusyAccessScope = $null
  TargetApplicationUri = "mail.fabrikam.com"
               Enabled = $true }
+
+New-OrganizationRelationship $ParamLocal
