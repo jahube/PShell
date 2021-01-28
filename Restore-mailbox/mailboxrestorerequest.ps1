@@ -45,7 +45,9 @@ New-MailboxRestoreRequest @param
 ################################################
 #          new syntax ARCHIVE                  #
 ################################################
+
          $source = "SOURCE@DOMAIN.com"
+
          $target = "TARGET@DOMAIN.com"
 
           $param = @{ AllowLegacyDNMismatch = $true
@@ -64,7 +66,9 @@ New-MailboxRestoreRequest @param
 ################################################
 #  SourceMailbox = ARCHIVE DistinguishedName   #
 ################################################
+
          $source = "SOURCE@DOMAIN.com"
+
          $target = "TARGET@DOMAIN.com"
 
           $param = @{ AllowLegacyDNMismatch = $true
@@ -80,6 +84,7 @@ New-MailboxRestoreRequest @param
 ################################################
 
          $source = "SOURCE@DOMAIN.com"
+
          $target = "TARGET@DOMAIN.com"
 
           $param = @{​ AllowLegacyDNMismatch = $true
@@ -95,6 +100,7 @@ New-MailboxRestoreRequest @param
 ################################################
 
     $ArchiveGUID = "Archive GUID here"
+
          $target = "TARGET@DOMAIN.com"
 
           $param = @{​ AllowLegacyDNMismatch = $true
