@@ -8,7 +8,8 @@ $user = "affected@user.com"
 
 $Credentials = Get-Credential $user
 
-Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2
+Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json # <-- NEW V3
+#OLD# Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2  # V2 seems deprecated use below
 
 Install-Package Exchange.WebServices.Managed.Api
 
