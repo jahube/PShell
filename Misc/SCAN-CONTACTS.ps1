@@ -4,10 +4,14 @@
 $user = "affected@mailbox.com"
 $Credentials = Get-Credential $user
 
-Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json # <-- NEW V3
 #OLD# Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2  # V2 seems deprecated use below
+# unRegister-PackageSource nugetRepository
 
-Install-Package Exchange.WebServices.Managed.Api
+Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json # <-- NEW V3
+
+get-package Exchange.WebServices.Managed.Api
+
+Install-Package Exchange.WebServices.Managed.Api -ProviderName NuGet -source nugetRepository # -RequiredVersion 2.2.1.2
 
 cd "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35"
 
