@@ -8,27 +8,14 @@ $user = "affected@user.com"
 
 $Credentials = Get-Credential $user
 
-#OLD# Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2  # V2 seems deprecated use below
-# unRegister-PackageSource nugetRepository
+$Path = "$ENV:USERPROFILE\Downloads"
 
-Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json # <-- NEW V3
+Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json 
+Install-Package Exchange.WebServices.Managed.Api -ProviderName NuGet -source nugetRepository
+Import-module "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35\Microsoft.Exchange.WebServices.dll"
 
-get-package Exchange.WebServices.Managed.Api
-
-Install-Package Exchange.WebServices.Managed.Api -ProviderName NuGet -source nugetRepository # -RequiredVersion 2.2.1.2
-
-cd "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35"
-
-$EWSDLL = 'Microsoft.Exchange.WebServices.dll'
-
-import-module "$pwd\$EWSDLL"
-
-wget -Uri "https://raw.githubusercontent.com/gscales/Powershell-Scripts/master/GetTeamsChatMessages.ps1" -OutFile ".\Get-TeamsChatMessages.ps1"
-
-Set-ExecutionPolicy bypass
-
-import-module .\Get-TeamsChatMessages.ps1
-
-# OR . .\Get-TeamsChatMessages.ps1
+$Source = "https://raw.githubusercontent.com/gscales/Powershell-Scripts/master/GetTeamsChatMessages.ps1"
+wget -Uri $Source -OutFile "$Path\Get-TeamsChatMessages.ps1" ; Set-ExecutionPolicy bypass ; CD /D $Path ;
+import-module $Path\Get-TeamsChatMessages.ps1
 
 Get-TeamsChatMessages -mailboxname $user | select DateTimeReceived,Body
