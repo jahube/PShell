@@ -1,8 +1,11 @@
 # source https://gallery.technet.microsoft.com/office/Removing-Duplicate-Items-f706e1cc
+# Autor's page: https://eightwone.com/2013/06/21/removing-duplicate-items-from-a-mailbox/
+#########################################################################################
+# NOTE: for shared mailbox assign full access permission and put the accessing user in credentials + parameter -Impersonationb
 
 $user = "affected@user.com"
 
-$Credentials = Get-Credential $user
+$Credentials = Get-Credential                 
 
 #OLD# Register-PackageSource -provider NuGet -name nugetRepository -location https://www.nuget.org/api/v2  # V2 seems deprecated use below
 # unRegister-PackageSource nugetRepository
@@ -23,4 +26,4 @@ wget -Uri "https://raw.githubusercontent.com/michelderooij/Remove-DuplicateItems
 
 Set-ExecutionPolicy bypass
 
-.\Remove-DuplicateItems.ps1 -Identity $user -Server outlook.office365.com -Credentials $Credentials
+.\Remove-DuplicateItems.ps1 -Identity $user -Server outlook.office365.com -Credentials $Credentials -
