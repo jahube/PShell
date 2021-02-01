@@ -28,6 +28,7 @@ Import-module $EWSDLLPath\$EWSDLL
 $Source = "https://raw.githubusercontent.com/michelderooij/Remove-DuplicateItems/master/Remove-DuplicateItems.ps1"
 wget -Uri $Source -OutFile "$EWSDLLPath\Remove-DuplicateItems.ps1" ; Set-ExecutionPolicy bypass -force -Confirm:$false
 
+# actual commands
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials
 
 #shared mailboxes
