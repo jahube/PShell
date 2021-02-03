@@ -24,7 +24,7 @@ get-recoverableitems -Identity $user -ResultSize unlimited | restore-recoverable
 
 $Items = "IPM.Note"          # Examples  -->   "IPM.Note"  "IPM.Appointment"   "IPM.Contact"
 
-$search = get-recoverableitems -Identity $user -FilterItemType $ItemsToRecover $ItemsToRecover -ResultSize unlimited
+$search = get-recoverableitems -Identity $user -FilterItemType $Items -ResultSize unlimited
 $search | ft subject,SourceFolder,ItemClass,LastParentPath,LastModifiedTime    #   <-- preview  
 $search | restore-recoverableitems                                             #   <-- restore 
 
