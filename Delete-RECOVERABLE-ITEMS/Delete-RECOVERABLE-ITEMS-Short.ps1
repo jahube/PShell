@@ -11,3 +11,6 @@ Search-Mailbox $user -SearchQuery size>8200000 -SearchDumpsterOnly –DeleteCont
 
 # delete all dumpster items * slow 30 Minutes <-> 6h
 Search-Mailbox $user -SearchDumpsterOnly -DeleteContent
+
+# get RESULT
+Get-MailboxFolderStatistics $user -FolderScope RecoverableItems | FL Name,FolderAndSubfolderSize,ItemsInFolderAndSubfolders
