@@ -21,26 +21,27 @@ EmailAddressPolicyEnabled = $false }
 Set-MailPublicFolder @Param
 Set-MailPublicFolder $NewAlias -EmailAddresses @{Remove=$OldAddress}
 
-# Version 2
-
-Set-MailPublicFolder -Identity $MatchingMEPF.PrimarySmtpAddress -PrimarySmtpAddress $Newaddress -alias $NewAlias -WindowsEmailAddress $NewAddress -EmailAddressPolicyEnabled $false
-
-Set-MailPublicFolder $NewAlias -EmailAddresses @{Remove=$OldAddress}
-
-get-MailPublicFolder -Identity $Newaddress | fl PrimarySmtpAddress, EmailAddresses, DisplayName, WindowsEmailAddress, Alias, EmailAddressPolicyEnabled, EntryId
-
-# SEARCH
-
+# SEARCH 
 $searchstring = "OldAddress"
 $NEWalias = "NewAlias"
 
 $MatchingMEPF = $MEPF| where-object { $_.emailaddresses -match $searchstring }
 IF ($MatchingMEPF) {Write-host $($MatchingMEPF.Identity) $($MatchingMEPF.EntryID) $($MatchingMEPF.EmailAddresses) -F green }
 
+#details
 get-MailPublicFolder -Identity $MatchingMEPF.PrimarySmtpAddress | fl PrimarySmtpAddress, EmailAddresses, DisplayName, WindowsEmailAddress, Alias, EmailAddressPolicyEnabled, EntryId
 
+#new adress
 $Newaddress = $NEWalias + '@' + $($MatchingMEPF.PrimarySmtpAddress -split '@')[1]
 $Newaddress 
+
+# Version 2 - after # SEARCH
+
+Set-MailPublicFolder -Identity $MatchingMEPF.PrimarySmtpAddress -PrimarySmtpAddress $Newaddress -alias $NewAlias -WindowsEmailAddress $NewAddress -EmailAddressPolicyEnabled $false
+
+Set-MailPublicFolder $NewAlias -EmailAddresses @{Remove=$OldAddress}
+
+get-MailPublicFolder -Identity $Newaddress | fl PrimarySmtpAddress, EmailAddresses, DisplayName, WindowsEmailAddress, Alias, EmailAddressPolicyEnabled, EntryId
 
 # SEARCH Dumpster MEPF
 
