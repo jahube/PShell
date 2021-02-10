@@ -1,7 +1,5 @@
-
 https://protection.office.com/dkimv2
 https://docs.microsoft.com/en-us/powershell/module/exchange/new-dkimsigningconfig
-
 
 try 1x to get the values in Error
 
@@ -18,3 +16,10 @@ selector2._domainkey                copy value from PS above
 run again after values are there To ENABLE
 
 New-DkimSigningConfig -DomainName contoso.com -Enabled $true
+
+# in case it gets stuck try
+Set-DkimSigningConfig -DomainName contoso.com -Enabled $false
+
+Set-DkimSigningConfig -DomainName contoso.com -Enabled $true
+
+Rotate-DkimSigningConfig -Identity contoso.com
