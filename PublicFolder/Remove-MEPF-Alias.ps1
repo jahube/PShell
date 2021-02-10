@@ -6,7 +6,7 @@ $MEPF | select -ExpandProperty emailaddresses
 
 $OldAddress = "OldAddress@tenant.onmicrosoft.com"
 $NewAddress = "NewAddress@tenant.onmicrosoft.com"
-$NewAlias = "NewAlias"
+  $NewAlias = "NewAlias"
 
 $NewDisplayname = "New Alias"
 
@@ -18,15 +18,15 @@ $NewDisplayname = "New Alias"
       WindowsEmailAddress = $NewAddress
 EmailAddressPolicyEnabled = $false }
 
-Set-MailPublicFolder @Param
-Set-MailPublicFolder $NewAlias -EmailAddresses @{Remove=$OldAddress}
+      Set-MailPublicFolder @Param
+      Set-MailPublicFolder $NewAlias -EmailAddresses @{Remove=$OldAddress}
 
 # SEARCH 
 $searchstring = "OldAddress"
-$NEWalias = "NewAlias"
+    $NEWalias = "NewAlias"
 
 $MatchingMEPF = $MEPF| where-object { $_.emailaddresses -match $searchstring }
-IF ($MatchingMEPF) {Write-host $($MatchingMEPF.Identity) $($MatchingMEPF.EntryID) $($MatchingMEPF.EmailAddresses) -F green }
+    IF ($MatchingMEPF) {Write-host $($MatchingMEPF.Identity) $($MatchingMEPF.EntryID) $($MatchingMEPF.EmailAddresses) -F green }
 
 #details
 get-MailPublicFolder -Identity $MatchingMEPF.PrimarySmtpAddress | fl PrimarySmtpAddress, EmailAddresses, DisplayName, WindowsEmailAddress, Alias, EmailAddressPolicyEnabled, EntryId
