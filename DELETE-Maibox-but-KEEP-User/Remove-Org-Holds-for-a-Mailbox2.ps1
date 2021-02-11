@@ -6,11 +6,11 @@
 Set-ExecutionPolicy RemoteSigned
 Install-Module -Name ExchangeOnlineManagement
 
-$ADMIN "admin@domain.com"                # <-- modify admin
-Connect-ExchangeOnline -UserPrincipalName $ADMIN
- 
-# SCC / security and compliance
-Connect-IPPSSession -UserPrincipalName $ADMIN
+$ADMIN = "admin@domain.com"                # <-- modify admin
+
+# Connect-ExchangeOnline -UserPrincipalName $ADMIN
+
+Connect-IPPSSession -UserPrincipalName $ADMIN # security and compliance
 
 #####################################
 
