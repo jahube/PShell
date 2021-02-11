@@ -6,19 +6,16 @@ Install-Module -Name ExchangeOnlineManagement
 #####################################
 
 #####################################
-$ADMIN "admin@domain.com"                # <-- modify admin
-Connect-ExchangeOnline -UserPrincipalName $ADMIN
-# SCC / security and compliance
-Connect-IPPSSession -UserPrincipalName $ADMIN
+$ADMIN = "admin@domain.com"               # <-- modify admin
+# Connect-ExchangeOnline -UserPrincipalName $ADMIN
+Connect-IPPSSession -UserPrincipalName $ADMIN # SCC / security and compliance
 #####################################
 
 #####################################
-$user = "affected@user.com"              # <-- modify affected user
-
+$user = "affected@user.com"               # <-- modify affected user
 $policies = Get-RetentionCompliancePolicy
 $policies | fl *guid*
 #####################################
-
 
 ######### Exo policy exclusion ##########
 $EXO = $policies | where { $_.TeamsPolicy -eq $false } ; foreach ($EP in $EXO) {
@@ -28,7 +25,6 @@ Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | FT Name,T
 Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | select -ExpandProperty ExchangeLocationException }
 ################ end ####################
 
-
 ######### Teams policy exclusion ########
 $teams = $policies | where { $_.TeamsPolicy -EQ $TRUE } ; foreach ($TP in $teams) {
 Try { Set-TeamsRetentionCompliancePolicy -Identity $TP.Guid -AddTeamsChatLocationException $user -confirm:$false } catch { write-host $error[0] | fl }
@@ -37,7 +33,6 @@ Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | FT N
 Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | select -ExpandProperty TeamsChatLocationException }
 ################ end ####################
 
- 
 ######### Hold policy exclusion #########
 $Holds = Get-HoldCompliancePolicy ;  foreach ($H in $Holds) {
 Try { Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -confirm:$false } catch { write-host $error[0] | fl }
