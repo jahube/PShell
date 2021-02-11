@@ -46,6 +46,5 @@ $search = Get-ComplianceSearch #| where { $_.ExchangeLocation -match 'all'} ;
 foreach ($S in $search) {
 Set-ComplianceSearch -Identity $S.Identity -RemoveExchangeLocation $user -CF:$false
 Set-ComplianceSearch -Identity $S.Identity -AddExchangeLocationExclusion $user -CF:$false
-Set-ComplianceSearch -Identity $S.Identity -RetryDistribution -confirm:$false
 Get-ComplianceSearch -Identity $S.Identity | FT *location*  }
 ################ end ####################
