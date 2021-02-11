@@ -1,4 +1,4 @@
-$NewRListName = 'RoomList'
+$NewRListName = "RoomList"
 $CheckPermissions = $false
 $CreateALLroomlist = $false
 $ts = Get-Date -Format yyyyMMdd_hhmmss
