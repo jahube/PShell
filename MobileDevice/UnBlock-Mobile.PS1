@@ -5,20 +5,16 @@ $user = "affected@user.com"
 Get-MobileDeviceStatistics -mailbox $user |ft *son,*ate,*fri*,*lied,*us,*imei*,*type,*os
 
 ############ short ##################################################################
-
 foreach ($id in @(Get-mobiledevice -Mailbox $user).DeviceID) { 
 Set-CASMailbox -identity $user -ActiveSyncAllowedDeviceIDs @{add=$id} }
 Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs $Null
-
 #####################################################################################
-
      $MD = Get-mobiledevice -Mailbox $user
 $blocked = @($MD | where { ($_.DeviceAccessState -eq "Quarantined") -or ($_.DeviceAccessState -eq "Blocked") }).DeviceID | sort-object -unique
-foreach ($id in $blocked) {Try {Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs @{remove=$id} } catch {}
-foreach ($id in $blocked) {Try {Set-CASMailbox -identity $user -ActiveSyncAllowedDeviceIDs @{add=$id}    } catch {}
-foreach ($id in $blocked) {Try {Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs @{remove=$id} } catch {}
-Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs $Null }
-
+foreach ($id in $blocked) { Try {Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs @{remove=$id} } catch {}
+                            Try {Set-CASMailbox -identity $user -ActiveSyncAllowedDeviceIDs @{add=$id}    } catch {}
+                            Try {Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs @{remove=$id} } catch {} }
+                            Set-CASMailbox -identity $user -ActiveSyncBlockedDeviceIDs $Null 
 #####################################################################################
 
 # read devices
