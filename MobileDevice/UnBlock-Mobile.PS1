@@ -1,8 +1,9 @@
-# modify user
+
 $user = "affected@user.com"
 
-# LIST
 Get-MobileDeviceStatistics -mailbox $user |ft *son,*ate,*fri*,*lied,*us,*imei*,*type,*os
+
+Get-CASMailbox $user | FL *active*
 
 ############ short ##################################################################
 foreach ($id in @(Get-mobiledevice -Mailbox $user).DeviceID) { 
