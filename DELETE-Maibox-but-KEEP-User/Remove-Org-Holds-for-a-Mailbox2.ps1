@@ -25,9 +25,9 @@ $policies | fl *guid*
 $EXO = $policies | where { $_.TeamsPolicy -eq $false } ; 
 
 foreach ($EP in $EXO) {
-                     Try { Set-RetentionCompliancePolicy -Identity $EP.Guid -AddExchangeLocationException $user -confirm:$false } 
+                     Try { Set-RetentionCompliancePolicy -Identity $EP.Guid -AddExchangeLocationException $user -CF:$false -EA stop } 
                    catch { write-host $error[0]|fl*}
-                     Try { Set-RetentionCompliancePolicy -identity $EP.Guid -RetryDistribution -confirm:$false } 
+                     Try { Set-RetentionCompliancePolicy -identity $EP.Guid -RetryDistribution -CF:$false -EA stop } 
                     catch { write-host $error[0]|fl* }
          Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | FT Name,Type,ExchangeLocation*,DistributionStatus,Enabled,Mode
          Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | select -ExpandProperty ExchangeLocationException
@@ -40,9 +40,9 @@ foreach ($EP in $EXO) {
 $teams = $policies | where { $_.TeamsPolicy -EQ $TRUE } ; 
 
 foreach ($TP in $teams) {
-                      Try { Set-TeamsRetentionCompliancePolicy -Identity $TP.Guid -AddTeamsChatLocationException $user -confirm:$false } 
+                      Try { Set-TeamsRetentionCompliancePolicy -Identity $TP.Guid -AddTeamsChatLocationException $user  -CF:$false -EA stop } 
                     catch { write-host $error[0] | fl }
-                      Try { Set-TeamsRetentionCompliancePolicy -identity $TP.Guid -RetryDistribution -confirm:$false } 
+                      Try { Set-TeamsRetentionCompliancePolicy -identity $TP.Guid -RetryDistribution  -CF:$false -EA stop } 
                     catch { write-host $error[0] }
           Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | FT Name,Type,TeamsChatLocation*,DistributionStatus,Enabled,Mode
           Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | select -ExpandProperty TeamsChatLocationException 
@@ -53,9 +53,9 @@ foreach ($TP in $teams) {
 ######### Hold policy exclusion #########
 $Holds = Get-HoldCompliancePolicy ;
 foreach ($H in $Holds) {
-                       Try { Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -confirm:$false } 
+                       Try { Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -CF:$false -EA stop } 
                      catch { write-host $error[0] | fl }
-                       Try { Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -confirm:$false } 
+                       Try { Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -CF:$false -EA stop } 
                      catch { write-host $error[0] }
                             Get-HoldCompliancePolicy -Identity $H.GUID -DistributionDetail | FT *location* 
                         }
@@ -72,7 +72,7 @@ foreach ($S in $search) {
                      catch { write-host $error[0] | fl }
                        Try { Set-ComplianceSearch -Identity $S.Identity -AddExchangeLocationExclusion $user -CF:$false -EA stop } 
                      catch { write-host $error[0] | fl }
-                       Try { Set-ComplianceSearch -Identity $S.Identity -RetryDistribution -confirm:$false } 
+                       Try { Set-ComplianceSearch -Identity $S.Identity -RetryDistribution -CF:$false -EA stop } 
                      catch { write-host $error[0] }
                              Get-ComplianceSearch -Identity $S.Identity | FT *location*
                         }
