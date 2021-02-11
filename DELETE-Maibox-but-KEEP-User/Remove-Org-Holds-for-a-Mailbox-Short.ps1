@@ -42,8 +42,7 @@ Get-HoldCompliancePolicy -Identity $H.GUID -DistributionDetail | FT *location* }
 Get-ComplianceSearch 
 
 ######### Hold policy exclusion #########
-$search = Get-ComplianceSearch #| where { $_.ExchangeLocation -match 'all'} ; 
-foreach ($S in $search) {
+$search = Get-ComplianceSearch  ; foreach ($S in $search) {
 Set-ComplianceSearch -Identity $S.Identity -RemoveExchangeLocation $user -CF:$false
 Set-ComplianceSearch -Identity $S.Identity -AddExchangeLocationExclusion $user -CF:$false
 Get-ComplianceSearch -Identity $S.Identity | FT *location*  }
