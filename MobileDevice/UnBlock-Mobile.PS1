@@ -5,6 +5,9 @@ Get-MobileDeviceStatistics -mailbox $user |ft *son,*ate,*fri*,*lied,*us,*imei*,*
 
 Get-CASMailbox $user | FL *active*
 
+get-activesyncorganizationsettings | FL *
+get-activesyncdevice | FL *
+
 ############ short ##################################################################
 foreach ($id in @(Get-mobiledevice -Mailbox $user).DeviceID) { 
 Set-CASMailbox -identity $user -ActiveSyncAllowedDeviceIDs @{add=$id} }
