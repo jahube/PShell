@@ -19,24 +19,24 @@ $policies | fl *guid*
 
 ######### Exo policy exclusion ##########
 $EXO = $policies | where { $_.TeamsPolicy -eq $false } ; foreach ($EP in $EXO) {
-Try { Set-RetentionCompliancePolicy -Identity $EP.Guid -AddExchangeLocationException $user -confirm:$false } catch { write-host $error[0] | fl }
-Try { Set-RetentionCompliancePolicy -identity $EP.Guid -RetryDistribution -confirm:$false } catch { write-host $error[0] }
+Try { Set-RetentionCompliancePolicy -Identity $EP.Guid -AddExchangeLocationException $user  -CF:$false -EA stop } catch { write-host $error[0] | fl }
+Try { Set-RetentionCompliancePolicy -identity $EP.Guid -RetryDistribution -CF:$false -EA stop } catch { write-host $error[0] }
 Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | FT Name,Type,ExchangeLocation,ExchangeLocationException,DistributionStatus,Enabled,Mode
 Get-RetentionCompliancePolicy -Identity $EP.Guid -DistributionDetail | select -ExpandProperty ExchangeLocationException }
 ################ end ####################
 
 ######### Teams policy exclusion ########
 $teams = $policies | where { $_.TeamsPolicy -EQ $TRUE } ; foreach ($TP in $teams) {
-Try { Set-TeamsRetentionCompliancePolicy -Identity $TP.Guid -AddTeamsChatLocationException $user -confirm:$false } catch { write-host $error[0] | fl }
-Try { Set-TeamsRetentionCompliancePolicy -identity $TP.Guid -RetryDistribution -confirm:$false } catch { write-host $error[0] }
+Try { Set-TeamsRetentionCompliancePolicy -Identity $TP.Guid -AddTeamsChatLocationException $user -CF:$false -EA stop } catch { write-host $error[0] | fl }
+Try { Set-TeamsRetentionCompliancePolicy -identity $TP.Guid -RetryDistribution -CF:$false -EA stop } catch { write-host $error[0] }
 Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | FT Name,Type,TeamsChatLocation,TeamsChatLocationException,DistributionStatus,Enabled,Mode
 Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | select -ExpandProperty TeamsChatLocationException }
 ################ end ####################
 
 ######### Hold policy exclusion #########
 $Holds = Get-HoldCompliancePolicy ;  foreach ($H in $Holds) {
-Try { Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -confirm:$false } catch { write-host $error[0] | fl }
-Try { Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -confirm:$false } catch { write-host $error[0] }
+Try { Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -CF:$false -EA stop } catch { write-host $error[0] | fl }
+Try { Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -CF:$false -EA stop } catch { write-host $error[0] }
 Get-HoldCompliancePolicy -Identity $H.GUID -DistributionDetail | FT *location*}
 ################ end ####################
 
