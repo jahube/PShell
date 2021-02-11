@@ -34,8 +34,8 @@ Get-TeamsRetentionCompliancePolicy -Identity $TP.Guid -DistributionDetail | sele
  
 ######### Hold policy exclusion #########
 $Holds = Get-HoldCompliancePolicy ; foreach ($H in $Holds) {
-Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -confirm:$false } 
-Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -confirm:$false } 
+Set-HoldCompliancePolicy -Identity $H.GUID -RemoveExchangeLocation $user -confirm:$false
+Set-HoldCompliancePolicy -Identity $H.GUID -RetryDistribution -confirm:$false
 Get-HoldCompliancePolicy -Identity $H.GUID -DistributionDetail | FT *location* }
 ################ end ####################
 
