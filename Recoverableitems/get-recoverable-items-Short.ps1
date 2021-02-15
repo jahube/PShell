@@ -12,6 +12,8 @@ Install-Module -Name ExchangeOnlineManagement
 Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 New-ManagementRoleAssignment -Role "Mailbox Import Export" -User $ADMIN
 # Enable-OrganizationCustomization -confirm:$false
+
+# IMPORTANT - connect AGAIN to update permission - IMPORTANT <<<
 Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 
 #  <<< ========      (1) ALL         ============>>>
