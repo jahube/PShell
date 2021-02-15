@@ -11,8 +11,7 @@ Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 New-ManagementRoleAssignment -Role "Mailbox Import Export" -User $ADMIN
 # Enable-OrganizationCustomization -confirm:$false
 
-# connect AGAIN to update the above permission - IMPORTANT
-$admin = "admin@domain.com"
+# IMPORTANT - connect AGAIN to update permission - IMPORTANT <<<
 Connect-ExchangeOnline -UserPrincipalName $admin -ShowProgress $true
 
 # GET-RECOVERABLEITEMS
