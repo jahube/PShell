@@ -2,6 +2,8 @@ Get-Organizationsegment | FT
 
 $REMOVE = "Segment to remove"
 
+Get-InformationBarrierPoliciesApplicationStatus | Stop-InformationBarrierPoliciesApplication
+
 $assignedpolicy = Get-InformationBarrierPolicy | where { $_.AssignedSegment -eq $REMOVE }
 
 $allowedpolicy = Get-InformationBarrierPolicy | where { $REMOVE -in $_.SegmentsAllowed }
@@ -38,3 +40,5 @@ Foreach ($Policy in $allowedpolicy) { set-InformationBarrierPolicy -Identity $Po
 
 #update blocked
 Foreach ($Policy in $blockedpolicy) { set-InformationBarrierPolicy -Identity $Policy.guid -SegmentsBlocked @(remove="$REMOVE") }
+
+Start-InformationBarrierPoliciesApplication
