@@ -18,30 +18,40 @@ Alternative: remove the link + custom text > Inbox instead of Spam
 https://docs.microsoft.com/en-us/microsoftteams/guest-access-checklist
 
 Set-ExecutionPolicy RemoteSigned -Force
+
 $ADMIN = "admin@domain.com"
+
 Get-Credential $ADMIN | Export-Clixml $ENV:UserProfile\Documents\MyCredential.xml
 $cred = Import-Clixml $ENV:UserProfile\Documents\MyCredential.xml
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange `
--ConnectionUri https://outlook.office365.com/powershell-liveid/ `
--Credential $cred -Authentication Basic -AllowRedirection
-Import-PSSession $Session -DisableNameChecking
+
+Install-Module-ExchangeonlineManagement
+
+Connect-Exchangeonline -credential $cred
+
 ##########################################################################
 ##     the stunt below to get Teams latest Beta + trust + TLS 1.2       ##
 ##########################################################################
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Install-PackageProvider -Name NuGet -Force -Scope CurrentUser
+
 Install-module AzureAD -scope CurrentUser
+
 Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-Register-PSRepository -SourceLocation "https://www.poshtestgallery.com/api/v2/" `
--Name PsTestGallery -InstallationPolicy Trusted
+
 # get-pssession | Remove-PSSession
+
 Uninstall-Module MicrosoftTeams -AllVersions
-Install-Module MicrosoftTeams -Repository PSTestGallery -RequiredVersion 1.0.21
+
+Install-Module MicrosoftTeams
 
 # Install-Module MSOnline -scope currentuser -Force
 # Connect-MsolService -Credential $cred
+
 Connect-MicrosoftTeams -Credential $cred
+
 Connect-AzureAD -Credential $cred
+
 ##########################################################################
 ##                       create group / channel                         ##
 ##########################################################################
