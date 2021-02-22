@@ -3,7 +3,7 @@ https://docs.microsoft.com/en-us/powershell/module/exchange/new-dkimsigningconfi
 
 try 1x to get the values in Error
 
-New-DkimSigningConfig -DomainName contoso.com -Enabled $true
+New-DkimSigningConfig -DomainName contoso.com -Enabled $false
 
 ADD CNAME like below
 
@@ -14,12 +14,19 @@ FROM hostname 2                     Points to 2
 selector2._domainkey                copy value from PS above
 
 run again after values are there To ENABLE
+Set-DkimSigningConfig -Identity contoso.com -Enabled $true
 
-New-DkimSigningConfig -DomainName contoso.com -Enabled $true
 
 # in case it gets stuck try
-Set-DkimSigningConfig -DomainName contoso.com -Enabled $false
 
-Set-DkimSigningConfig -DomainName contoso.com -Enabled $true
+# New-DkimSigningConfig -DomainName contoso.com -Enabled $false
+#disable
+Set-DkimSigningConfig -Identity contoso.com -Enabled $false
 
+# wait 30 Minutes <-> 2h
+
+# enable
+Set-DkimSigningConfig -Identity contoso.com -Enabled $true
+
+# only in rare cases rotate between 1<>2 to quicklz replace invalid values and skip 4 days replication time
 Rotate-DkimSigningConfig -Identity contoso.com
