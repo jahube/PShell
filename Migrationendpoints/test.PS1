@@ -1,6 +1,8 @@
 $Server = "mail.server.com"
 
-Test-Migrationserveravailability -Excahngeremotemove -Remoteserver $Server
+Test-Migrationserveravailability -Exchangeremotemove -Remoteserver $Server
+
+Test-Migrationserveravailability -Exchangeremotemove -Remoteserver $Server -credential (Get-Credential CONTOSO\Administrator)
 
 $req = [System.Net.HttpWebRequest]::Create("https://$Server")
 $req.UseDefaultCredentials = $false
