@@ -43,7 +43,7 @@ $credential = get-credential $ADMIN                             # run + enter pa
 
 connect-Exchangeonline -credential $credential                  # connect
 
-New-ManagementRoleAssignment -Role "Address List" -User $ADMIN  # permission
+New-ManagementRoleAssignment -Role "Address Lists" -User $ADMIN # permission
 
 connect-Exchangeonline -credential $credential                  # connect AGAIN ! IMPORTANT
 
