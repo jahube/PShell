@@ -1,4 +1,20 @@
-﻿
+﻿###########################################################################################
+
+install-module Exchangeonlinemanagement
+
+###########################################################################################
+$ADMIN = "admin@domain.com"                                     # Change please
+
+$credential = get-credential $ADMIN                             # run + enter password
+
+connect-Exchangeonline -credential $credential                  # connect
+
+New-ManagementRoleAssignment -Role "Address List" -User $ADMIN  # permission
+
+connect-Exchangeonline -credential $credential                  # connect AGAIN ! IMPORTANT
+
+###########################################################################################
+
 # Create Address Lists
 New-AddressList -Name "Addresslist Internal"  -RecipientFilter {(RecipientType -eq 'UserMailbox') -or (RecipientTypeDetails -eq 'SharedMailbox') -or (RecipientType -eq 'Mailuser')}
 New-AddressList -Name "Addresslist External"  -RecipientFilter {(RecipientType -eq 'MailContact') }
