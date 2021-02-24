@@ -29,3 +29,22 @@ Get-Mailbox -Filter {(RecipientType -eq 'UserMailbox') -and (Company -eq $compan
 
 # update Addresslists
 get-AddressList | % { Set-AddressList -Identity $_.identity }
+
+
+######### connect #########################################################################
+
+install-module Exchangeonlinemanagement
+
+###########################################################################################
+
+$ADMIN = "admin@domain.com"                                     # Change please
+
+$credential = get-credential $ADMIN                             # run + enter password
+
+connect-Exchangeonline -credential $credential                  # connect
+
+New-ManagementRoleAssignment -Role "Address List" -User $ADMIN  # permission
+
+connect-Exchangeonline -credential $credential                  # connect AGAIN ! IMPORTANT
+
+###########################################################################################
