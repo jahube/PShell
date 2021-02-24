@@ -40,3 +40,24 @@ $Stats = (Get-MailboxFolderStatistics $user).where( {$_.foldertype.tostring() -e
 $search = (get-recoverableitems $user).where({$_.LastParentPath -eq $Stats[0].name })
 $search | fl subject,SourceFolder,ItemClass,LastParentPath                     #   <-- preview  
 $search | restore-recoverableitems                                             #   <-- restore
+
+
+###########################################################################################
+
+install-module Exchangeonlinemanagement
+
+###########################################################################################
+
+$ADMIN = "admin@domain.com"                                             # Change please
+
+$credential = get-credential $ADMIN                                     # run + enter password
+
+connect-Exchangeonline -credential $credential                          # connect
+
+New-ManagementRoleAssignment -Role "Mailbox Import Export" -User $ADMIN # permission
+
+connect-Exchangeonline -credential $credential                          # connect AGAIN ! IMPORTANT
+
+Enable-OrganizationCustomization -confirm:$false                        # ONLY if you get the error above
+
+###########################################################################################
