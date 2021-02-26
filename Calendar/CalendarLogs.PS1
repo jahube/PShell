@@ -22,9 +22,10 @@ $Calendar = Get-CalendarDiagnosticLog $user -StartDate $start -EndDate $end -WA 
        
        Write-Progress -Activity $A -Status $S -PercentComplete (($C/$count)*100) -SecondsRemaining ($count-$C) ;
 
-     $Out = Get-CalendarDiagnosticObjects -Identity $user -MeetingId $ID -StartDate $start -EndDate $end -WA silentlycontinue ;
-    $DayN = (get-date $Cal[$C].LogDate).DayOfWeek ; 
- $Datestr = get-date $Cal[$C].LogDate -Format yyyy-MM-dd-HHmm ;
-   $FileN =  $Cal[$C].CleanGlobalObjectId + '_' + $Cal[$C].NormalizedSubject + '.Csv' ; 
-$FileName = $FileN.Split([IO.Path]::GetInvalidFileNameChars()) -join '_';IF(!(Test-Path $path)){mkdir $path}
-     $Out | Export-csv $path\$Filename -NoTypeInformation }
+             $Out = Get-CalendarDiagnosticObjects -Identity $user -MeetingId $ID -StartDate $start -EndDate $end -WA silentlycontinue ;
+            $DayN = (get-date $Cal[$C].LogDate).DayOfWeek ; 
+         $Datestr = get-date $Cal[$C].LogDate -Format yyyy-MM-dd-HHmm ;
+   [string]$FileN =  $Cal[$C].CleanGlobalObjectId + '_' + $DayN + '_' + $Datestr + '-' + $Cal[$C].NormalizedSubject 
+[string]$FileName = $FileN.Split([IO.Path]::GetInvalidFileNameChars()) -join '_' ; [int]$Lgt = (250 - $path.Length)
+IF ($FileName.length -gt $Lgt) { $File = $FileName.substring(0, $Lgt) + '.Csv' } else { $File = $FileName + '.Csv' } ;
+IF(!(Test-Path $path)){ mkdir $path} ; $Out | Export-csv $path\$File -NoTypeInformation -force}
