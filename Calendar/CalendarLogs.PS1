@@ -1,20 +1,20 @@
 # install-module exchangeonlinemanagement
 # connect-exchangeonline -UserPrincipalName ADMIN
 
-$user = "user@domain.com"
-$startDays = "-14"
-$endDays = "30"
-$Subject = "" #Subject
+     $user = "user@domain.com"
+$startDays = "-14" # [-] days in past
+  $endDays = "30"  # [+] days in future
+  $Subject = "" #Subject   leave subject "" to skip filter or any string / date range to match against
 
 $path = "C:\Temp"
 
-   $start = (get-date).AddDays($startDays).ToShortDateString() ;
-     $end = (get-date).AddDays($endDays).ToShortDateString() ;
+      $st = (get-date).AddDays($startDays).tostring(“MM/dd/yyyy”); 
+      $ed = (get-date).AddDays($endDays).tostring(“MM/dd/yyyy”);
 $Calendar = Get-CalendarDiagnosticLog $user -StartDate $start -EndDate $end -WA silentlycontinue ;
    $Match = $Calendar.Where({($_.NormalizedSubject -match $Subject) -or ($_.NormalizedSubject -eq $Subject)})
      $Cal = $Match | sort-Object CleanGlobalObjectId -Unique ;
 
-$count= $Cal.count ; $label = "Calendarlogs for [$user]"
+   $count = $Cal.count ; $label = "Calendarlogs for [$user]"
   for ($C = 0; $C -lt $Cal.count; $C++) { 
        $S =" [Event Count] ($($C+1)/$count)  [Time]"
        $A = "$label [Subject] $($Cal[$C].NormalizedSubject) [Date] $($Cal[$C].LogDate)" ; 
