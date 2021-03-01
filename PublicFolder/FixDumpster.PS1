@@ -60,7 +60,7 @@ foreach ($F in $folders) {   $Dumpster = @() ; $DID = @() ;
 }
 
 IF(!(Test-Path $LogsPath)){ mkdir $LogsPath} 
-$Dumpstermismatch | Export-csv $path\Dumpstermismatch.csv -NoTypeInformation -force
-$Dumpstermissing | Export-csv $path\Dumpstermissing.csv -NoTypeInformation -force
-$ContentMBXmismatch | Export-csv $path\ContentMBXmismatch.CSV -NoTypeInformation -force
+  IF($Dumpstermismatch) { $Dumpstermismatch | Export-csv $LogsPath\Dumpstermismatch.csv -NoTypeInformation -force }
+   IF($Dumpstermissing) { $Dumpstermissing | Export-csv $LogsPath\Dumpstermissing.csv -NoTypeInformation -force }
+IF($ContentMBXmismatch) { $ContentMBXmismatch | Export-csv $LogsPath\ContentMBXmismatch.CSV -NoTypeInformation -force }
 #end
