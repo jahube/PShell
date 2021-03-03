@@ -1,6 +1,6 @@
-$NewRListName = "RoomList"
+$NewRListName = "Workspace List"
 $CheckPermissions = $false
-$CreateALLroomlist = $false
+$CreateALLroomlist = $true
 $RessourceType = "Workspace"
 $ts = Get-Date -Format yyyyMMdd_hhmmss
 $FormatEnumerationLimit = -1
