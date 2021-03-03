@@ -21,7 +21,7 @@ foreach ($F in $folders) {   $Dumpster = @() ; $DID = @() ;
         If ($Dumpster) { Write-Host "Dumpster" $DID "- Folder" $($F.entryID) "Found" -F cyan }
    Else { $Dumpstermissing += $F
     try { Update-PublicFolderMailbox $F.ContentMailboxGuid.Guid -FolderId $F.EntryID -CreateAssociatedDumpster -InvokeSynchronizer -EA stop -Confirm:$false }
-  catch { $Error[0] | FL* }
+  catch { $Error[0] | FL * }
                          sleep 20 ; $Dumpster = Get-Publicfolder -identity $DID -EA silentlycontinue }
 
         If ($F.ContentMailboxGuid.Guid -eq $Dumpster.ContentMailboxGuid.Guid) {
