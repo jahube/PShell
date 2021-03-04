@@ -1,4 +1,4 @@
-$FolterToDelete = "\path\Folter To Delete" # affected folder that cannot be deleted
+$FolterToDelete = "\Folder To Delete" # affected folder that cannot be deleted
 
 # name for NEW test folder that will be created + deleted for testing purposes
 $NewTestFolder = "MStestPFtemp"   
