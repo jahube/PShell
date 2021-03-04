@@ -1,7 +1,14 @@
+########### Reference ###################################################################################
+# https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/external-email-forwarding #
+#########################################################################################################
+
+######### Tenant Level ##################################################################################
+
 Get-HostedOutboundSpamFilterPolicy | Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode on
 
-# the Default is applied only if a specific is not applied
-# if you scope on a user, only that policy will apply for the user
+######### User Level ####################################################################################
+#    IF you scope ANOTHER policy on a USER, only the scoped policy will be applied for that user        #
+#########################################################################################################
 
 NEW-HostedOutboundSpamFilterPolicy "AutoForward" -AutoForwardingMode on
 
