@@ -15,25 +15,26 @@ $logsPATH = mkdir "$DesktopPath\MS-Logs\Public_Folder_Stats_$ts"
 Start-Transcript "$logsPATH\Public_Folder_Stats_$ts.txt"
 $FormatEnumerationLimit = -1
 
-Get-publicfolder $FolterToDelete | FL >> "$LogsPath\FolterToDelete_Get_Publicfolder.txt"
+# Get the affected FOLDER and STATS - BEFORE
+Get-publicfolder $FolterToDelete | FL >> "$LogsPath\FolterToDelete_Get_Publicfolder-BEFORE.txt"
 $DelPFStats = Get-publicfolderstatistics $FolterToDelete
-$DelPFStats | FL >> "$LogsPath\FolderToDelete_Get_publicfolderstatistics.txt"
+$DelPFStats | FL >> "$LogsPath\FolderToDelete_PublicfolderStatistics.txt"
+$DelPFStats | Export-Clixml "$LogsPath\FolderToDelete_PublicfolderStatistics.xml"
 
 # Run the command to REMOVE the unwanted PF
 Remove-PublicFolder $FolterToDelete
-$exception1 = $error[0].Exception
+$exception1 = $error[0].Exception ; $exception1 | fl *
 $exception1 | fl * >> "$LogsPath\FolderToDelete_DeleteException.txt"
-$exception1 | fl *
 
+# Get the affected FOLDER            - AFTER
 $DelPF = Get-publicfolder $FolterToDelete
-$DelPF | fl * >> "$LogsPath\FolderToDelete.txt"
-$DelPF | Export-Clixml "$LogsPath\FolderToDelete.xml"
+$DelPF | fl * >> "$LogsPath\FolterToDelete_Get_Publicfolder-AFTER.txt"
+$DelPF | Export-Clixml "$LogsPath\FolterToDelete_Get_Publicfolder-AFTER.xml"
 
-#Get the dumpster folder and statistics of it
-$DelPF.dumpsterentryid | fl
-
-# if you get error, again run $error[0].Exception | fl *
+#Get the affected DUMPSTER and STATS
+$DelPF.dumpsterentryid | fl >> "$LogsPath\FolderToDelete_Dumpster_EntryID.txt"
 $DelPFstats =  get-publicfolderstatistics -Identity $DelPF.dumpsterentryid
+$error[0].Exception | fl * >> "$LogsPath\FolderToDelete_Dumpster_exception.txt"
 $DelPFstats | fl * >> "$LogsPath\FolderToDelete_Dumpster_Stats.txt"
 $DelPFstats | Export-Clixml "$LogsPath\FolderToDelete_Dumpster_Stats.xml"
 
