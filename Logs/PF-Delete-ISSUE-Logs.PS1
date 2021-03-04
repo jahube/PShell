@@ -1,4 +1,4 @@
-$FolterToDelete = "\Folder To Delete" # affected folder that cannot be deleted
+$FolderToDelete = "\Folder To Delete" # affected folder that cannot be deleted
 
 # name for NEW test folder that will be created + deleted for testing purposes
 $NewTestFolder = "MStestPFtemp"   
@@ -16,18 +16,18 @@ Start-Transcript "$logsPATH\Public_Folder_Stats_$ts.txt"
 $FormatEnumerationLimit = -1
 
 # Get the affected FOLDER and STATS - BEFORE
-Get-publicfolder $FolterToDelete | FL >> "$LogsPath\FolterToDelete_Get_Publicfolder-BEFORE.txt"
-$DelPFStats = Get-publicfolderstatistics $FolterToDelete
+Get-publicfolder $FolderToDelete | FL >> "$LogsPath\FolterToDelete_Get_Publicfolder-BEFORE.txt"
+$DelPFStats = Get-publicfolderstatistics $FolderToDelete
 $DelPFStats | FL >> "$LogsPath\FolderToDelete_PublicfolderStatistics.txt"
 $DelPFStats | Export-Clixml "$LogsPath\FolderToDelete_PublicfolderStatistics.xml"
 
 # Run the command to REMOVE the unwanted PF
-Remove-PublicFolder $FolterToDelete
+Remove-PublicFolder $FolderToDelete
 $exception1 = $error[0].Exception ; $exception1 | fl *
 $exception1 | fl * >> "$LogsPath\FolderToDelete_DeleteException.txt"
 
 # Get the affected FOLDER            - AFTER
-$DelPF = Get-publicfolder $FolterToDelete
+$DelPF = Get-publicfolder $FolderToDelete
 $DelPF | fl * >> "$LogsPath\FolterToDelete_Get_Publicfolder-AFTER.txt"
 $DelPF | Export-Clixml "$LogsPath\FolterToDelete_Get_Publicfolder-AFTER.xml"
 
