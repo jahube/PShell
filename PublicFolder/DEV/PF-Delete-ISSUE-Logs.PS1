@@ -42,9 +42,8 @@ $DelPFstats | Export-Clixml "$LogsPath\FolderToDelete_Dumpster_Stats.xml"
 New-PublicFolder -Name $NewTestFolder -Path \ -Confirm:$false
 Get-PublicFolder "\$NewTestFolder" | fl * >> "$LogsPath\NewTestFolder_BEFORE.txt"
 Remove-PublicFolder "\$NewTestFolder" -Confirm:$false
-$exception2 = $error[0].Exception
+$exception2 = $error[0].Exception ; $exception2 | fl *
 $exception2 | fl * >> "$LogsPath\NewTestFolder_DeleteException.txt"
-$exception2 | fl *
 
   Try { Get-PublicFolder "\$NewTestFolder" -ErrorAction Stop | fl * >> "$LogsPath\NewTestFolder_AFTER.txt" }
 Catch { $error[0].Exception | fl * >> "$LogsPath\NewTestFolder_AFTER-ExceptionOnly.txt" }
