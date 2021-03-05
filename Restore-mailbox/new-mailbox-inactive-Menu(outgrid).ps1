@@ -15,11 +15,11 @@ $splitlast = $splitname.Split(' ')[-1] # first.LAST@domain.com
 $splitlast = $splitlast.substring(0,1).toupper() + $splitlast.substring(1).tolower()
 $splitname = "$($splitfirst + ' ' + $splitlast)"
 
-$param = @{ InactiveMailbox = $InactiveMailbox.DistinguishedName
-                       Name = $InactiveMailbox.Name
+$param = @{ InactiveMailbox = $M.DistinguishedName
+                       Name = $M.Name
                   FirstName = $splitfirst
                    LastName = $splitlast
-                DisplayName = $InactiveMailbox.DisplayName
+                DisplayName = $M.DisplayName
   MicrosoftOnlineServicesID = $WEA
                    Password = (ConvertTo-SecureString -String 'P@ssW0rd' -AsPlainText -Force)
    ResetPasswordOnNextLogon = $false }
