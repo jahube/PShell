@@ -1,4 +1,4 @@
-   $Mbx = get-mailbox -SoftDeletedMailbox | where {($_.ExternaldirectoryObjectId -ne "") -or ($_.ExternaldirectoryObjectId -ne $null) }
+   $Mbx = get-mailbox -SoftDeletedMailbox | where {($_.ExternaldirectoryObjectId -ne "") -and ($_.ExternaldirectoryObjectId -ne $null) }
      $M = $Mbx | select Name,displayname,userprincipalname,primarysmtpaddress,WindowsEmailAddress | Out-GridView -PassThru
    $PWD = (ConvertTo-SecureString -String 'Pa$$word1' -AsPlainText -Force)
  $Param = @{ Name = $M.Name
