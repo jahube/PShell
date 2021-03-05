@@ -1,4 +1,4 @@
-﻿  # $Mbx = get-mailbox -SoftDeletedMailbox
+﻿  # $Mbx = get-mailbox -SoftDeletedMailbox | where {($_.ExternaldirectoryObjectId -eq "") -or ($_.ExternaldirectoryObjectId -eq $null) }
 $Mbx = get-mailbox -InactiveMailboxOnly
 $M = $Mbx | select Name,displayname,userprincipalname,primarysmtpaddress,MicrosoftOnlineServicesID,WindowsEmailAddress | Out-GridView -PassThru -title "Select Mailbox to Re-Connect"
 Write-host $M -F cyan
