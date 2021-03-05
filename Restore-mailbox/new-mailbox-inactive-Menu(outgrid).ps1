@@ -1,6 +1,6 @@
 ﻿  # $Mbx = get-mailbox -SoftDeletedMailbox | where {($_.ExternaldirectoryObjectId -eq "") -or ($_.ExternaldirectoryObjectId -eq $null) }
 $Mbx = get-mailbox -InactiveMailboxOnly | where {($_.ExternaldirectoryObjectId -eq "") -or ($_.ExternaldirectoryObjectId -eq $null) }
-$M = $Mbx | select Name,displayname,userprincipalname,primarysmtpaddress,MicrosoftOnlineServicesID,WindowsEmailAddress | Out-GridView -PassThru -title "Select Mailbox to Re-Connect"
+$M = $Mbx | select Name,displayname,userprincipalname,primarysmtpaddress,MicrosoftOnlineServicesID,WindowsEmailAddress,DistinguishedName | Out-GridView -PassThru -title "Select Mailbox to Re-Connect"
 Write-host $M -F cyan
 
 If ($M.MicrosoftOnlineServicesID -ne "") { $WEA = $M.MicrosoftOnlineServicesID ; write-host "MSOL-SID used for Windowslive [$WEA]" -F yellow }
