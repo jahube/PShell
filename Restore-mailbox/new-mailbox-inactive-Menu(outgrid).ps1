@@ -2,14 +2,25 @@
 $Mbx = get-mailbox -InactiveMailboxOnly | where {($_.ExternaldirectoryObjectId -eq "") -or ($_.ExternaldirectoryObjectId -eq $null) }
 $M = $Mbx | select Name,displayname,userprincipalname,primarysmtpaddress,MicrosoftOnlineServicesID,WindowsEmailAddress | Out-GridView -PassThru -title "Select Mailbox to Re-Connect"
 Write-host $M -F cyan
-$FirstName = read-host "Enter First Name"
- $LastName = read-host "Enter Last Name"
+
+If ($M.MicrosoftOnlineServicesID -ne "") { $WEA = $M.MicrosoftOnlineServicesID }
+  ElseIf ($M.WindowsEmailAddress -ne "") { $WEA = $M.WindowsEmailAddress }
+                                    Else { $WEA = $M.primarysmtpaddress }
+$UPN = $M.userprincipalname
+$splitname = $UPN.Split('@')[0].Replace('.', ' ')
+# output = First Last
+$splitfirst = $splitname.Split(' ')[0] # FIRST.last@domain.com ; 
+$splitfirst = $splitfirst.substring(0,1).toupper() + $splitfirst.substring(1).tolower()
+$splitlast = $splitname.Split(' ')[-1] # first.LAST@domain.com 
+$splitlast = $splitlast.substring(0,1).toupper() + $splitlast.substring(1).tolower()
+$splitname = "$($splitfirst + ' ' + $splitlast)"
+
 $param = @{ InactiveMailbox = $InactiveMailbox.DistinguishedName
                        Name = $InactiveMailbox.Name
-                  FirstName = $FirstName
-                   LastName = $LastName
+                  FirstName = $splitfirst
+                   LastName = $splitlast
                 DisplayName = $InactiveMailbox.DisplayName
-  MicrosoftOnlineServicesID = $InactiveMailbox.MicrosoftOnlineServicesID
+  MicrosoftOnlineServicesID = $WEA
                    Password = (ConvertTo-SecureString -String 'P@ssW0rd' -AsPlainText -Force)
    ResetPasswordOnNextLogon = $false }
 
