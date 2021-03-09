@@ -1,6 +1,10 @@
-﻿
-# Version (1) WITHDelegates
+﻿# Reference https://support.microsoft.com/en-us/topic/resources-in-exchange-don-t-respond-to-meeting-requests-e6d24af5-36ae-5d87-b615-f292f3953dac
 
+# check [ressource booking assistant] if [AutomateProcessing] is conflicting with [ResourceDelegates]/[ForwardRequestsToDelegates]
+
+# below are 2 "best practive" configurations
+
+# Version (1) >> WITH Delegates <<
 
 #### start ###
 $mailbox = “mailbox@domain.com”
@@ -20,7 +24,7 @@ set-calendarprocessing @WITHDelegates
 #### end ###
 
 
-# Version (2) WITHOUTDelegates 
+# Version (2) >> WITHOUT Delegates <<
 
 #### start ###
 $mailbox = “mailbox@domain.com”
