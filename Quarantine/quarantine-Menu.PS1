@@ -7,7 +7,7 @@ Start-Transcript -Path $logsPATH\LOGS$ts.txt
 $MSrch = Get-QuarantineMessage
 $MSel = $MSrch | Select-Object ReceivedTime,SenderAddress,RecipientAddress,QuarantineTypes,PolicyType,PolicyName,Reported,ReleaseStatus,Expires,MessageId,Identity
 $MSel | Export-Csv -Path "$logsPATH\1_Before-MessageSearch_All_$ts.csv" -NoTypeInformation
-$MSrchMenuSel = $MSel | Out-GridView -Title "select Messages to release"
+$MSrchMenuSel = $MSel | Out-GridView -Title "select Messages to release" -PassThru
 $MSrchMenuSel | Export-Csv -Path "$logsPATH\1_Before-MessageSearch_Selection_$ts.csv" -NoTypeInformation
 $mcount = 1 ;$Messagecount = $MSrchMenuSel.count
 Foreach ($Message in $MSrchMenuSel) {
