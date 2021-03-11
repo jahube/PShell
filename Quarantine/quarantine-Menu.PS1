@@ -1,9 +1,13 @@
-# Release-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "RELEASE").identity -Rel -F
+################################################ Onliner ############################################################################################
+# Release-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "RELEASE").identity -Rel -F  #
+#####################################################################################################################################################
+# $MSG = Export-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "EXPORT").identity     #
+# Foreach ($M in $MSG) { [IO.File]::WriteAllBytes([String]$("C:\TempQ\"+$M.Identity.Split('\')[1]+".eml"), $([Convert]::FromBase64String($m.Eml)))} #
+#####################################################################################################################################################
+# Delete-QuarantineMessage -Identity 000 -Identities@(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "DELETE").identity -CF:$false  #
+#####################################################################################################################################################
 
-# $MSG = Export-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "EXPORT").identity
-# Foreach ($M in $MSG) { [IO.File]::WriteAllBytes([String]$("C:\TempQ\"+$M.Identity.Split('\')[1]+".eml"), $([Convert]::FromBase64String($m.Eml)))}
-
-# Delete-QuarantineMessage -Identity 000 -Identities@(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "DELETE").identity -CF:$false
+############ Long Version ###########################################################################################################################
 
 $ts = Get-Date -Format yyyyMMdd_hhmmss
 
