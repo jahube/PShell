@@ -28,11 +28,10 @@ $MenuSel = $Sorted | Out-GridView -Title "select Messages to release" -PassThru
 $MenuSel | Export-Csv -Path "$logsPATH\Exp-Quarantine-Messages-$ts.csv" -NoTypeInformation
 
 $count = $MenuSel.count ; $mcount = 0 ;
+
 Foreach ($Message in $MenuSel) { 
 
-$m = $null ; 
-$m = Export-QuarantineMessage -Identity $Message.Identity -Identities ; 
-$email = $m.Eml
+$m = $null ; $m = Export-QuarantineMessage -Identity $Message.Identity ; $email = $m.Eml
 
 $MessageId = $null ; $MessageId = $Message.MessageId -Replace "(\<)|(\>)", ""
 
