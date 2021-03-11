@@ -1,6 +1,6 @@
-################################################ Onliner ############################################################################################
+########### Release Short ###################### Onliner ############################################################################################
 # Release-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "RELEASE").identity -Rel -F  #
-#####################################################################################################################################################
+############## Export short #########################################################################################################################
 # $MSG = Export-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "EXPORT").identity     #
 # Foreach ($M in $MSG) { [IO.File]::WriteAllBytes([String]$("C:\TempQ\"+$M.Identity.Split('\')[1]+".eml"), $([Convert]::FromBase64String($m.Eml)))} #
 ############ Long Version ###########################################################################################################################
@@ -26,8 +26,6 @@ $MenuSel = $Sorted | Out-GridView -Title "select Messages to release" -PassThru
  $Sorted | Export-Csv -Path "$logsPATH\All-Quarantine-Messages-before_$ts.CSV" -NoTypeInformation
   $MSrch | Export-Clixml "$logsPATH\All-Quarantine-Messages-before_$ts.XML"
 $MenuSel | Export-Csv -Path "$logsPATH\Exp-Quarantine-Messages-$ts.csv" -NoTypeInformation
-
-
 
 $count = $MenuSel.count ; $mcount = 0 ;
 Foreach ($Message in $MenuSel) { 
