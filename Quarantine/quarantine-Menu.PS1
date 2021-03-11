@@ -3,10 +3,6 @@
 #####################################################################################################################################################
 # $MSG = Export-QuarantineMessage -Identity 000 -Identities @(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "EXPORT").identity     #
 # Foreach ($M in $MSG) { [IO.File]::WriteAllBytes([String]$("C:\TempQ\"+$M.Identity.Split('\')[1]+".eml"), $([Convert]::FromBase64String($m.Eml)))} #
-#####################################################################################################################################################
-# Delete-QuarantineMessage -Identity 000 -Identities@(Get-QuarantineMessage | Select-Object *ss,Me*,*ity | OGV -P -T "DELETE").identity -CF:$false  #
-#####################################################################################################################################################
-
 ############ Long Version ###########################################################################################################################
 
 $ts = Get-Date -Format yyyyMMdd_hhmmss
@@ -14,25 +10,12 @@ $ts = Get-Date -Format yyyyMMdd_hhmmss
 IF(!@(Get-PSSession | where { $_.State -ne "broken" } ) ) { 
 Try { Connect-ExchangeOnline } catch { install-module ExchangeOnlinemanagement ; Connect-ExchangeOnline} }
 
-$FormatEnumerationLimit = -1
+                      $FormatEnumerationLimit = -1
+       $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
+  [String]$logsPATH = mkdir "$DesktopPath\MS-Logs\$ts\MS-Logs_Headers"
+  [String]$MailPATH = mkdir "$DesktopPath\MS-Logs\$ts\QuarantineMessages”
 
-$DesktopPath = ([Environment]::GetFolderPath('Desktop'))
-
-[String]$logsPATH = mkdir "$DesktopPath\MS-Logs\$ts\MS-Logs_Headers"
-
-[String]$MailPATH = mkdir "$DesktopPath\MS-Logs\$ts\QuarantineMessages”
-
-Start-Transcript -Path $logsPATH\Transcript_$ts.txt
-
-$SRC = Get-QuarantineMessage | Select-Object *ivedT*,*Address,*neTyp*,Poli*,Repo*,Relea*,Exp*,Mess*Id,Identity
-Release-QuarantineMessage -Identity 000 -Identities @($SRC | Out-GridView -PassThru).identity -ReleaseToAll -Force
-
-$SRC = Get-QuarantineMessage | Select-Object *ivedT*,*Address,*neTyp*,Poli*,Repo*,Relea*,Exp*,Mess*Id,Identity
-Delete-QuarantineMessage -Identity 000 -Identities @($SRC | Out-GridView -PassThru).identity
-
-$SRC = Get-QuarantineMessage | Select-Object *ivedT*,*Address,*neTyp*,Poli*,Repo*,Relea*,Exp*,Mess*Id,Identity
-$MSG = Export-QuarantineMessage -Identity 000 -Identities @($SRC | Out-GridView -PassThru).identity
-Foreach ($M in $MSG) { [IO.File]::WriteAllBytes([String]$("C:\TempQ\"+$M.Identity.Split('\')[1]+".eml"), $([Convert]::FromBase64String($m.Eml)))}
+    Start-Transcript -Path $logsPATH\Transcript_$ts.txt
 
   $MSrch = Get-QuarantineMessage
 
