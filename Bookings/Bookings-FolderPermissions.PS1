@@ -61,4 +61,3 @@ write-host "`nREMOVE [EDITOR] $CalEDITOR Successful" -F green ; } catch { write-
 write-host "`n`n AFTER" -F green ; Try { get-MailboxFolderPermission $FN -EA stop | ft 
 } catch { write-host $Error[0].Exception.message -F yellow }  }  }
 stop-transcript
-stop-transcript
