@@ -11,6 +11,8 @@ $EDaccess = 'Reviewer'                   # 'Editor' or 'LimitedDetails' or 'Revi
 ##############################################################################################
 # $REMOVEEditor = 'YES'
 ##############################################################################################
+# $CalEditor = @(get-mailbox $CalEditor).primarysmtpaddress
+# $CalEditor = @(get-mailbox $CalEditor).distinguishedname
 
 $MBX = get-recipient -Resultsize Unlimited
 foreach ($M in $MBX) {
