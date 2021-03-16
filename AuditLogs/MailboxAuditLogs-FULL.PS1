@@ -50,7 +50,7 @@ $MoveToDltd | Export-CSV "$logsPATH\MoveToDltd-Details.csv" -NoTypeInformation
 
 Stop-Transcript
 
-Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$ts.Zip" -Force # Zip Logs
+Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$($USER.replace('@',"-"))_$ts.Zip" -Force # Zip Logs
 Invoke-Item $DesktopPath\MS-Logs # open file manager
 
 $title = "Mailbox Audit Log Overview for [$user] from $((get-date).AddDays(-90))"
