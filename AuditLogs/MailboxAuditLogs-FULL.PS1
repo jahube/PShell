@@ -11,26 +11,17 @@ Start-Transcript "$logsPATH\Transcript_$ts.txt"
 $FormatEnumerationLimit = -1
 
 IF(!@(Get-PSSession | where { $_.State -ne "broken" } )) {
-
 IF(!@(Get-InstalledModule ExchangeOnlineManagement -ErrorAction SilentlyContinue)) { install-module exchangeonlinemanagement -Scope CurrentUser }
-
 IF(!@($Credentials)) {$Credentials = Get-credential } ; IF(!@($ADMIN)) {$ADMIN = $Credentials.UserName }
-
 Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
-
 IF (!($Credentials.UserName -in (get-RoleGroupMember "Organization Management").primarySMTPaddress)) { Add-RoleGroupMember "Organization Management" -Member $ADMIN
-
 Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
 
 IF (!($USER)) { $MBXs = get-mailbox -ResultSize unlimited ;
-
 IF ($MBXs.Count -gt "400") { $USER = Read-Host -Prompt "Affected User [Userprincipalname]" }
-
                       ELSE { $USER = @($MBXs | select Pr*ess,Dis*me,Use*me | OGV -P -T "Select User").userprincipalname }}
 
-IF (!($start)) { [int]$start = "-90" }
-
-IF (!($data)) { $data = Search-MailboxAuditLog -Identity $user -ShowDetails -StartDate (get-date).AddDays($start) -EndDate (get-date) }
+IF (!($data)) { $data = Search-MailboxAuditLog -Identity $user -ShowDetails -StartDate (get-date).AddDays(-90) -EndDate (get-date) }
 
 $data | Export-Clixml "$logsPATH\mailboxlogs.xml"
 
@@ -40,15 +31,15 @@ get-mailbox $user | select -expandproperty auditdelegate
 get-mailbox $user | select -expandproperty auditowner
 
 # $path = ""$logsPATH\Users\NAME\Downloads\mailboxlogs"
-
 # $file = "mailboxlogs.xml"
-
 # $data = Import-Clixml $path\$file
 
 $data | select-object operation,clientprocessname,clientinfostring,ClientVersion -Unique | ft > "$logsPATH\Types-Unique.txt"
 
 $softdelete = $data | where {$_.operation -eq "softdelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
+
 $harddelete = $data | where {$_.operation -eq "harddelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
+
 $MoveToDltd = $data | where {$_.operation -eq "MoveToDeletedItems" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
 
 $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType | select count,Name | Sort count -Descending | ft > "$logsPATH\Types-Summary.txt"
@@ -70,10 +61,8 @@ $MoveToDltd | Export-CSV "$logsPATH\MoveToDltd-Details.csv" -NoTypeInformation
 
 Stop-Transcript
 
-Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$($USER.replace('@',"-"))_$ts.Zip" -Force # Zip Logs
-
+Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$ts.Zip" -Force # Zip Logs
 Invoke-Item $DesktopPath\MS-Logs # open file manager
 
-$title = "Mailbox Audit Log Overview for [$user] from $((get-date).AddDays($start))"
-
+$title = "Mailbox Audit Log Overview for [$user] from $((get-date).AddDays(-90))"
 $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType | select count,Name | Sort count,Operation -Descending | Out-GridView -T $title
