@@ -1,13 +1,8 @@
 # desktop/MS-Logs+Timestamp
-
 $ts = Get-Date -Format yyyyMMdd_hhmmss
-
 $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
-
 $logsPATH = mkdir "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$ts"
-
 Start-Transcript "$logsPATH\Transcript_$ts.txt"
-
 $FormatEnumerationLimit = -1
 
 IF(!@(Get-PSSession | where { $_.State -ne "broken" } )) {
@@ -17,10 +12,8 @@ Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-Exchange
 IF (!($Credentials.UserName -in (get-RoleGroupMember "Organization Management").primarySMTPaddress)) { Add-RoleGroupMember "Organization Management" -Member $ADMIN
 Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
 
-IF (!($USER)) { $MBXs = get-mailbox -ResultSize unlimited ;
-IF ($MBXs.Count -gt "400") { $USER = Read-Host -Prompt "Affected User [Userprincipalname]" }
-                      ELSE { $USER = @($MBXs | select Pr*ess,Dis*me,Use*me | OGV -P -T "Select User").userprincipalname }}
-
+IF (!($USER)) { $MBXs = get-mailbox -ResultSize unlimited ; IF ($MBXs.Count -gt "400") { $USER = Read-Host -Prompt "Affected User [Userprincipalname]" }
+         ELSE { $USER = @($MBXs | select Pr*ess,Dis*me,Use*me | OGV -P -T "Select User").userprincipalname }}
 IF (!($data)) { $data = Search-MailboxAuditLog -Identity $user -ShowDetails -StartDate (get-date).AddDays(-90) -EndDate (get-date) }
 
 $data | Export-Clixml "$logsPATH\mailboxlogs.xml"
