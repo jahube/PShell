@@ -35,13 +35,9 @@ get-mailbox $user | select -expandproperty auditowner
 # $data = Import-Clixml $path\$file
 
 $data | select-object operation,clientprocessname,clientinfostring,ClientVersion -Unique | ft > "$logsPATH\Types-Unique.txt"
-
 $softdelete = $data | where {$_.operation -eq "softdelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
-
 $harddelete = $data | where {$_.operation -eq "harddelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
-
 $MoveToDltd = $data | where {$_.operation -eq "MoveToDeletedItems" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
-
 $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType | select count,Name | Sort count -Descending | ft > "$logsPATH\Types-Summary.txt"
 
 $harddelete | FT > "$logsPATH\harddelete-Details.txt"
