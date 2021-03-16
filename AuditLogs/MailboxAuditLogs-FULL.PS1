@@ -25,9 +25,11 @@ Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-Exchange
 IF (!($USER)) { $MBXs = get-mailbox -ResultSize unlimited ;
 
 IF ($MBXs.Count -gt "400") { $USER = Read-Host -Prompt "Affected User [Userprincipalname]" }
+
                       ELSE { $USER = @($MBXs | select Pr*ess,Dis*me,Use*me | OGV -P -T "Select User").userprincipalname }}
 
 IF (!($start)) { [int]$start = "-90" }
+
 IF (!($data)) { $data = Search-MailboxAuditLog -Identity $user -ShowDetails -StartDate (get-date).AddDays($start) -EndDate (get-date) }
 
 $data | Export-Clixml "$logsPATH\mailboxlogs.xml"
@@ -38,15 +40,15 @@ get-mailbox $user | select -expandproperty auditdelegate
 get-mailbox $user | select -expandproperty auditowner
 
 # $path = ""$logsPATH\Users\NAME\Downloads\mailboxlogs"
+
 # $file = "mailboxlogs.xml"
+
 # $data = Import-Clixml $path\$file
 
 $data | select-object operation,clientprocessname,clientinfostring,ClientVersion -Unique | ft > "$logsPATH\Types-Unique.txt"
 
 $softdelete = $data | where {$_.operation -eq "softdelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
-
 $harddelete = $data | where {$_.operation -eq "harddelete" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
-
 $MoveToDltd = $data | where {$_.operation -eq "MoveToDeletedItems" } | select operation,clientprocessname,clientinfostring,lastaccessed,clientip,ClientVersion,FolderPathName,SourceItemFolderPathNamesList,SourceItemSubjectsList
 
 $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType | select count,Name | Sort count -Descending | ft > "$logsPATH\Types-Summary.txt"
@@ -68,8 +70,10 @@ $MoveToDltd | Export-CSV "$logsPATH\MoveToDltd-Details.csv" -NoTypeInformation
 
 Stop-Transcript
 
-Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$ts.Zip" -Force # Zip Logs
+Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$($USER.replace('@',"-"))_$ts.Zip" -Force # Zip Logs
+
 Invoke-Item $DesktopPath\MS-Logs # open file manager
 
 $title = "Mailbox Audit Log Overview for [$user] from $((get-date).AddDays($start))"
+
 $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType | select count,Name | Sort count,Operation -Descending | Out-GridView -T $title
