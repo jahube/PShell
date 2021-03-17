@@ -13,7 +13,7 @@ disable-mailbox $user
 get-mailbox -softdeletedmailbox $user | set-mailbox -ExcludeFromAllOrgHolds # remove holds if applicable
 
 # permanently disable
-disable-mailbox $user -PermanentlyDisable -IgnoreLegalHold
+disable-mailbox $user -PermanentlyDisable # -IgnoreLegalHold deprecated
 
 # remove recipienttype mailbox --> mailuser
 Set-User $user -PermanentlyClearPreviousMailboxInfo
