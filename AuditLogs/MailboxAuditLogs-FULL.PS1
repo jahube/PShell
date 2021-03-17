@@ -16,10 +16,10 @@ IF(!@(Get-PSSession | where { $_.State -ne "broken" } )) {
 IF(!@(Get-InstalledModule ExchangeOnlineManagement -ErrorAction SilentlyContinue)) { install-module exchangeonlinemanagement -Scope CurrentUser }
 
 IF(!@($Credentials)) {$Credentials = Get-credential } ; IF(!@($ADMIN)) {$ADMIN = $Credentials.UserName }
-Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
+Try { Connect-ExchangeOnline -Credential $Credentials -EA stop } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
 
 IF (!($Credentials.UserName -in (get-RoleGroupMember "Organization Management").primarySMTPaddress)) { Add-RoleGroupMember "Organization Management" -Member $ADMIN
-Try { Connect-ExchangeOnline -Credential $Credentials } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
+Try { Connect-ExchangeOnline -Credential $Credentials -EA stop } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
 
 IF (!($USER)) { $MBXs = get-mailbox -ResultSize unlimited ;
 IF ($MBXs.Count -gt "400") { $USER = Read-Host -Prompt "Affected User [Userprincipalname]" }
@@ -33,10 +33,6 @@ get-mailbox $user | select AuditEnabled
 get-mailbox $user | select -expandproperty auditadmin
 get-mailbox $user | select -expandproperty auditdelegate
 get-mailbox $user | select -expandproperty auditowner }
-
-# $path = ""$logsPATH\Users\NAME\Downloads\mailboxlogs"
-# $file = "mailboxlogs.xml"
-# $data = Import-Clixml $path\$file
 
 Else { $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{
    InitialDirectory = [Environment]::GetFolderPath('Desktop')
