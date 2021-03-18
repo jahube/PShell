@@ -55,22 +55,22 @@ $data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonTy
 
 $harddelete | FT > "$logsPATH\harddelete-Details.txt"
 $harddelete | Export-CSV "$logsPATH\harddelete-Details.csv" -NoTypeInformation
-$harddelete | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name > "$logsPATH\harddelete.txt"
-$harddelete | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name > "$logsPATH\harddelete-Summary.txt"
+$harddelete | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name | Sort count,Operation -Descending > "$logsPATH\harddelete.txt"
+$harddelete | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name | Sort count,Operation -Descending > "$logsPATH\harddelete-Summary.txt"
 
 $softdelete | FT > "$logsPATH\softdelete-Details.txt"
-$softdelete | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name > "$logsPATH\softdelete.txt"
-$softdelete | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name > "$logsPATH\softdelete-Summary.txt"
+$softdelete | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name | Sort count,Operation -Descending > "$logsPATH\softdelete.txt"
+$softdelete | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name | Sort count,Operation -Descending > "$logsPATH\softdelete-Summary.txt"
 $softdelete | Export-CSV "$logsPATH\softdelete-Details.csv" -NoTypeInformation
 
 $MoveToDltd | FT > "$logsPATH\MoveToDltd-Details.txt"
-$MoveToDltd | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name > "$logsPATH\MoveToDltd.txt"
-$MoveToDltd | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name > "$logsPATH\MoveToDltd-Summary.txt"
+$MoveToDltd | group operation,clientprocessname,clientinfostring,ClientVersion,clientip,LogonType,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name | Sort count,Operation -Descending > "$logsPATH\MoveToDltd.txt"
+$MoveToDltd | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion | select count,Name | Sort count,Operation -Descending > "$logsPATH\MoveToDltd-Summary.txt"
 $MoveToDltd | Export-CSV "$logsPATH\MoveToDltd-Details.csv" -NoTypeInformation
 
 $data | FT > "$logsPATH\ALL-Details.txt"
-$data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType,clientip,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name > "$logsPATH\ALL.txt"
-$data | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion,clientip | select count,Name > "$logsPATH\ALL-Summary.txt"
+$data | group operation,clientprocessname,clientinfostring,ClientVersion,LogonType,clientip,CrossMailboxOperation,DestMailboxOwnerUPN,ExternalAccess | select count,Name | Sort count,Operation -Descending > "$logsPATH\ALL.txt"
+$data | group operation,clientprocessname,clientinfostring,LogonType,ClientVersion,clientip | select count,Name | Sort count,Operation -Descending > "$logsPATH\ALL-Summary.txt"
 $data | Export-CSV "$logsPATH\ALL-Details.csv" -NoTypeInformation
 
 Stop-Transcript
