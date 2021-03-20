@@ -8,9 +8,6 @@ $ts = Get-Date -Format yyyyMMdd_hhmmss
 $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
 $logsPATH = mkdir "$DesktopPath\MS-Logs\Mailbox-Audit-Logs_$ts"
 
-Start-Transcript "$logsPATH\Transcript_$ts.txt"
-$FormatEnumerationLimit = -1
-
 # check PS Session + check Exo Module V2 (+ install if not found) + connect + $credentials
 
 IF(!@(Get-PSSession | where { $_.State -ne "broken" } )) {
@@ -18,6 +15,9 @@ IF(!@(Get-InstalledModule ExchangeOnlineManagement -ErrorAction SilentlyContinue
 
 IF(!@($Credentials)) {$Credentials = Get-credential } ; IF(!@($ADMIN)) {$ADMIN = $Credentials.UserName }
 Try { Connect-ExchangeOnline -Credential $Credentials -EA stop } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
+
+Start-Transcript "$logsPATH\Transcript_$ts.txt"
+$FormatEnumerationLimit = -1
 
 IF (!($Credentials.UserName -in (get-RoleGroupMember "Organization Management").primarySMTPaddress)) { Add-RoleGroupMember "Organization Management" -Member $ADMIN
 Try { Connect-ExchangeOnline -Credential $Credentials -EA stop } catch { Connect-ExchangeOnline -UserPrincipalName $ADMIN } }
