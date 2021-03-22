@@ -17,7 +17,12 @@ write-host "`nBookings was disabled - ENABLING - TAKES 12-48h" -F yellow }
 IF (($OrgCfg.BookingsEnabled)){$BkDays=(NEW-TIMESPAN –Start $OrgCfg.BookingsEnabledLastUpdateTime –End (get-date)).Days;
 write-host "`nBookings enabled $BkDays Days ago  :    [ $($OrgCfg.BookingsEnabledLastUpdateTime) ]" -F green }
 ##############################################################################################
-$MBX = get-recipient -Resultsize Unlimited | where {$_.RecipientTypeDetails -match "SchedulingMailbox"}
+# $MBX = get-mailbox -RecipientTypeDetails "SchedulingMailbox" -Resultsize Unlimited
+
+$MBX = get-mailbox -RecipientTypeDetails "SchedulingMailbox" -Resultsize Unlimited
+
+If ($MBX) { $MBX | FT } ELSE { write-host "No Bookings Mailboxes found" -F yellow }
+
 foreach ($M in $MBX) {
 Write-Host -ForegroundColor green "collecting permissions for $($M.alias)..."
 $stats = get-MailboxFolderStatistics $M.distinguishedname
