@@ -1,5 +1,6 @@
+$ADMIN = "" # modify Admin
 
-$user = "user@domain.com"
+$user = "user@domain.com" # affected user
 
 IF(!@(Get-PSSession | where { $_.State -ne "broken" } )) {
 IF(!@(Get-InstalledModule ExchangeOnlineManagement -ErrorAction SilentlyContinue)) { install-module exchangeonlinemanagement -Scope CurrentUser }
