@@ -35,4 +35,6 @@ Elseif ($M.WindowsLiveID -eq $MBX.WindowsLiveID) { $MemberOF += $G }
 }
 }
 $OwnerOF | Export-csv "C:\$($MBX.name)_OwnerOF.CSV" -NoTypeInformation
+$OwnerOF | select Name,primarySMTPAddress | FT > "C:\$($MBX.name)_OwnerOF.TXT"
 $MemberOF | Export-csv "C:\$($MBX.name)_MemberOF.CSV" -NoTypeInformation
+$MemberOF | select Name,primarySMTPAddress | FT > "C:\$($MBX.name)_MemberOF.TXT"
