@@ -16,11 +16,10 @@ Set-AuthConfig –PublishCertificate
 Set-AuthConfig -ClearPreviousCertificate
 
 # IIS reset has 1 minute downtime at least
+
 IISReset 
 
 # OR
-•	Restart the Microsoft Exchange Service Host Service.
-•	Either run the IISReset command to restart IIS or run the following commands (in elevated mode) to recycle OWA and ECP Application pools:
 
 Restart-WebAppPool MSExchangeOWAAppPool
 Restart-WebAppPool MSExchangeECPAppPool
