@@ -24,6 +24,11 @@ get-MigrationBatch | where { $_.status -eq 'synced' } | Set-MigrationBatch -Comp
 ###############################
 
 remove failed migrationusers
+$failedusers =  get-migrationuser | where { $_.status -eq 'synced' }
+$failedusers | % { Set-migrationuser -identity $_.identity -approveskippeditems -CF:$true }
+$failedusers | % { Set-migrationuser -identity $_.identity -CompleteAfter (Get-Date).ToUniversalTime() -CF:$true }
+
+remove failed migrationusers
 $failedusers =  get-migrationuser | where { $_.status -eq 'failed' }
 $failedusers | % { remove-migrationuser -identity $_.identity -force -CF:$true }
 
