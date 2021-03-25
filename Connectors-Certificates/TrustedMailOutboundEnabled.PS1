@@ -1,4 +1,5 @@
-
+# the receive connector should be CREATED on EACH server created/configured/set
+# credits and big thanks to Victor Legat 
 ############# ONPREM #####################################################################################
 
 ##############
@@ -43,8 +44,6 @@ Set-remotedomain 'custom-domain.com' -TrustedMailOutboundEnabled $true -isintern
 ####### ONPREM: TLS Connector Certificate steps (or HCW) #################################################
 
 Get-ExchangeCertificate | Format-List FriendlyName,Subject,CertificateDomains,Thumbprint,Services
-
-** the receive connector should be CREATED on EACH server created/configured/set ** THANKS VICTOR !
 
 $TLSCert = Get-ExchangeCertificate <Thumbrint from above>
 
