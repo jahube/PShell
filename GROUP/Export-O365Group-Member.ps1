@@ -40,17 +40,6 @@ $item | FL > "$GroupDirPath\Group-short-$Groupdirname.txt"
 $item | Export-csv "$GroupDirPath\Group-$Groupdirname-custom.csv" -NoTypeInformation
 $G | FL > "$GroupDirPath\Group-Long-$Groupdirname.txt"
 
-$Groupmembers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Member
-$Groupmembers | Export-csv "$GroupDirPath\Groupmembers-$Groupdirname.CSV" -NoTypeInformation
-$Groupmembers | Export-Clixml "$GroupDirPath\Groupmembers-$Groupdirname.XML"
-$Groupmembers | FT > "$GroupDirPath\Groupmembers-$Groupdirname.txt"
-
-$GroupOwners = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Owner
-$GroupOwners | Export-csv "$GroupDirPath\GroupOwners-$Groupdirname.CSV" -NoTypeInformation
-$GroupOwners | Export-Clixml "$GroupDirPath\GroupOwners-$Groupdirname.XML"
-$GroupOwners | FT > "$GroupDirPath\GroupOwners-$Groupdirname.txt"
-
-
 $Groupmembers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Member -ResultSize unlimited
 $Groupmembers | Export-csv "$GroupDirPath\Groupmembers-$Groupdirname.CSV" -NoTypeInformation
 $Groupmembers | Export-Clixml "$GroupDirPath\Groupmembers-$Groupdirname.XML"
