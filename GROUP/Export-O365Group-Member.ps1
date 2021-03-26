@@ -5,7 +5,7 @@ mkdir $logsPATH\complete
 $Groups = Get-UnifiedGroup -ResultSize unlimited
 $C = 0
 
-$count = $DLS.count
+$count = $Groups.count
 $Members = @() ; $data = @()
 #check
 foreach ($G in $Groups) {
