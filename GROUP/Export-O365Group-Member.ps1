@@ -6,17 +6,14 @@ $Groups = Get-UnifiedGroup -ResultSize unlimited
 $C = 0
 
 $count = $DLS.count
-$Members = @()
+$Members = @() ; $data = @()
 #check
 foreach ($G in $Groups) {
 Write-Progress -Activity "Group $($DL.name) $($DL.userprincipalname)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
-$Members = @()
 $ps = $path + '\short\' + $DL.PrimarySmtpAddress + '.csv'
 $pc = $path + '\complete\' + $DL.PrimarySmtpAddress + '.csv'
 
-$data = @()
-foreach ($G in $Groups) { 
 $item = New-Object -TypeName PSObject   
 $item | Add-Member -MemberType NoteProperty -Name Type -Value "Group"
 $item | Add-Member -MemberType NoteProperty -Name DisplayName -Value $G.DisplayName
