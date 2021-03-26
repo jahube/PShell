@@ -37,7 +37,6 @@ $data += $item
 $Groupdirname = $($G.Alias).Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
 $GroupDirPath = mkdir "$logsPATH\$Groupdirname"
 $item | FL > "$GroupDirPath\Group-short-$Groupdirname.txt"
-$item | Export-csv "$GroupDirPath\Group-$Groupdirname-custom.csv" -NoTypeInformation
 $G | FL > "$GroupDirPath\Group-Long-$Groupdirname.txt"
 
 $Groupmembers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Member -ResultSize unlimited
@@ -55,10 +54,11 @@ $GroupOwners | Export-csv "$GroupDirPath\GroupSubscriber-$Groupdirname.CSV" -NoT
 $GroupOwners | Export-Clixml "$GroupDirPath\GroupSubscriber-$Groupdirname.XML"
 $GroupOwners | FT > "$GroupDirPath\GroupSubscriber-$Groupdirname.txt"
 
-
 $C++
 
 }
+
+$Data | Export-csv "$logsPATH\Group-Overview.csv" -NoTypeInformation
 
 Stop-Transcript
 
