@@ -6,13 +6,13 @@ $Groups = get-distributiongroup | select Displayname,Identity,PrimarySMTPaddress
 
 $Select = $Groups | Out-Gridview -Passthru -Title "Select Groups To Hide"
 
-$foreach ($G in $Select) { Set-DistributionGroup -ReportToOriginatorEnabled:$true -Confirm:$false }
+$foreach ($G in $Select) { Set-DistributionGroup $G.distinguishedname -ReportToOriginatorEnabled:$true -Confirm:$false }
 
 #################################################################################################################
 # oneliner Exchange Onprem Management Shell
 #################################################################################################################
 
-get-distributiongroup | select Dis*me | OGV -P -T "Select Group to Hide" | Set-DistributionGroup -ReportToOriginatorEnabled:$true -CF:$false
+get-distributiongroup | select Dis*me | OGV -P -T "Select Group to Hide" | % { Set-DistributionGroup $_.distinguishedname -ReportToOriginatorEnabled:$true -CF:$false }
 
 #################################################################################################################
 # Active Directory / DC
