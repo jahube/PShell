@@ -1,13 +1,15 @@
-﻿
-$logsPATH = "C:\temp"
-mkdir $logsPATH\short
-mkdir $logsPATH\complete
-$Groups = Get-UnifiedGroup -ResultSize unlimited
-$C = 0
+﻿# desktop/MS-Logs+Timestamp
+$ts = Get-Date -Format yyyyMMdd_hhmmss
+$DesktopPath = ([Environment]::GetFolderPath('Desktop'))
+$logsPATH = mkdir "$DesktopPath\MS-Logs\Group_Export_$ts"
 
-$count = $Groups.count
-$Members = @() ; $data = @()
-#check
+Start-Transcript "$logsPATH\Group_Export_$ts.txt"
+$FormatEnumerationLimit = -1
+
+$Groups = Get-UnifiedGroup -ResultSize unlimited
+
+$count = $Groups.count ; $C = 0 ; $Members = @() ; $data = @()
+
 foreach ($G in $Groups) {
 Write-Progress -Activity "Group $($DL.name) $($DL.userprincipalname)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
@@ -68,3 +70,8 @@ $GroupOwners | FT > "$GroupDirPath\GroupSubscriber-$Groupdirname.txt"
 $C++
 
 }
+
+Stop-Transcript
+
+Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Group_Export_$ts" -Force # Zip Logs
+Invoke-Item $DesktopPath\MS-Logs # open file manager
