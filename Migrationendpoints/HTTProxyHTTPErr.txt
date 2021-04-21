@@ -1,0 +1,16 @@
+Test-OAuthconnectivity
+
+Test-OAuthConnectivity -Service EWS -TargetUri https://mail.domain.com/autodiscover/autodiscover.svc -Mailbox 'cloud@user.com' -Verbose | fl
+
+HTTProxy + HTTPErr logs prüfen.
+- timely correlated for file-date / log-date + time for above test
+- zeitlich korreliert nach Datei-Datum / LOG datum damit die Suche eingegrenzt wird. + time for above test
+
+https://raw.githubusercontent.com/jahube/PShell/master/Migrationendpoints/test.PS1
+
+%ExchangeInstallPath%Logging\HttpProxy\Ews
+
+%SystemRoot%\System32\LogFiles\HTTPERR 
+
+check Abfrage + Antwort / request + response
+

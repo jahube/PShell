@@ -9,7 +9,7 @@ $Subject = "" #Subject
 $path = "C:\Temp"
 
 $st = (get-date).AddDays($startDays).tostring(“MM/dd/yyyy”); $ed = (get-date).AddDays($endDays).tostring(“MM/dd/yyyy”);
-$Calendar = Get-CalendarDiagnosticLog $user -StartDate $start -EndDate $end -WA silentlycontinue;
+$Calendar = Get-CalendarDiagnosticLog $user -StartDate $st -EndDate $ed -WA silentlycontinue;
 $Match = $Calendar.Where({($_.NormalizedSubject -match $Subject) -or ($_.NormalizedSubject -eq $Subject)})
 $Cal = $Match | sort-Object CleanGlobalObjectId -Unique ;
 
