@@ -15,6 +15,5 @@ Set-AuthConfig -ClearPreviousCertificate
 # IIS reset has 1 minute downtime at least
 IISReset 
 
-# OR
 Restart-WebAppPool MSExchangeOWAAppPool
 Restart-WebAppPool MSExchangeECPAppPool
