@@ -1,26 +1,18 @@
-# Suggested Contacts - thanks to Zaki !
+$mbxs = try { get-EXOmailbox -ResultSize unlimited -EA stop } catch { get-mailbox -ResultSize unlimited }
+[System.Collections.ArrayList]$MBX = $mbxs.userprincipalname ; $count= $MBX.count
 
-$Configs = "Configuration\IPM.Configuration.Relevance.SasPeopleMetadataModel"
-$Configs += "Configuration\IPM.Configuration.Relevance.SasPeopleIndexModel"
-$Configs += "Configuration\IPM.Configuration.Relevance.SasInstantIndexModelItem"
-$Configs += "Configuration\IPM.Configuration.AutoComplete"
-$Configs += "Configuration\IPM.Configuration.OWA.AutocompleteCache"
+        $time = [system.diagnostics.stopwatch]::startNew() ; for ($M = 0; $M -lt $MBX.count ) {
+    try { $C1 = @(get-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity "Configuration\*" -EA stop).identity }
+  catch {        $Error[0].Exception | FL * -F }
+         $C2  =  $C1 | where { $_ -match "OWA" -or $_ -match "Relevance" -or $_ -match "Search" -or $_ -match "Autocomplete" }
+       
+Foreach ( $C in $C2 ) { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -Confirm:$false -EA silentlycontinue }
 
-$mbxs = get-mailbox -ResultSize unlimited; $count= $MBXs.count
-[System.Collections.ArrayList]$MBX = $mbxs.userprincipalname
-for ($M = 0; $M -lt $MBX.count; $M++) { $S =" [MBX] ($($M+1)/$count)  [Time]"
-$A = "Clearing OWA Autocomplete Cache [Mailbox Count] ($($M+1)/$count) [Mailbox] $($MBX[$M])"
-Write-Progress -Activity $A -Status $S -PercentComplete (($M/$count)*100) -SecondsRemaining $($count-$M) ;
+  $M++ ;  $Pn = $M/$count ; $Pc = $Pn * 100 ;
+        $Tsec = $time.ElapsedMilliseconds/1000 ;
+          $ts =  [timespan]::fromseconds($Tsec) ;
+         $res = "$($ts.hours):$($ts.minutes):$($ts.seconds)"
+           $S = "[Time/Elapsed] $res [Total]" ; $Ttl = $Tsec/$Pn ; $Tr = $Ttl - $Tsec
+           $A = "Clearing OWA Autocomplete Cache [Mailbox Count] [User] $($MBX[$M]) [MBX] ($M/$count)  "
 
-Foreach ($C in $Configs) {
-Try { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -Confirm:$false 
-} catch { Write-Host $Error[0].Exception.Message -F Yellow } } }
-
-
-# Outlook Offline Addressbook - for reference
-# delete subfolders when Outlook is closed
-# the OAB will be immediately downloaded again once Outlook is started
-# Filemanager OR  Search beside Start menu
-# %LocalAppData%\Microsoft\Outlook\Offline Address Books\
-# %LocalAppData%\Microsoft\Outlook\RoamCache\
-# also check Recipientcache in MFCMAPI
+Write-Progress -Activity $A -Status $S -PercentComplete $Pc -SecondsRemaining $($count-$M) }
