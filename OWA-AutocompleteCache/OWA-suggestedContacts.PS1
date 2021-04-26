@@ -13,7 +13,7 @@ Configuration\IPM.Configuration.Relevance.PeopleIndexBuilderModel
 "@
 
 $Mbxs = try { get-EXOmailbox -ResultSize unlimited } catch { get-mailbox -ResultSize unlimited }
-[System.Collections.ArrayList]$MBX = $mbxs | Out-Gridview -T "Select Mailboxes to Clear Cache" -P| select userprincipalname
+[System.Collections.ArrayList]$MBX = @($mbxs | select use*e,disp*e,Pr*ess | ogv -P -T "Select to clear Cache").userprincipalname ;
 $count= $MBX.count; $time = [system.diagnostics.stopwatch]::startNew() ; for ($M = 0; $M -lt $MBX.count ) {
 $C1 = @(get-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity "Configuration\*").identity
 $C2  = $C1 | where { $_ -in $Cfg.Split(';') } ; Foreach ($C in $C2) {
