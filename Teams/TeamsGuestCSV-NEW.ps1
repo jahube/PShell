@@ -50,7 +50,7 @@ if (!(get-PSRepository PSGallery -ErrorAction SilentlyContinue)) { Register-PSRe
 try { Install-PackageProvider -Name NuGet -Force -ErrorAction Stop } catch { Install-PackageProvider -Name NuGet -Force -Scope CurrentUser }
 
 # Trust PSGallery
-if ((get-PSRepository PSGallery -ErrorAction SilentlyContinue).InstallationPolicy -ne ) { Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted }
+if ((get-PSRepository PSGallery -ErrorAction SilentlyContinue).InstallationPolicy -ne "Trusted") { Set-PSRepository -Name "PSGallery" -InstallationPolicy "Trusted" }
 
 # get-pssession | Remove-PSSession
 
