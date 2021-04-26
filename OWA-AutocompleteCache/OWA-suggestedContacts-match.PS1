@@ -1,10 +1,10 @@
 $mbxs = try { get-EXOmailbox -ResultSize unlimited -EA stop } catch { get-mailbox -ResultSize unlimited }
-[System.Collections.ArrayList]$MBX = $mbxs.userprincipalname ; $count= $MBX.count
+[System.Collections.ArrayList]$MBX = $mbxs | select use*me,dis*me,Pri*tp | ogv -P -T "Select to clear Cache" | select userprincipalname ;
 
+       $count = $MBX.count
         $time = [system.diagnostics.stopwatch]::startNew() ; for ($M = 0; $M -lt $MBX.count ) {
-    try { $C1 = @(get-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity "Configuration\*" -EA stop).identity }
-  catch {        $Error[0].Exception | FL * -F }
-         $C2  =  $C1 | where { $_ -match "OWA" -or $_ -match "Relevance" -or $_ -match "Search" -or $_ -match "Autocomplete" -or $_ -match "Suite.Storage" }
+    try { $C1 = @(get-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity "Configuration\*" -EA stop).identity } catch { $Error[0].Exception | FL * -F }
+          $C2 = $C1 | where { $_ -match "OWA" -or $_ -match "Relevance" -or $_ -match "Search" -or $_ -match "Autocomplete" -or $_ -match "Suite.Storage" }
        
 Foreach ( $C in $C2 ) { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -Confirm:$false -EA silentlycontinue }
 
