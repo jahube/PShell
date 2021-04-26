@@ -1,5 +1,5 @@
 $mbxs = try { get-EXOmailbox -ResultSize unlimited -EA stop } catch { get-mailbox -ResultSize unlimited }
-[System.Collections.ArrayList]$MBX = $mbxs | select use*me,dis*me,Pri*tp | ogv -P -T "Select to clear Cache" | select userprincipalname ;
+[System.Collections.ArrayList]$MBX = @($mbxs | select use*e,disp*e,Pr*ess | ogv -P -T "Select to clear Cache").userprincipalname ;
 
        $count = $MBX.count
         $time = [system.diagnostics.stopwatch]::startNew() ; for ($M = 0; $M -lt $MBX.count ) {
