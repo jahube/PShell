@@ -13,12 +13,12 @@ Configuration\IPM.Configuration.Relevance.PeopleIndexBuilderModel
 "@
 
 $Mbxs = try { get-EXOmailbox -ResultSize unlimited } catch { get-mailbox -ResultSize unlimited }
-[System.Collections.ArrayList]$MBX = $mbxs | Out-Gridview -T "Select Mailboxes to Clear Cache" -passthru | select userprincipalname
+[System.Collections.ArrayList]$MBX = $mbxs | Out-Gridview -T "Select Mailboxes to Clear Cache" -P| select userprincipalname
 $count= $MBX.count; $time = [system.diagnostics.stopwatch]::startNew() ; for ($M = 0; $M -lt $MBX.count ) {
 $C1 = @(get-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity "Configuration\*").identity
 $C2  = $C1 | where { $_ -in $Cfg.Split(';') } ; Foreach ($C in $C2) {
-Try { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -Confirm:$false } catch { $Error[0].Exception| FL * -F } }
-$M++ ; $Pn = $M/$count ; $Pc = $Pn * 100 ; $Tsec = $time.ElapsedMilliseconds/1000 ;
+Try { Remove-MailboxUserConfiguration -Mailbox $MBX[$M] -Identity $c -CF:$false -EA stop } catch { $Error[0].Exception | FL * -F } } 
+$M++ ; $Pn = $M/$count ; $Pc = $Pn * 100 ; $Tsec = $time.ElapsedMilliseconds/1000;
 $ts =  [timespan]::fromseconds($Tsec) ; $res = "$($ts.hours):$($ts.minutes):$($ts.seconds)"
 $S =" [MBX] ($M/$count)  [Time/Elapsed] $res [Total]" ; $Ttl = $Tsec/$Pn ; $Tr = $Ttl - $Tsec
 $A = "Clearing OWA Autocomplete Cache [Mailbox Count] ($M/$count) [Mailbox] $($MBX[$M])"
