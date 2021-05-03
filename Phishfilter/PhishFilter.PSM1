@@ -63,18 +63,19 @@ IF ($ViewOnly) { PhishView }
    InitialDirectory = [Environment]::GetFolderPath('Desktop')
              Filter = 'CSV Files (*.csv)|*.csv' }
               $null = $FileBrowser.ShowDialog()
-       $ImportData = Import-CSV $FileBrowser.FileName
+ $Global:ImportData = Import-CSV $FileBrowser.FileName
 
-# $compareData = $ImportData.emailadresse
+# $Global:compareData = $Global:ImportData.emailadresse
 
-$compareData = $ImportData
+$Global:compareData = $Global:ImportData
 
-$CompareDomains = @()
-foreach ($D in $compareData) {
-IF ($D -match '@' ) { $CompareDomains += ($D -split "@")[1] }
-            ELSE { $CompareDomains += $D } }
+$Cp = @()
+foreach ($D in $Global:compareData) {
+IF ($D -match '@' ) { $Cp += ($D -split "@")[1] }
+               ELSE { $Cp += $D } }
 
-$Global:FilterData = $Global:Data | where { $_.spoofeduser -in $CompareDomains -or $_.sender -in $CompareDomains -or @($_.spoofeduser -split '@')[1] -in $CompareDomains -or ($_.sender -split '@')[1] -in $CompareDomains }
+$Global:Data = Get-PhishFilterPolicy -Detailed
+$Global:FilterData = $Global:Data | where { $_.spoofeduser -in $Cp -or $_.sender -in $Cp -or @($_.spoofeduser -split '@')[1] -in $Cp -or ($_.sender -split '@')[1] -in $Cp }
 
 }
 
