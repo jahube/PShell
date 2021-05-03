@@ -74,9 +74,7 @@ foreach ($D in $compareData) {
 IF ($D -match '@' ) { $CompareDomains += ($D -split "@")[1] }
             ELSE { $CompareDomains += $D } }
 
-$FilterData = $Global:Data | where { $_.spoofeduser -in $CompareDomains -or $_.sender -in $CompareDomains -or @($_.spoofeduser -split '@')[1] -in $CompareDomains -or ($_.sender -split '@')[1] -in $CompareDomains }
-
-$Global:Data = $FilterData
+$Global:FilterData = $Global:Data | where { $_.spoofeduser -in $CompareDomains -or $_.sender -in $CompareDomains -or @($_.spoofeduser -split '@')[1] -in $CompareDomains -or ($_.sender -split '@')[1] -in $CompareDomains }
 
 }
 
