@@ -35,6 +35,8 @@ IF ($OpenFileDialog) { Open-FileDialog }
  $Global:Data | Export-CSV "$logsPATH\Spoofed_Senders_$ts.csv" -NoTypeInformation -Force }
 
 
+#################################################################################################################################################
+
  Function PhishView
  { if(!($Days)) { $Days = "14" }
 
@@ -50,6 +52,33 @@ $LastData | Out-GridView -Title "View Only"
 }
 
 IF ($ViewOnly) { PhishView }
+
+#################################################################################################################################################
+
+ Function compareData
+{
+
+# Open File Dialog
+       $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{
+   InitialDirectory = [Environment]::GetFolderPath('Desktop')
+             Filter = 'CSV Files (*.csv)|*.csv' }
+              $null = $FileBrowser.ShowDialog()
+       $ImportData = Import-CSV $FileBrowser.FileName
+
+# $compareData = $ImportData.emailadresse
+
+$compareData = $ImportData
+
+$CompareDomains = @()
+foreach ($D in $compareData) {
+IF ($D -match '@' ) { $CompareDomains += ($D -split "@")[1] }
+            ELSE { $CompareDomains += $D } }
+
+$FilterData = $Global:Data | where { $_.spoofeduser -in $CompareDomains -or $_.sender -in $CompareDomains -or @($_.spoofeduser -split '@')[1] -in $CompareDomains -or ($_.sender -split '@')[1] -in $CompareDomains }
+
+$Global:Data = $FilterData
+
+}
 
 #################################################################################################################################################
 
