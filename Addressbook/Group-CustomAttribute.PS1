@@ -13,7 +13,7 @@ $O365Group = Get-UnifiedGroup -resultsize unlimited
 $selected = $O365Group | Out-Gridview -T "Select O365-Group to filter" -OutputMode single
 
 ###################################################################################################################################
-# check Filter
+# check Filter for MemberOfGroup
 get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$($selected.DistinguishedName)")
 
 get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$($selected.Name)")
@@ -31,16 +31,19 @@ $Members = Get-UnifiedGroupLinks $selected.ExternalDirectoryObjectId -LinkType M
 
 Foreach ($M in $Members) { set-mailbox $M.DistinguishedName -CustomAttribute11 $CustomAttribute }
 
+###################################################################################################################################
+###################################################################################################################################
+
 ########## Tag legacy Distribution List / Security Group  ########################################################################
 
 # Select legacy Distribution List / Security Group
 
-$DLs = Get-get-distributiongroup -resultsize unlimited
+$DLs = Get-distributiongroup -resultsize unlimited
 
 $selected = $DLs | Out-Gridview -T "Select O365-Group to filter" -OutputMode single
 
 ###################################################################################################################################
-# check Filter
+# check Filter for MemberOfGroup
 get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$($selected.DistinguishedName)")
 
 get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$($selected.Name)")
@@ -69,3 +72,13 @@ set-mailbox MAILBOX_NAME -CustomAttribute11 ABC
 Set-DistributionGroup MAILBOX_NAME -CustomAttribute11 ABC
 
 Set-UnifiedGroup MAILBOX_NAME -CustomAttribute11 ABC
+
+
+###################################################################################################################################
+# Oneliner to check recipientfilter MemberOfGroup
+###################################################################################################################################
+# UnifiedGroup
+get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$(@(Get-UnifiedGroup | Out-Gridview -T "Select Group filter" -OutputMode single).DistinguishedName)")
+
+# distributiongroup
+get-recipient -ResultSize unlimited -RecipientPreviewFilter -RecipientFilter {(MemberOfGroup -eq "$(@(Get-distributiongroup | Out-Gridview -T "Select Group filter" -OutputMode single).DistinguishedName)")
