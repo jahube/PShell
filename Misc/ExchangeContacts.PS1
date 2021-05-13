@@ -1,3 +1,4 @@
+# source https://github.com/gscales/Powershell-Scripts/tree/master/EWSContacts
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # Install EWS Module
