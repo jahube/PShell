@@ -2,8 +2,13 @@
 # source   https://techcommunity.microsoft.com/t5/office-365/powershell-script-to-export-audit-log-search-data-based-on/m-p/32658
 # based on https://github.com/jahube/AuditLogs/blob/main/tmp/Split-O365AuditLogs-FromO365.ps1
 
+        # change to $true to use start / enddate
+
 	[bool]$GLOBAL:specifyPeriod = $false # if false it will be the default period time specified $DefaultPeriodToCheck (last XX days)
-	[int]$GLOBAL:DefaultPeriodToCheck = -1 #last 14 days by default
+	
+        # if above is $False the below Timeframe is used instead
+
+        [int]$GLOBAL:DefaultPeriodToCheck = -14 #last 14 days by default
 
 	[DateTime]$GLOBAL:startDate = (get-date).AddDays(-30) # "01/01/2019 00:00" #"01/01/2019 00:00" #Format: mm/dd/yyyy hh:MM #(get-date).AddDays(-1)
 	[DateTime]$GLOBAL:endDate = (get-date) # "01/31/2019 23:59" #"01/11/2019 23:59" #Format: mm/dd/yyyy hh:MM #(get-date)
