@@ -2,6 +2,8 @@
 $DL = Get-DistributionGroup –Identity "Test DL2"
 $DL = Get-DistributionGroup -Filter { primarysmtpaddress -like "*Test*"}
 
+$Path "C:\Temp"
+
 #check
 $DL
 $Members = Get-DistributionGroupMember –Identity $DL.distinguishedname –ResultSize Unlimited
