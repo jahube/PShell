@@ -35,7 +35,7 @@ Set-UnifiedGroup -Identity $DL.Name -DisplayName $DL.DisplayName -Alias $DL.Alia
 $mcount = 1
 $Memberscount = $Members.count
 Foreach ($Member in $Members) { 
-Write-Progress -Activity "Adding Member" -Id 2 -ParentId 1 -Status "Member: $($Member.DisplayName)" -PercentComplete (($mcount/$Memberscount)*100)
+#Write-Progress -Activity "Adding Member" -Id 2 -ParentId 1 -Status "Member: $($Member.DisplayName)" -PercentComplete (($mcount/$Memberscount)*100)
 try { Add-UnifiedGroupLinks -Identity $DL.Name -LinkType member -Links $Member.distinguishedname -Confirm:$false } catch { Writehost $error[0] }
 $mcount++
 }
