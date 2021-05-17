@@ -54,7 +54,7 @@ $Members = Import-Csv -Path "$Path\exportDLremove.csv" -Encoding UTF8
 $rcount = 1
 Foreach ($Member in $Members) { 
 Write-Progress -Activity "Removing Members" -Id 2 -ParentId 1 -Status "Member: $($Member.DisplayName)" -PercentComplete (($rcount/$Memberscount)*100)
-try { remove-UnifiedGroupLinks -Identity $DL.Name -LinkType member -Links $Member.GUID -Confirm:$false } catch { Writehost $error[0] }
+try { remove-UnifiedGroupLinks -Identity $DL.Name -LinkType member -Links $Member.distinguishedname -Confirm:$false } catch { Writehost $error[0] }
 $rcount++
 }
 
