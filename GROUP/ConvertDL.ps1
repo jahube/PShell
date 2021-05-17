@@ -2,6 +2,9 @@
 $DL = Get-DistributionGroup –Identity "Test DL2"
 $DL = Get-DistributionGroup -Filter { primarysmtpaddress -like "*Test*"}
 
+# "Menu"
+$DL = Get-DistributionGroup | select *name*,alias,pri*,GUID | Out-Gridview -Outputmode Single -T "Select Distributionlist to Upgrade"
+
 # documents
 $Path = ([Environment]::GetFolderPath('MyDocuments'))
 
