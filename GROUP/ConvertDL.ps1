@@ -2,7 +2,10 @@
 $DL = Get-DistributionGroup –Identity "Test DL2"
 $DL = Get-DistributionGroup -Filter { primarysmtpaddress -like "*Test*"}
 
-$Path "C:\Temp"
+# documents
+$Path = ([Environment]::GetFolderPath('MyDocuments'))
+
+#$Path "C:\Temp"
 
 #check
 $DL
