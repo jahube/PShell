@@ -7,12 +7,20 @@ $Path = ([Environment]::GetFolderPath('MyDocuments'))
 
 #$Path "C:\Temp"
 
+#DL export
+$DL | Export-Csv -Path "$Path\DL_$($DL.Name).csv" -NoTypeInformation -Encoding UTF8 -Force
+
 #check
 $DL
+
+# $DL = Import-Csv -Path "$Path\DL_$($DL.Name).csv" -Encoding UTF8
+
+#MEMBERS export
+
 $Members = Get-DistributionGroupMember –Identity $DL.distinguishedname –ResultSize Unlimited
-$Members | Export-Csv -Path "$Path\exportDL.csv" -NoTypeInformation -Encoding UTF8
-$Members | select *name*,alias,pri*,GUID | Export-Csv -Path "$Path\exportDLshort.csv" -NoTypeInformation -Encoding UTF8
-# $Members = Import-Csv -Path "$Path\exportDL.csv" -Encoding UTF8
+$Members | Export-Csv -Path "$Path\exportDL_$($DL.Name).csv" -NoTypeInformation -Encoding UTF8
+$Members | select *name*,alias,pri*,GUID | Export-Csv -Path "$Path\exportDLshort.csv" -NoTypeInformation -Encoding UTF8 -Force
+# $Members = Import-Csv -Path "$Path\exportDL_$($DL.Name).csv" -Encoding UTF8
 
 #delete DL after export
 Remove-DistributionGroup -identity $DL.DistinguishedName
