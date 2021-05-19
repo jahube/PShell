@@ -4,5 +4,7 @@ winrm set winrm/config/winrs '@{ AllowRemoteShellAccess = "true" ; IdleTimeout =
 
 winrm get winrm/config/winrs
 
+Set-WSManQuickConfig
+
 reference
 https://docs.microsoft.com/en-us/windows/win32/winrm/quotas
