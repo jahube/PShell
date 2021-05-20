@@ -2,11 +2,11 @@
 # Exchange Onprem Management Shell
 #################################################################################################################
 
-$Groups = get-distributiongroup | select Displayname,Identity,PrimarySMTPaddress,SamAccountName,Distinguishedname
+$Groups = get-distributiongroup | select Displayname,Identity,PrimarySMTPaddress,SamAccountName,HiddenFromAddressListsEnabled,Distinguishedname
 
 $Select = $Groups | Out-Gridview -Passthru -Title "Select Groups To Hide"
 
-$foreach ($G in $Select) { Set-distributiongroup $G.distinguishedname -HiddenFromAddressListsEnabled $true -Confirm:$false }
+foreach ($G in $Select) { Set-distributiongroup $G.distinguishedname -HiddenFromAddressListsEnabled $true -Confirm:$false }
 
 #################################################################################################################
 # oneliner Exchange Onprem Management Shell
@@ -20,17 +20,17 @@ get-distributiongroup | select Dis*me | OGV -P -T "Select Group to Hide" | % { S
 
 Import-module activedirectory
 
-ADSet-ADServerSettings -ViewEntireForest $true
+Set-ADServerSettings -ViewEntireForest $true
 
-$ADGroups = Get-ADGroup -Filter 'groupcategory -eq "Distribution"' -Properties displayName,groupType,objectClass
+$ADGroups = Get-ADGroup -Filter 'groupcategory -eq "Distribution"' -Properties displayName,groupType,objectClass,msExchHideFromAddressLists
 
 # -Server localhost:60000 -Filter "GroupScope -eq 'DomainLocal'" -SearchBase "DC=AppNC"
 
-$Filtered = $ADGroups | select Displayname,Identity,PrimarySMTPaddress,SamAccountName,Distinguishedname
+$Filtered = $ADGroups | select Displayname,Identity,PrimarySMTPaddress,SamAccountName,msExchHideFromAddressLists,Distinguishedname
 
 $Selected = $Filtered | Out-Gridview -Passthru -Title "Select Groups To Hide"
  
-$foreach ($G in $Selected) { Set-ADObject $Group.distinguishedname -replace @{msExchHideFromAddressLists=$true} }
+foreach ($G in $Selected) { Set-ADObject $G.distinguishedname -replace @{msExchHideFromAddressLists=$true} }
 
 #################################################################################################################
 #  Oneliner versions AD
