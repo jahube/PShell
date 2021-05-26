@@ -3,18 +3,21 @@ standard
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ICM $([scriptblock]::Create((wget "https://raw.githubusercontent.com/jahube/Logs/main/Migration-Stats.PS1").Content))
 
+webview https://raw.githubusercontent.com/jahube/Logs/main/Migration-Stats.PS1
 =========================================================================================================================
 long
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ICM $([scriptblock]::Create((wget "https://raw.githubusercontent.com/jahube/Logs/main/Migration-Stats-long.PS1").Content))
 
+webview https://raw.githubusercontent.com/jahube/Logs/main/Migration-Stats-long.PS1
 =========================================================================================================================
-
+after migration
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ICM $([scriptblock]::Create((wget "https://raw.githubusercontent.com/jahube/Logs/main/migration-stats-after.ps1").Content))
 
+webview https://raw.githubusercontent.com/jahube/Logs/main/migration-stats-after.ps1
 =========================================================================================================================
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
