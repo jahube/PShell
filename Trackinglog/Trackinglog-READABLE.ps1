@@ -18,7 +18,7 @@ Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 $Servers = Get-ExchangeServer;  $Servers | where {​​$_.isHubTransportServer -eq $true -or $_.isMailboxServer -eq $true}​​
 
 $senderlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL 
-$senderlog | Export-CsV "$logsPATH\Sender-trackinglog.csv -notypeinformation"
+$senderlog | Export-CsV "$logsPATH\Sender-trackinglog.csv" -notypeinformation
 $senderlog | Export-clixml -path "$logsPATH\Sender-trackinglog.xml"
 
 
