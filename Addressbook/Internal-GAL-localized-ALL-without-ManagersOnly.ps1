@@ -132,6 +132,7 @@ Get-Mailbox -Filter { ( RecipientType -eq "UserMailbox" ) -AND ( Manager -eq "$M
 
 get-AddressList | % { Set-AddressList -Identity $_.identity }
 
+# Test Repro cleanup
 <#
 $Addresslists1 = $intern_AL,$extern_AL,$Groups_AL,$Rooms_AL,$Ressources_AL,$RoomList_AL
 
