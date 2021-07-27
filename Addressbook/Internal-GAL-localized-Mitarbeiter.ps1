@@ -27,7 +27,6 @@ connect-Exchangeonline -credential $credential                  # connect AGAIN 
 
 # for Example "Roomlists Team" - the word Team was added as a Suffix to avoid conflict
 
-
           # ENGLISH
 
         $TeamName = "Team" # 
