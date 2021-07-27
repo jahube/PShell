@@ -85,30 +85,28 @@ set-mailbox kasim -CustomAttribute15 ""
 # objects that are tagged to be exceptionally visible for above
 
 ---------------------------------------
-
 # ENGLISH
-
   $TeamName = "Team" #
 
----------------------------------------
-
 # GERMAN
-
   $TeamName = "Mitarbeiter" #
-
 ---------------------------------------
 
-set-mailbox kasim -CustomAttribute15 $TeamName
+          set-mailbox USERNAME -CustomAttribute15 $TeamName
 
-Set-DistributionGroup abc -CustomAttribute15 $TeamName
+Set-DistributionGroup USERNAME -CustomAttribute15 $TeamName
 
-Set-UnifiedGroup test2 -CustomAttribute15 $TeamName
+     Set-UnifiedGroup USERNAME -CustomAttribute15 $TeamName
+
+         Set-MailUser USERNAME -CustomAttribute15 $TeamName
+
+      Set-MailContact USERNAME -CustomAttribute15 $TeamName
 
 ---------------------------------------
 
 #check wih test user first
 
-Get-Mailbox TESTUSER |  Where { $_.CustomAttribute15 -eq $TeamName } | Set-Mailbox -AddressBookPolicy $AdressbookPolicy
+Get-Mailbox TESTUSER | Set-Mailbox -AddressBookPolicy $AdressbookPolicy
 
 # later assign to all users if it is confirmed to be running
 
