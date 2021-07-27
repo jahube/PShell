@@ -127,11 +127,11 @@ $MANAGER = ( Get-Recipient "CEO@Email.here" ).Distinguishedname
 
 Get-Mailbox -Filter { ( RecipientType -eq "UserMailbox" ) -AND ( Manager -eq "$MANAGER") } -resultsize unlimited  | Set-Mailbox -AddressBookPolicy $AdressbookPolicy
 
-
 # update Addresslists
 
 get-AddressList | % { Set-AddressList -Identity $_.identity }
 
+# Test Repro cleanup
 <#
 $Addresslists1 = $intern_AL,$extern_AL,$Groups_AL,$Rooms_AL,$Ressources_AL,$RoomList_AL
 
