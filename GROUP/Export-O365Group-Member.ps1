@@ -13,7 +13,7 @@ $count = $Groups.count ; $C = 0 ; $Members = @() ; [Array]$data = @()
 foreach ($G in $Groups) {
 Write-Progress -Activity "[Group - NAME]  $($G.name)  - [Group - SMTP] $($G.PrimarySmtpAddress)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
-$item = New-Object -TypeName PSObject  
+$item = New-Object -TypeName PSCustomObject  
 $item | Add-Member -MemberType NoteProperty -Name Type -Value "Group"
 $item | Add-Member -MemberType NoteProperty -Name DisplayName -Value $G.DisplayName
 $item | Add-Member -MemberType NoteProperty -Name ExternalDirectoryObjectId -Value $G.ExternalDirectoryObjectId
@@ -63,7 +63,9 @@ $C++
 
 }
 
-$Data | Export-csv "$logsPATH\Group-Overview.csv" -NoTypeInformation
+$Data | Export-csv "$logsPATH\Group-Overview.csv" -force -NoTypeInformation
+$Data | Export-Clixml "$logsPATH\Group-Overview.XML"
+$Data | FT -AutoSize > "$logsPATH\Group-Overview.txt"
 
 Stop-Transcript
 
