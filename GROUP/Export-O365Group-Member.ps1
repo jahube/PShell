@@ -42,12 +42,20 @@ IF ($MBX) { $item | Add-Member -MemberType NoteProperty -Name MBX_SMTP -Value $M
              write-host $Error[0].Exception.message -F yellow }
 
 IF ($MbxStats) { 
-   $item | Add-Member -MemberType NoteProperty -Name TotalItemSize -Value $([math]::Round(($MbxStats.TotalItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
-   $item | Add-Member -MemberType NoteProperty -Name TotalDeletedItemSize -Value $([math]::Round(($MbxStats.TotalDeletedItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
-   $item | Add-Member -MemberType NoteProperty -Name MessageTableTotalSize -Value $([math]::Round(($MbxStats.MessageTableTotalSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
-   $item | Add-Member -MemberType NoteProperty -Name SystemMessageSize -Value $([math]::Round(($MbxStats.SystemMessageSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
-   $item | Add-Member -MemberType NoteProperty -Name MailboxGuid -Value $MbxStats.MailboxGuid.guid
-   $item | Add-Member -MemberType NoteProperty -Name OwnerADGuid -Value $MbxStats.OwnerADGuid.guid }
+
+           $TotalItemSize = $([math]::Round(($MbxStats.TotalItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+    $TotalDeletedItemSize = $([math]::Round(($MbxStats.TotalDeletedItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $MessageTableTotalSize = $([math]::Round(($MbxStats.MessageTableTotalSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+       $SystemMessageSize = $([math]::Round(($MbxStats.SystemMessageSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+             $MailboxGuid = $MbxStats.MailboxGuid.guid
+             $OwnerADGuid = $MbxStats.OwnerADGuid.guid
+
+   $item | Add-Member -MemberType NoteProperty -Name TotalItemSize -Value $TotalItemSize
+   $item | Add-Member -MemberType NoteProperty -Name TotalDeletedItemSize -Value $TotalDeletedItemSize
+   $item | Add-Member -MemberType NoteProperty -Name MessageTableTotalSize -Value $MessageTableTotalSize
+   $item | Add-Member -MemberType NoteProperty -Name SystemMessageSize -Value $SystemMessageSize
+   $item | Add-Member -MemberType NoteProperty -Name MailboxGuid -Value $MailboxGuid
+   $item | Add-Member -MemberType NoteProperty -Name OwnerADGuid -Value $OwnerADGuid }
 
 $data += $item
 
