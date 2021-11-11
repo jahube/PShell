@@ -8,12 +8,12 @@ $FormatEnumerationLimit = -1
 
 $Groups = Get-UnifiedGroup -ResultSize unlimited
 
-$count = $Groups.count ; $C = 0 ; $Members = @() ; $data = @()
+$count = $Groups.count ; $C = 0 ; $Members = @() ; [Array]$data = @()
 
 foreach ($G in $Groups) {
 Write-Progress -Activity "[Group - NAME]  $($G.name)  - [Group - SMTP] $($G.PrimarySmtpAddress)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
-$item = New-Object -TypeName PSObject   
+$item = New-Object -TypeName PSObject  
 $item | Add-Member -MemberType NoteProperty -Name Type -Value "Group"
 $item | Add-Member -MemberType NoteProperty -Name DisplayName -Value $G.DisplayName
 $item | Add-Member -MemberType NoteProperty -Name ExternalDirectoryObjectId -Value $G.ExternalDirectoryObjectId
