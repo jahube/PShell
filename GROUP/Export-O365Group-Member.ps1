@@ -13,9 +13,6 @@ $count = $Groups.count ; $C = 0 ; $Members = @() ; $data = @()
 foreach ($G in $Groups) {
 Write-Progress -Activity "Group $($DL.name) $($DL.userprincipalname)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
-$ps = $path + '\short\' + $DL.PrimarySmtpAddress + '.csv'
-$pc = $path + '\complete\' + $DL.PrimarySmtpAddress + '.csv'
-
 $item = New-Object -TypeName PSObject   
 $item | Add-Member -MemberType NoteProperty -Name Type -Value "Group"
 $item | Add-Member -MemberType NoteProperty -Name DisplayName -Value $G.DisplayName
@@ -39,6 +36,9 @@ $GroupDirPath = mkdir "$logsPATH\$Groupdirname"
 $item | FL > "$GroupDirPath\Group-short-$Groupdirname.txt"
 $G | FL > "$GroupDirPath\Group-Long-$Groupdirname.txt"
 
+#$ps = $path + '\short\' + $DL.PrimarySmtpAddress + '.csv'
+#$pc = $path + '\complete\' + $DL.PrimarySmtpAddress + '.csv'
+
 $Groupmembers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Member -ResultSize unlimited
 $Groupmembers | Export-csv "$GroupDirPath\Groupmembers-$Groupdirname.CSV" -NoTypeInformation
 $Groupmembers | Export-Clixml "$GroupDirPath\Groupmembers-$Groupdirname.XML"
@@ -49,10 +49,10 @@ $GroupOwners | Export-csv "$GroupDirPath\GroupOwners-$Groupdirname.CSV" -NoTypeI
 $GroupOwners | Export-Clixml "$GroupDirPath\GroupOwners-$Groupdirname.XML"
 $GroupOwners | FT > "$GroupDirPath\GroupOwners-$Groupdirname.txt"
 
-$GroupOwners = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Subscriber -ResultSize unlimited
-$GroupOwners | Export-csv "$GroupDirPath\GroupSubscriber-$Groupdirname.CSV" -NoTypeInformation
-$GroupOwners | Export-Clixml "$GroupDirPath\GroupSubscriber-$Groupdirname.XML"
-$GroupOwners | FT > "$GroupDirPath\GroupSubscriber-$Groupdirname.txt"
+$GroupSubscribers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Subscriber -ResultSize unlimited
+$GroupSubscribers | Export-csv "$GroupDirPath\GroupSubscribers-$Groupdirname.CSV" -NoTypeInformation
+$GroupSubscribers | Export-Clixml "$GroupDirPath\GroupSubscribers-$Groupdirname.XML"
+$GroupSubscribers | FT > "$GroupDirPath\GroupSubscribers-$Groupdirname.txt"
 
 $C++
 
