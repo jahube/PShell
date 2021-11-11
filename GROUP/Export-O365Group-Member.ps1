@@ -29,10 +29,25 @@ $item | Add-Member -MemberType NoteProperty -Name ReportToManager -Value $G.Repo
 $item | Add-Member -MemberType NoteProperty -Name RequireSenderAuthentication -Value $G.RequireSenderAuthenticationEnabled
 
 #MBX
-Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } catch { write-host $Error[0].Exception.message -F yellow } 
+      Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } 
+    catch { write-host $Error[0].Exception.message -F yellow }
+     
 IF ($MBX) { $item | Add-Member -MemberType NoteProperty -Name MBX_SMTP -Value $MBX.PrimarySMTPaddress
             $item | Add-Member -MemberType NoteProperty -Name MBX_Alias -Value $MBX.Alias
             $item | Add-Member -MemberType NoteProperty -Name MBX_ExchangeGuid -Value $MBX.ExchangeGuid }
+#MBXStats
+      Try {  $MbxStats = '' ;  $MbxStats = Get-MailboxStatistics -Identity $MBX.DistinguishedName -ErrorAction stop }
+           # $MBX_Fstat = Get-MailboxfolderStatistics -Identity $MBX.DistinguishedName -FolderScope recoverableitems -ErrorAction stop  
+    catch {  $MbxStats = '' # | select TotalItemSize,TotalDeletedItemSize,MessageTableTotalSize,SystemMessageSize,MailboxGuid,OwnerADGuid 
+             write-host $Error[0].Exception.message -F yellow }
+
+IF ($MbxStats) { 
+   $item | Add-Member -MemberType NoteProperty -Name TotalItemSize -Value $([math]::Round(($MbxStats.TotalItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $item | Add-Member -MemberType NoteProperty -Name TotalDeletedItemSize -Value $([math]::Round(($MbxStats.TotalDeletedItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $item | Add-Member -MemberType NoteProperty -Name MessageTableTotalSize -Value $([math]::Round(($MbxStats.MessageTableTotalSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $item | Add-Member -MemberType NoteProperty -Name SystemMessageSize -Value $([math]::Round(($MbxStats.SystemMessageSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $item | Add-Member -MemberType NoteProperty -Name MailboxGuid -Value $MbxStats.MailboxGuid.guid
+   $item | Add-Member -MemberType NoteProperty -Name OwnerADGuid -Value $MbxStats.OwnerADGuid.guid }
 
 $data += $item
 
@@ -69,5 +84,5 @@ $Data | FT -AutoSize > "$logsPATH\Group-Overview.txt"
 
 Stop-Transcript
 
-Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Group_Export_$ts" -Force # Zip Logs
-Invoke-Item $DesktopPath\MS-Logs # open file manager
+Compress-Archive -Path $logsPATH -DestinationPath "$logsPATH\Group_Export_$ts" -Force # Zip Logs
+Invoke-Item $logsPATH # open file manager
