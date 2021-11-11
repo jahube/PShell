@@ -30,8 +30,10 @@ $item | Add-Member -MemberType NoteProperty -Name RequireSenderAuthentication -V
 
 #MBX
 Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } catch { write-host $Error[0].Exception.message -F yellow } 
-IF ($MBX) { $item | Add-Member -MemberType NoteProperty -Name MBXSMTP -Value $MBX.PrimarySMTPaddress
-            $item | Add-Member -MemberType NoteProperty -Name MBXAlias -Value $MBX.Alias }
+IF ($MBX) { $item | Add-Member -MemberType NoteProperty -Name MBX_SMTP -Value $MBX.PrimarySMTPaddress
+            $item | Add-Member -MemberType NoteProperty -Name MBX_Alias -Value $MBX.Alias
+            $item | Add-Member -MemberType NoteProperty -Name MBX_ExchangeGuid -Value $MBX.ExchangeGuid }
+
 $data += $item
 
 $Groupdirname = $($G.Alias).Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
