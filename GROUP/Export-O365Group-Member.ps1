@@ -11,7 +11,7 @@ $Groups = Get-UnifiedGroup -ResultSize unlimited
 $count = $Groups.count ; $C = 0 ; $Members = @() ; $data = @()
 
 foreach ($G in $Groups) {
-Write-Progress -Activity "Group $($DL.name) $($DL.userprincipalname)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
+Write-Progress -Activity "[Group - NAME]  $($G.name)  - [Group - SMTP] $($G.PrimarySmtpAddress)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
 $item = New-Object -TypeName PSObject   
 $item | Add-Member -MemberType NoteProperty -Name Type -Value "Group"
@@ -24,6 +24,9 @@ $item | Add-Member -MemberType NoteProperty -Name HiddenGroupMembership -Value $
 $item | Add-Member -MemberType NoteProperty -Name HiddenFromExchangeClients -Value $G.HiddenFromExchangeClientsEnabled
 $item | Add-Member -MemberType NoteProperty -Name HiddenFromAddressLists -Value $G.HiddenFromAddressListsEnabled
 $item | Add-Member -MemberType NoteProperty -Name Subscription -Value $G.SubscriptionEnabled
+$item | Add-Member -MemberType NoteProperty -Name ReportToOriginator -Value $G.ReportToOriginatorEnabled
+$item | Add-Member -MemberType NoteProperty -Name ReportToManager -Value $G.ReportToManagerEnabled
+$item | Add-Member -MemberType NoteProperty -Name RequireSenderAuthentication -Value $G.RequireSenderAuthenticationEnabled
 
 #MBX
 Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } catch { write-host $Error[0].Exception.message -F yellow } 
@@ -36,8 +39,8 @@ $GroupDirPath = mkdir "$logsPATH\$Groupdirname"
 $item | FL > "$GroupDirPath\Group-short-$Groupdirname.txt"
 $G | FL > "$GroupDirPath\Group-Long-$Groupdirname.txt"
 
-#$ps = $path + '\short\' + $DL.PrimarySmtpAddress + '.csv'
-#$pc = $path + '\complete\' + $DL.PrimarySmtpAddress + '.csv'
+#$ps = $logsPATH + '\short\' + $G.PrimarySmtpAddress + '.csv'
+#$pc = $logsPATH + '\complete\' + $G.PrimarySmtpAddress + '.csv'
 
 $Groupmembers = Get-UnifiedGroupLinks -Identity $G.ExternalDirectoryObjectId -LinkType Member -ResultSize unlimited
 $Groupmembers | Export-csv "$GroupDirPath\Groupmembers-$Groupdirname.CSV" -NoTypeInformation
