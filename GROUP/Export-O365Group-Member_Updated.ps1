@@ -14,9 +14,30 @@ $count = $Groups.count ; $C = 0 ; $Members = @() ; [Array]$data = @()
 foreach ($G in $Groups) {
 Write-Progress -Activity "[Group - NAME]  $($G.name)  - [Group - SMTP] $($G.PrimarySmtpAddress)" -Status "Group $($C) / $($count)" -PercentComplete (($C/$count)*100) -SecondsRemaining "$($count-$C)" ;
 
-  Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } 
-catch { $MBX = "" | select PrimarySMTPaddress,Alias,ExchangeGuid ; $MBX.PrimarySMTPaddress = "failed" ; $MBX.Alias = "failed" ; $MBX.ExchangeGuid = "failed"
-write-host $Error[0].Exception.message -F yellow }
+#MBX
+    Try { $MBX = @() ; $MBX = Get-Mailbox $G.ExternalDirectoryObjectId -GroupMailbox -ErrorAction stop } 
+  catch { $MBX = "" | select PrimarySMTPaddress,Alias,ExchangeGuid ; $MBX.PrimarySMTPaddress = "failed" ; $MBX.Alias = "failed" ; $MBX.ExchangeGuid = "failed"
+           write-host $Error[0].Exception.message -F yellow }
+
+#MBXStats
+    Try {  $MbxStats = '' ;  $MbxStats = Get-MailboxStatistics -Identity $MBX.DistinguishedName -ErrorAction stop
+         # $MBX_Fstat = Get-MailboxfolderStatistics -Identity $MBX.DistinguishedName -FolderScope recoverableitems -ErrorAction stop
+
+           $TotalItemSize = $([math]::Round(($MbxStats.TotalItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+    $TotalDeletedItemSize = $([math]::Round(($MbxStats.TotalDeletedItemSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+   $MessageTableTotalSize = $([math]::Round(($MbxStats.MessageTableTotalSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+       $SystemMessageSize = $([math]::Round(($MbxStats.SystemMessageSize.ToString().Split(“(“)[1].Split(” “)[0].Replace(“,”,””)/1MB),2))
+             $MailboxGuid = $MbxStats.MailboxGuid.guid
+             $OwnerADGuid = $MbxStats.OwnerADGuid.guid  }
+  catch {       $MbxStats = '' | select TotalItemSize,TotalDeletedItemSize,MessageTableTotalSize,SystemMessageSize,MailboxGuid,OwnerADGuid 
+           $TotalItemSize = "failed"
+    $TotalDeletedItemSize = "failed"
+   $MessageTableTotalSize = "failed"
+       $SystemMessageSize = "failed"
+             $MailboxGuid = "failed"
+             $OwnerADGuid = "failed"
+
+           write-host $Error[0].Exception.message -F yellow }
 
 # $item = "" | select Type,DisplayName,ExternalDirectoryObjectId,Name,Alias,PrimarySMTP,HiddenGroupMembership,HiddenFromExchangeClients,HiddenFromAddressLists,Subscription,ReportToOriginator,ReportToManager,RequireSenderAuthentication,MBX_SMTP,MBX_Alias,MBX_ExchangeGuid
 
@@ -35,7 +56,13 @@ $item = [PSCustomObject]@{ Type = "Group"
     RequireSenderAuthentication = $G.RequireSenderAuthenticationEnabled
                        MBX_SMTP = $MBX.PrimarySMTPaddress
                       MBX_Alias = $MBX.Alias
-               MBX_ExchangeGuid = $MBX.ExchangeGuid }
+               MBX_ExchangeGuid = $MBX.ExchangeGuid
+                  TotalItemSize = $TotalItemSize
+           TotalDeletedItemSize = $TotalDeletedItemSize
+          MessageTableTotalSize = $MessageTableTotalSize
+              SystemMessageSize = $SystemMessageSize
+                    MailboxGuid = $MailboxGuid
+                    OwnerADGuid = $OwnerADGuid }
 
 $data += $item
 
@@ -72,5 +99,5 @@ $Data | FT -AutoSize > "$logsPATH\Group-Overview.txt"
 
 Stop-Transcript
 
-Compress-Archive -Path $logsPATH -DestinationPath "$DesktopPath\MS-Logs\Group_Export_$ts" -Force # Zip Logs
-Invoke-Item $DesktopPath\MS-Logs # open file manager
+Compress-Archive -Path $logsPATH -DestinationPath "$logsPATH\Group_Export_$ts" -Force # Zip Logs
+Invoke-Item $logsPATH # open file manager
