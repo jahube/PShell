@@ -75,8 +75,8 @@ $paths += [String]$("$Array1.$Array2.$Array3.$String4")
 
 }
 
-
-
+##############################################################################
+##############################################################################
 
 $OUT = @()
 
@@ -101,6 +101,9 @@ $OUT += $data
 $OUT | Export-Csv "C:\securitylogs.csv" -Force
 
 $OUT | FT -autosize
+
+
+##############################################################################
 
 function propByPath { param($obj, $propPath) foreach ($prop in $propPath.Split('.')) { $obj = $obj.$prop }; $obj }
 # https://stackoverflow.com/questions/51863251/access-psobject-property-indirectly-with-variable
