@@ -101,3 +101,32 @@ $OUT += $data
 $OUT | Export-Csv "C:\securitylogs.csv" -Force
 
 $OUT | FT -autosize
+
+function propByPath { param($obj, $propPath) foreach ($prop in $propPath.Split('.')) { $obj = $obj.$prop }; $obj }
+# https://stackoverflow.com/questions/51863251/access-psobject-property-indirectly-with-variable
+
+
+
+$OUT = @()
+
+Foreach ($line in $LOGS) {
+
+        $data = New-Object -TypeName PSCustomObject
+
+Foreach ($path in $paths) {
+
+$items = try { propByPath $line $path -erroraction "STOP" } catch { }
+
+IF ($items) { $itemstring = $items -join '; ' } ELSE { $itemstring = " " }
+
+$data | Add-Member -MemberType NoteProperty -Name $path -Value $itemstring
+
+}
+
+$OUT += $data
+
+}
+
+$OUT | Export-Csv "C:\securitylogs2.csv" -Force
+
+$OUT | FT -autosize
