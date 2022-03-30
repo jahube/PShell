@@ -1,0 +1,5 @@
+﻿$path = [environment]::getfolderpath("mydocuments")
+$MessageID = "<92B5AD5CDB393A4BBF5C20A8AB5AFC2E5AE46404@EX01.ads.local>"
+$Msg_Trace = Get-TransportService | Invoke-Command { Get-MessageTrackingLog -MessageID $MessageID }
+$Msg_Data  = $Trace | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { (($_ | select -expandproperty Recipients) -join ";") | Out-String }},@{ n = 'RecipientStatus'; e = { $(($_ | select -expandproperty RecipientStatus) -join ";") | Out-String }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = 'EventData'; e = {  $_.EventData | Out-String }},TransportTrafficType
+$Msg_Data| Export-Csv "$path\92B5AD5CDB393A4BBF5C20A8AB5AFC2E5AE46404.csv" -Force -Delimiter ';' -NTI -Encoding UTF8
