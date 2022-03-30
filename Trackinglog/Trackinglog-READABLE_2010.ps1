@@ -12,7 +12,7 @@ $DesktopPath = ([Environment]::GetFolderPath('Desktop'))
 $logsPATH =mkdir "$DesktopPath\MS-Logs\$ts" # creates MS-Logs on desktop + Timestamp
 Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 
-$Servers=Get-ExchangeServer|where{​$_.isHubTransportServer -eq $true}​​;
+$Servers=Get-ExchangeServer|where{$_.isHubTransportServer -eq $true};
 
 $senderlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL 
 $senderlog | Export-CsV "$logsPATH\Sender-trackinglog.csv" -notypeinformation
@@ -28,7 +28,7 @@ $Recipientlog | Export-clixml -path "$logsPATH\Receive-trackinglog.xml"
 #$MessageIDLog | Export-CsV "$logsPATH\MessageID-trackinglog.csv" -notypeinformation
 #$MessageIDLog | Export-clixml -path "$logsPATH\MessageID-trackinglog.xml"
 
-$Servers | Get-queue ; ($Servers | Get-queue ).LastError
+$queue = $Servers | % { Get-queue -server $_.name } ; $queue.LastError
 
 Get-RemoteDomain |ft DomainName,IsInternal,TargetDeliveryDomain,TrustedMail*,OriginatingServer
 
