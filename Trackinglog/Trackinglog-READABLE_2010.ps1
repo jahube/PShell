@@ -15,17 +15,17 @@ Start-Transcript "$logsPATH\OnPremises$ts.txt" -Verbose
 $Servers=Get-ExchangeServer|where{$_.isHubTransportServer -eq $true};
 
 $senderlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -sender $EMAIL 
-$senderlog | Export-CsV "$logsPATH\Sender-trackinglog.csv" -notypeinformation
+$senderlog | Export-CsV "$logsPATH\Sender-trackinglog.csv" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 $senderlog | Export-clixml -path "$logsPATH\Sender-trackinglog.xml"
 
 
 $Recipientlog = $Servers | Get-MessageTrackingLog -Start (get-date).AddDays($timeframe) -End (get-date) -Recipients $EMAIL 
-$Recipientlog | Export-CsV "$logsPATH\Receive-trackinglog.csv" -notypeinformation
+$Recipientlog | Export-CsV "$logsPATH\Receive-trackinglog.csv" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 $Recipientlog | Export-clixml -path "$logsPATH\Receive-trackinglog.xml"
 
 
 #$MessageIDLog = $Servers | Get-MessageTrackingLog -MessageId $MessageID
-#$MessageIDLog | Export-CsV "$logsPATH\MessageID-trackinglog.csv" -notypeinformation
+#$MessageIDLog | Export-CsV "$logsPATH\MessageID-trackinglog.csv" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 #$MessageIDLog | Export-clixml -path "$logsPATH\MessageID-trackinglog.xml"
 
 $queue = $Servers | % { Get-queue -server $_.name } ; $queue.LastError
@@ -43,10 +43,10 @@ Function HashConvertTo-String($ht) { $first = $true ;
    $output }
 
 $senderlog_Fixed = $senderlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { "$($_.Recipients -join "; ")" }},@{ n = 'RecipientStatus'; e = { "$($_.RecipientStatus)" }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = 'EventData'; e = { HashConvertTo-String $_.EventData }},TransportTrafficType
-$senderlog_Fixed | Export-Csv "$path\Sender-trackinglog-READABLE-Properties.CSV" -Force
+$senderlog_Fixed | Export-Csv "$path\Sender-trackinglog-READABLE-Properties.CSV" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 
 $Recipientlog_Fixed = $Recipientlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { "$($_.Recipients -join "; ")" }},@{ n = 'RecipientStatus'; e = { "$($_.RecipientStatus)" }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = 'EventData'; e = { HashConvertTo-String $_.EventData }},TransportTrafficType
-$Recipientlog_Fixed | Export-Csv "$path\Receive-trackinglog-READABLE-Properties.CSV" -Force
+$Recipientlog_Fixed | Export-Csv "$path\Receive-trackinglog-READABLE-Properties.CSV" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 
 <#
 $MessageIDLog_Fixed = $MessageIDLog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { "$($_.Recipients -join "; ")" }},@{ n = 'RecipientStatus'; e = { "$($_.RecipientStatus)" }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = 'EventData'; e = { HashConvertTo-String $_.EventData }},TransportTrafficType
