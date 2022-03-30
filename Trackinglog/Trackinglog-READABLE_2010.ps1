@@ -1,7 +1,6 @@
 ﻿
 $EMAIL = 'EMAIL@DOMAIN.com'     # Change
 
-
 #$MessageID = "<MessageID>"      # Change
 
 $timeframe = “-5" # ("days back")
@@ -43,10 +42,10 @@ Function HashConvertTo-String($ht) { $first = $true ;
     $output+=" {0} = {1}" -f $($pair.key),$($pair.Value)  }
    $output }
 
-$senderlog_Fixed = $senderlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { [string]::join("|",($_.Recipients)) }},@{ n = 'RecipientStatus'; e = { [string]::join("|",($_.RecipientStatus)) }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = "EventData" ; e = {   [string]::join("|",($_.EventData)) }},TransportTrafficType
+$senderlog_Fixed = $senderlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = {  (($_ | select -expandproperty Recipients) -join " | ") | Out-String }},@{ n = 'RecipientStatus'; e = { $(($_ | select -expandproperty RecipientStatus) -join " | ") | Out-String }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = "EventData" ; e = {  $(($_ | select -expandproperty EventData) -join " | ") | Out-String }},TransportTrafficType
 $senderlog_Fixed | Export-Csv "$path\Sender-trackinglog-READABLE-Properties.CSV" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 
-$Recipientlog_Fixed = $Recipientlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = { [string]::join("|",($_.Recipients)) }},@{ n = 'RecipientStatus'; e = { [string]::join("|",($_.RecipientStatus)) }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = "EventData" ; e = {  [string]::join("|",($_.EventData)) }},TransportTrafficType
+$Recipientlog_Fixed = $Recipientlog | select Timestamp,ClientIp,ClientHostname,ServerIp,ServerHostname,SourceContext,ConnectorId,Source,EventId,InternalMessageId,MessageId,NetworkMessageId,@{ n = 'Recipients'; e = {  (($_ | select -expandproperty Recipients) -join " | ") | Out-String }},@{ n = 'RecipientStatus'; e = { $(($_ | select -expandproperty RecipientStatus) -join " | ") | Out-String }},MessageSubject,Sender,ReturnPath,Directionality,TenantId,OriginalClientIp,MessageInfo,MessageLatency,MessageLatencyType,@{ n = "EventData" ; e = {$(($_ | select -expandproperty EventData) -join " | ") | Out-String }},TransportTrafficType
 $Recipientlog_Fixed | Export-Csv "$path\Receive-trackinglog-READABLE-Properties.CSV" -Encoding UTF8 -Delimiter ";" -Force -NoTypeInformation
 
 <#
