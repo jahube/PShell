@@ -32,3 +32,14 @@ Import-Module c:\AnalyzeMoveRequestStats.psm1
               $Data = Import-Clixml $FileBrowser.FileName
 
 ProcessStats -stats $Data -name ProcessedStats1
+
+=========================================================================================================================
+MRS_Explorer
+
+# REF  https://github.com/zarkatech/MRS-Explorer/blob/master/MRS_Explorer.ps1
+# TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+wget "https://raw.githubusercontent.com/zarkatech/MRS-Explorer/master/MRS_Explorer.ps1" -OutFile c:\MRS_Explorer.ps1
+
+c:\MRS_Explorer.ps1
