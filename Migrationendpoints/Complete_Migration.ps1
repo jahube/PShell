@@ -15,6 +15,9 @@ $NeedsApproval | % { set-MigrationUser $_.guid -ApproveSkippedItems }           
 $NeedsApproval | % { set-MigrationUser $_.guid -SyncNow }                                     # SYNC     Now
 $NeedsApproval | % { set-MigrationUser $_.guid -CompleteAfter (get-date).ToUniversalTime() }  # COMPLETE Now
 
+# Check
+$NeedsApproval| Get-MigrationUser | ft status
+
 # (3) STOP ("Pause") + Approve + START ("Resume") + ReSync +  Complete
 $NeedsApproval | % { stop-MigrationUser $_.guid }                                             # STOP ("Anhalten")
 $NeedsApproval | % { set-MigrationUser $_.guid -ApproveSkippedItems }                         # APPROVE USER
